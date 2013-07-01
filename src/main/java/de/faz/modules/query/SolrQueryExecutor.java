@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.management.Query;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
@@ -52,7 +51,7 @@ public class SolrQueryExecutor extends QueryExecutor {
 
     @Override
     @Nonnull
-    protected SearchContext.SearchResult executeQuery(@Nonnull final javax.management.Query query, @Nonnull final SearchSettings settings) {
+    protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
         if(query == null) { throw new IllegalArgumentException("A query instance is required to perform a search."); }
         if(settings == null) { throw new IllegalArgumentException("Settings are required to perform a search."); }
         if(client == null) { return new SolrSearchResult(null, settings.getPageSize()); }

@@ -16,8 +16,6 @@ package de.faz.modules.query;
 
 import de.faz.modules.query.SearchContext;
 
-import javax.management.Query;
-
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class DefaultSearchContext implements SearchContext {
 

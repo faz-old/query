@@ -1,10 +1,10 @@
 package de.faz.modules.query;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
-import javax.management.Query;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class SearchContextTest {
     public void execute_withQuery_callsExecutor() {
         Query q = mock(Query.class);
         context.execute(q);
-        verify(executor).execute(Matchers.eq(q), Matchers.any(SearchSettings.class));
+        verify(executor).execute(eq(q), any(SearchSettings.class));
     }
 
     @Test

@@ -22,11 +22,11 @@ import javax.annotation.Nonnull;
 public abstract class QueryExecutor {
 
     @Nonnull
-    public SearchContext.SearchResult execute(@Nonnull javax.management.Query query, @Nonnull SearchSettings settings) {
+    public SearchContext.SearchResult execute(@Nonnull Query query, @Nonnull SearchSettings settings) {
         return executeQuery(query, settings);
     }
 
     @Nonnull
-    protected abstract SearchContext.SearchResult executeQuery(@Nonnull javax.management.Query query, @Nonnull SearchSettings settings);
+    protected abstract SearchContext.SearchResult executeQuery(@Nonnull Query query, @Nonnull SearchSettings settings);
 
 }

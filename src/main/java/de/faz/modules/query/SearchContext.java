@@ -15,10 +15,6 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Optional;
-import de.faz.mapping.Mapping;
-import de.faz.mapping.PreparedQuery;
-import de.faz.mapping.Query;
-import de.faz.mapping.SearchSettings;
 
 import java.util.Iterator;
 
