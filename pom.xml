@@ -80,4 +80,14 @@
             </exclusions>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <siteDirectory>${project.basedir}/src/main/site</siteDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

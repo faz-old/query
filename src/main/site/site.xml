@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="Maven" xmlns="http://maven.apache.org/DECORATION/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+    <bannerLeft>
+        <name>FAZ.NET Polopoly 10.6.1</name>
+        <src>http://www.faz.net/img/fazlogo_home.gif</src>
+        <href>http://www.faz.net</href>
+    </bannerLeft>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.2.1</version>
+    </skin>
+    <custom>
+        <fluidoSkin>
+            <sideBarEnabled>true</sideBarEnabled>
+        </fluidoSkin>
+    </custom>
+
+    <body>
+        <links>
+            <item name="${project.name}" href="${project.url}"/>
+        </links>
+
+        <menu name="Dokumentation">
+            <item name="Erste Schritte" href="query-first-steps.html" />
+            <item name="Result mittels SearchSettings modifizieren" href="query-first-settings.html" />
+            <item name="Result mittels Highlighting modifizieren" href="query-highlighting.html" />
+        </menu>
+
+        <menu ref="parent" />
+        <menu ref="modules" />
+        <menu ref="reports" />
+    </body>
+</project>
