@@ -14,8 +14,6 @@
 
 package de.faz.modules.query;
 
-import de.faz.modules.query.SearchContext;
-
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class DefaultSearchContext implements SearchContext {
 
@@ -30,7 +28,6 @@ public class DefaultSearchContext implements SearchContext {
     DefaultSearchContext(QueryExecutor executor, FieldDefinitionGenerator generator) {
         this.generator = generator;
         this.executor = executor;
-
     }
 
     @Override
