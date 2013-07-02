@@ -35,6 +35,10 @@ public class DefaultSearchContext implements SearchContext {
         return new Query(generator);
     }
 
+    public Query createQuery(Query.Operator operator) {
+        return new QueryDefaultComparator(createQuery(), operator);
+    }
+
     @Override
     public PreparedQuery createPreparedQuery() {
         return new PreparedQuery(generator);

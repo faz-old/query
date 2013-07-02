@@ -22,6 +22,7 @@ import java.util.Iterator;
 public interface SearchContext {
 
     Query createQuery();
+    Query createQuery(Query.Operator operator);
     PreparedQuery createPreparedQuery();
     <T extends Mapping> T createFieldDefinitionFor(Class<T> mappingClass);
     SearchResult execute(Query query);

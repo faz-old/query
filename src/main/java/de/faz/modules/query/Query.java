@@ -44,9 +44,35 @@ public class Query {
     private FieldDefinitionGenerator definitionGenerator;
     protected final Stack<QueryItem> queryElementStack;
 
-    Query(FieldDefinitionGenerator generator) {
-        definitionGenerator = generator;
+    public enum Operator {
+        AND("AND", true),
+        OR("OR", true),
+        NOT("NOT", false);
+
+        private String representation;
+        private boolean bothSides;
+
+        private Operator(String stringRepresentation, boolean separateOnBothSides) {
+            this.representation = stringRepresentation;
+            this.bothSides = separateOnBothSides;
+        }
+
+        public String getRepresentation() {
+            StringBuffer sb = new StringBuffer();
+            if(bothSides) {
+                sb.append(' ');
+            }
+            return sb.append(representation).append(' ').toString();
+        }
+    }
+
+    protected Query() {
         queryElementStack = new Stack<>();
+    }
+
+    Query(FieldDefinitionGenerator generator) {
+        this();
+        definitionGenerator = generator;
     }
 
     /**
@@ -106,7 +132,7 @@ public class Query {
             throw new IllegalArgumentException("you need a minimum of two elements for an 'or' query");
         }
         QueryItem[] items = getLastItemsOf(elements.length + 1);
-        pushItemsWithSeparatorWhenHasItems(items, " AND ");
+        pushItemsWithSeparatorWhenHasItems(items, Operator.AND.getRepresentation());
         return this;
     }
 
@@ -122,7 +148,7 @@ public class Query {
         if(values == null || values.length < 2) {
             throw new IllegalArgumentException("You need a minimum of two values for an 'and' query");
         }
-        return new OperatorValue(" AND ", values);
+        return new OperatorValue(Operator.AND.getRepresentation(), values);
     }
 
     /**
@@ -138,7 +164,7 @@ public class Query {
         if(element == null || elements == null || elements.length == 0) {
             throw new IllegalArgumentException("you need a minimum of two elements for an 'or' query");
         }
-        pushItemsWithSeparatorWhenHasItems(getLastItemsOf(elements.length + 1), " OR ");
+        pushItemsWithSeparatorWhenHasItems(getLastItemsOf(elements.length + 1), Operator.OR.getRepresentation());
 
         return this;
     }
@@ -159,7 +185,7 @@ public class Query {
         if(values.length == 1) {
             result = new DeprecatedStringValue(values[0]);
         } else {
-            result = new OperatorValue(" OR ", values);
+            result = new OperatorValue(Operator.OR.getRepresentation(), values);
         }
 
         return result;
@@ -178,7 +204,7 @@ public class Query {
         }
 
         QueryItem elem = queryElementStack.pop();
-        queryElementStack.push(new OperatorItem("NOT ", elem));
+        queryElementStack.push(new OperatorItem(Operator.NOT.getRepresentation(), elem));
         return this;
     }
 
@@ -262,7 +288,7 @@ public class Query {
      * @return a new {@link QueryItem} that combines item and items with an 'and' operator.
      */
     public QueryItem and(QueryItem item, QueryItem... items) {
-        return new ItemChain(" AND ", mergeItems(item, items));
+        return new ItemChain(Operator.AND.getRepresentation(), mergeItems(item, items));
     }
 
     /**
@@ -274,7 +300,7 @@ public class Query {
      * @return a new {@link QueryItem} that combines item and items with an 'or' operator.
      */
     public QueryItem or(QueryItem item, QueryItem... items) {
-        return new ItemChain(" OR ", mergeItems(item, items));
+        return new ItemChain(Operator.OR.getRepresentation(), mergeItems(item, items));
     }
 
     /**
@@ -285,7 +311,7 @@ public class Query {
      * @return a new instance of {@link QueryItem} object that negates the {@code item} param
      */
     public QueryItem not(QueryItem item) {
-        return new OperatorItem("NOT ", item);
+        return new OperatorItem(Operator.NOT.getRepresentation(), item);
     }
 
     /**
