@@ -10,7 +10,7 @@
     </parent>
     <groupId>de.faz.modules</groupId>
     <artifactId>query</artifactId>
-    <version>${project.parent.version}</version>
+    <version>4.0-SNAPSHOT</version>
     <name>query - faz query framework</name>
     <dependencies>
         <dependency>
