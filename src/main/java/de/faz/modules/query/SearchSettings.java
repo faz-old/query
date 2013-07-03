@@ -46,14 +46,15 @@ public class SearchSettings implements SearchOption {
         DESC
     }
 
-    private Optional<SolrResponseCallbackFactory> customCallbackFactory;
-
     private Collection<SearchOption> optionCollection;
 
-
     private Collection<SortBy> sort;
+
+
+    private Optional<SolrResponseCallbackFactory> customCallbackFactory = Optional.absent();
     private Optional<Integer> pageSize = Optional.absent();
     private Optional<Integer> offset = Optional.absent();
+    
     private List<Query> filterList;
 
     protected FieldDefinitionGenerator generator;
