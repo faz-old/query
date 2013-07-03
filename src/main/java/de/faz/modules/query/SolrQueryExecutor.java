@@ -16,9 +16,7 @@ package de.faz.modules.query;
 
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SolrSearchClient;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import de.faz.modules.query.solr.SolrResponseCallbackFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -27,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
@@ -47,8 +44,6 @@ public class SolrQueryExecutor extends QueryExecutor {
         this.generator = generator;
     }
 
-
-
     @Override
     @Nonnull
     protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
@@ -65,11 +60,14 @@ public class SolrQueryExecutor extends QueryExecutor {
             if(settings.getOffset().isPresent()) {
                 page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
             }
-            if(settings.getCustomCallbackFactory().isPresent()) {
-                result =  new SolrSearchResult(solrResult.getPage(page).getQueryResponses().get(0), numOfElementsOnPage, page, settings.getCustomCallbackFactory().get());
-            } else {
-                result =  new SolrSearchResult(solrResult.getPage(page).getQueryResponses().get(0), numOfElementsOnPage, page);
-            }
+
+            result =  new SolrSearchResult(
+                    solrResult.getPage(page).getQueryResponses().get(0)
+                    , numOfElementsOnPage
+                    , page
+                    , settings.getCustomCallbackFactory()
+            );
+
         } catch (SolrServerException e) {
             LOG.warn("got exception when execute a search to solr", e);
             result = new SolrSearchResult(null, numOfElementsOnPage);
@@ -93,24 +91,6 @@ public class SolrQueryExecutor extends QueryExecutor {
 
         public SolrSearchResult(final QueryResponse result, int pageSize) {
             super(result, pageSize);
-        }
-
-        private SolrSearchResult(final QueryResponse result, final int pageSize, final int offset) {
-            this(result, pageSize, offset, new SolrResponseCallbackFactory() {
-                @Override
-                public Callback createCallbackForDocument(final QueryResponse response, final SolrDocument document) {
-                    return new MethodInterceptor() {
-                        @Override
-                        public Object intercept(final Object o, final Method method, final Object[] objects, final MethodProxy methodProxy) throws Throwable {
-                            MapToField mapping = method.getAnnotation(MapToField.class);
-                            if(mapping != null) {
-                                return document.getFieldValue(mapping.value());
-                            }
-                            return null;
-                        }
-                    };
-                }
-            });
         }
 
         private SolrSearchResult(final QueryResponse result, final int pageSize, final int offset, SolrResponseCallbackFactory callbackFactory) {

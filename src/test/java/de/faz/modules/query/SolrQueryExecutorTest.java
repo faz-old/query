@@ -108,31 +108,22 @@ public class SolrQueryExecutorTest {
     }
 
     @Test
-    public void executeQuery_withResult_createdCallbackIsMethodInterceptor() {
-        SearchContext.SearchResult searchResult = executor.executeQuery(q, settings);
-        SolrDocument doc = mock(SolrDocument.class);
-        when(solrResponse.getResults().iterator().hasNext()).thenReturn(true);
-        when(solrResponse.getResults().iterator().next()).thenReturn(doc);
-
-        searchResult.getResultsForMapping(TestMapping.class).next();
-        ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
-        verify(generator).enhanceWithInterceptor(eq(TestMapping.class), callbackCaptor.capture());
-        Callback callback = callbackCaptor.getValue();
-        assertTrue(MethodInterceptor.class.isAssignableFrom(callback.getClass()));
+    public void executeQuery_withResult_verifyFactoryIsGetFromSettings() {
+        executor.executeQuery(q, settings);
+        verify(settings).getCustomCallbackFactory();
     }
 
     @Test
-    public void executeQuery_callingMethodInterceptor_verifyGetFieldOfSolrDocumentIsCalled() throws Throwable {
-        SearchContext.SearchResult searchResult = executor.executeQuery(q, settings);
-        SolrDocument doc = mock(SolrDocument.class);
-        when(solrResponse.getResults().iterator().hasNext()).thenReturn(true);
-        when(solrResponse.getResults().iterator().next()).thenReturn(doc);
+    public void executeQuery_withServiceNotAvailableException_returnsStandardResult() throws ServiceNotAvailableException, SolrServerException {
+        when(polopolyResult.getPage(anyInt())).thenThrow(new ServiceNotAvailableException("message"));
+        SearchContext.SearchResult result = executor.executeQuery(q, settings);
+        assertEquals(0, result.getNumCount());
+    }
 
-        searchResult.getResultsForMapping(TestMapping.class).next();
-        ArgumentCaptor<MethodInterceptor> callbackCaptor = ArgumentCaptor.forClass(MethodInterceptor.class);
-        verify(generator).enhanceWithInterceptor(eq(TestMapping.class), callbackCaptor.capture());
-        MethodInterceptor interceptor = callbackCaptor.getValue();
-        interceptor.intercept(null, TestMapping.class.getMethod("getField1"), null, null);
-        verify(doc).getFieldValue("field1");
+    @Test
+    public void executeQuery_withSolrServerException_returnStandardResult() throws ServiceNotAvailableException, SolrServerException {
+        when(polopolyResult.getPage(anyInt())).thenThrow(new SolrServerException("message"));
+        SearchContext.SearchResult result = executor.executeQuery(q, settings);
+        assertEquals(0, result.getNumCount());
     }
 }

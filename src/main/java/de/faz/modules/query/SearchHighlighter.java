@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
+import de.faz.modules.query.solr.SolrResponseCallbackFactory;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

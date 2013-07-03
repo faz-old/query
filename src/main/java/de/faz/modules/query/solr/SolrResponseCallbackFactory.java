@@ -12,11 +12,14 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.solr;
 
-import org.apache.solr.client.solrj.SolrQuery;
+import net.sf.cglib.proxy.Callback;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public abstract class SolrEnrichQueryExecutor implements EnrichQueryExecutor<SolrQuery> {
-    public  abstract void enrich(final SolrQuery query);
+public interface SolrResponseCallbackFactory {
+
+    public Callback createCallbackForDocument(QueryResponse response, SolrDocument document);
 }

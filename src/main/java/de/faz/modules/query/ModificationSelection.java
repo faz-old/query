@@ -84,13 +84,5 @@ public class ModificationSelection {
         private boolean isAll() {
             return from == null && to == null;
         }
-
-        private boolean hasLowerLimit() {
-            return from != null;
-        }
-
-        private boolean hasUpperLimit() {
-            return to != null;
-        }
     }
 }
