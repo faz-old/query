@@ -49,7 +49,7 @@ Eine Verwendung dieses Ansatzes wäre z.B.
 Suchergebnisse erzeugen mittels Mappings
 ----------------------------------------
 Die dritte Verwendung dieses Mapping findet sich in den Suchergebnissen. Wenn man ein Suchergebnis vorliegen hat enthält
-dies eine Funktion ***getResultsForMapping(Mapping.class)***, welche einen ***Iterator<Mapping>*** zurück liefert.
+dies eine Funktion ***getResultsForMapping(Mapping.class)***, welche einen `Iterator<Mapping>` zurück liefert.
 In diesem Fall bekommt man einen Iterator auf alle gefundenen Suchergebnisse (die eine Seiteneinschränkung besitzen) welcher
 die Suchresultate in Form von Mapping Instanzen zurück gibt.
 Eine Verwendung dieses Ansatzes wäre z.B.
