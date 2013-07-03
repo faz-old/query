@@ -18,15 +18,107 @@ import com.google.common.base.Optional;
 
 import java.util.Iterator;
 
-/** @author Andreas Kaubisch <a.kaubisch@faz.de> */
+/**
+ * This interface provides all functionality to create and
+ * execute queries with the new query framework.
+ * With an implementation of this interface you can create
+ * field definition classes that do the field magic behind this
+ * framework.
+ * You must call {@link SearchContext#createFieldDefinitionFor(Class)}
+ * first to use all functionalities of this framework. When you
+ * don't use this function you'll get exceptions.
+ * You can also create {@link SearchSettings} which provide some extra
+ * functionality in this framework.
+ *
+ * @author Andreas Kaubisch <a.kaubisch@faz.de>
+ */
 public interface SearchContext {
 
+    /**
+     * This function creates a new Query instance an return this.
+     * You must this factorial function because the SearchContext
+     * initializes the {@link Query} instance with some required
+     * objects.
+     *
+     * @return a new {@link Query} instance
+     */
     Query createQuery();
+
+    /**
+     * This function works like {@link de.faz.modules.query.SearchContext#createQuery()}
+     * but it will initialize the {@link Query} instance to combine
+     * all query items with a specific operator
+     *
+     * @param operator a {@link de.faz.modules.query.Query.Operator} which is used
+     *                 to combine all query items
+     * @return a new {@link Query} instance
+     */
     Query createQuery(Query.Operator operator);
+
+    /**
+     * This function creates a new {@link PreparedQuery} instance that
+     * provides some extra function to specify some value placeholders
+     * at runtime that can be replaced with some real values.
+     *
+     * @return a new {@link PreparedQuery} instance
+     */
     PreparedQuery createPreparedQuery();
+
+    /**
+     * This function is one of the primary function you will use when you
+     * work with this framework. It generates a new instance of a given
+     * {@link Mapping} class and decorates this instance that the framework
+     * get the field definition from this {@link Mapping} instead of any
+     * values defined in the getter methods.
+     * You need to annotate that function with {@link MapToField} annotation
+     * that this function works correctly.
+     *
+     * @param mappingClass a class that implement {@link Mapping}
+     * @param <T> a class that implements {@link Mapping}
+     * @return  a new class of type T that is decorated to be used
+     *          in other framework classes.
+     */
     <T extends Mapping> T createFieldDefinitionFor(Class<T> mappingClass);
+
+    /**
+     * This function takes a {@link Query} instance an call a execute this
+     * query with a remote service.
+     * You don't need to specify a {@link SearchSettings} object because
+     * this function uses a standard {@link SearchSettings} instance with
+     * default values.
+     *
+     * Beware of that function because this function will be do a expensive
+     * call to the backend. Please make sure that you call this function once.
+     *
+     * @param query a {@link Query} instance
+     * @return a new {@link SearchResult} that contains the search results
+     */
     SearchResult execute(Query query);
+
+    /**
+     * This function works similar to {@link SearchContext#execute(Query)}
+     * expect that you can handover your own {@link SearchSettings}.
+     * When you need some sorting oder paging you must use this function.
+     *
+     * Beware of that function because this function will be do a expensive
+     * call to the backend. Please make sure that you call this function once.
+     *
+     * @param query a {@link Query} instance
+     * @param settings a custom {@link SearchSettings} instance
+     * @return a new {@link SearchResult} that contains the search results
+     */
     SearchResult execute(Query query, SearchSettings settings);
+
+    /**
+     * This function creates a new instance of {@link SearchSettings}.
+     * Use this function when you want to create a custom
+     * {@link SearchSettings} instance with your own configurations.
+     * Use always this creatio method to create new instances of
+     * {@link SearchSettings} because the context will be initialize
+     * this new created instance to work properly with this framework.
+     *
+     * @return a new {@link SearchSettings} instance
+     */
     SearchSettings withSettings();
 
     abstract class SearchResult<T> {
