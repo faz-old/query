@@ -60,7 +60,7 @@ public class FieldDefinitionGenerator {
         });
     }
 
-    <T extends Mapping> T enhanceWithInterceptor(Class<T> enhancedClass, Callback interceptor) {
+    public <T extends Mapping> T enhanceWithInterceptor(Class<T> enhancedClass, Callback interceptor) {
         Enhancer enhancer = new Enhancer();
         enhancer.setCallback(interceptor);
         enhancer.setSuperclass(enhancedClass);

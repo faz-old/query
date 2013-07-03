@@ -12,11 +12,16 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.solr;
 
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SolrSearchClient;
-import de.faz.modules.query.solr.SolrResponseCallbackFactory;
+import de.faz.modules.query.FieldDefinitionGenerator;
+import de.faz.modules.query.Mapping;
+import de.faz.modules.query.Query;
+import de.faz.modules.query.QueryExecutor;
+import de.faz.modules.query.SearchContext;
+import de.faz.modules.query.SearchSettings;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -28,14 +33,14 @@ import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public class SolrQueryExecutor extends QueryExecutor {
+class SolrQueryExecutor extends QueryExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SolrQueryExecutor.class);
 
     private final SolrSearchClient client;
     private final FieldDefinitionGenerator generator;
 
-    public SolrQueryExecutor(SolrSearchClient client) {
+    SolrQueryExecutor(SolrSearchClient client) {
         this(client, new FieldDefinitionGenerator());
     }
 
@@ -85,7 +90,7 @@ public class SolrQueryExecutor extends QueryExecutor {
         return solrQuery;
     }
 
-    private class SolrSearchResult extends DefaultSearchContext.SearchResult<QueryResponse> {
+    private class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 
         private SolrResponseCallbackFactory callbackFactory;
 

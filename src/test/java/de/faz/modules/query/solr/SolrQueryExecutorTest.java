@@ -1,13 +1,15 @@
-package de.faz.modules.query;
+package de.faz.modules.query.solr;
 
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SearchResult;
 import com.polopoly.search.solr.SolrSearchClient;
 import de.faz.modules.query.FieldDefinitionGenerator;
+import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
-import de.faz.modules.query.SolrQueryExecutor;
+import de.faz.modules.query.SearchSettings;
+import de.faz.modules.query.TestMapping;
+import de.faz.modules.query.solr.SolrQueryExecutor;
 import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.MethodInterceptor;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -41,8 +43,10 @@ public class SolrQueryExecutorTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchResult polopolyResult;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) QueryResponse solrResponse;
 
-    @Mock Query q;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchSettings settings;
+    @Mock
+    Query q;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    SearchSettings settings;
     @Mock
     FieldDefinitionGenerator generator;
     private SolrQueryExecutor executor;
