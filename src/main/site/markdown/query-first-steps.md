@@ -8,13 +8,15 @@ Des Weiteren ist durch dieses Framework ein leichteres testen möglich.
 
 Hauptklassen, die man kennen sollte
 ===================================
-Das Framework besteht derzeit aus 3 Hauptklassen, die für die Entwicklung eines Queries und eines Suchergebnisses
+Das Framework besteht derzeit aus 4 Hauptklassen, die für die Entwicklung eines Queries und eines Suchergebnisses
 gebraucht werden.
 * **SearchContext** Dies ist die zentrale Einstiegsklasse. Sie erstellt ein Query und führt ein Suchquery auf der
                     implementierten Suchdatenbank aus.
 * **Query**         Diese Klasse repräsentiert eine Suchquery für eine Suchdatenbank. Diese erstellt man mittels einer
                     SearchContext-Instanz. Sie enthält Funktionen wie and(), or() und term() womit man eine Query
                     entwickeln kann.
+* **SearchSettings** Mit einer Instanz dieser Klasse kann man das Suchresultat noch beeinflußen. So kann man den Offset
+                    definieren oder die Sortierung ändern. Diese Klasse wird auch genutzt, um zusätzliche Filter einzubauen.
 * **SearchResult**  Die innere Klasse SearchResult repräsentiert das Suchergebnis einer Suchabfrage. Diese enthält
                     die sucheigenen Objekte und dient als Adapter in das neue Framework.
 
@@ -24,32 +26,48 @@ nicht gebraucht werden, um erfolgreich Suchergebnisse zu erhalten.
 
 Das Interface Mapping und der Datencontainer
 ============================================
-In dem Framework gibt es eine Klasse namens **Mapping**, womit man Klassen markiert, die ein Dokumenten-Objekt darstellt,
-welches in der dokumentenbasierten Datenbank gespeichert wird. Das Mapping als Objekttyp selber hat mehrere Aufgabe:
+In dem Framework gibt es eine Klasse namens **Mapping**, womit man Klassen markiert, die ein Dokumenten-Objekt darstellt.
+Diese Objekte dienen als Datenlieferant für eine dokumentenbasierte Datenbank.
+
+Das Mapping als Objekttyp selber hat mehrere Aufgabe:
 
 Import der Daten in die Datenbank
 ---------------------------------
 Für den Import und der Aufbereitung der Polopoly Daten in der Datenbank wird eine Klasse mit Interface markiert und in
 den entsprechenden .content Dateien referenziert. Alle Funktionen innerhalb dieser Klasse können dann mit der Annotation
-***@MapToField*** annotiert werden, wo angegeben wird, welches Feld diese Funktion repräsentiert.
+`@MapToField` annotiert werden, wo angegeben wird, welches Feld diese Funktion repräsentiert.
+Ein Beispielmapping könnte zum Beispiel so ausschauen:
+
+    public class HelloWorldMapping {
+
+        @MapToField("hello")
+        public void String getHello() {
+            return "world";
+        }
+    }
+
+In dieser Klasse wird die Funktion `getHello()` als Datenlieferant verwendet und wenn dieses Mapping indiziert werden würde,
+dann wäre ein Feld `hello` mit dem Wert `world` angelegt worden.
 
 Aufbau der Suchqueries mittels Mappings
 ---------------------------------------
 Wenn man eine Suchquery mittels SearchContext erstellt, wird man bei der Funktion term(...) feststellen, dass dort ein
 Funktionsparameter namens ***fieldDefinition*** gefordert wird und diese Funktion auch eine Exception wirft, wenn man
 sie nicht korrekt anspricht.
-Um sich eine Feld-Definition zu erstellen ruft man die Funktion ***createFielDefinitionFor(Mapping)*** einer SearchContext
+Um sich eine Feld-Definition zu erstellen ruft man die Funktion `createFieldDefinitionFor(Mapping)` einer SearchContext
 Instanz auf und bekommt eine Instanz dieser Mapping-Klasse zurück. Diese ist nun so vorbereitet, dass man es in der Query
 nutzen kann.
 Eine Verwendung dieses Ansatzes wäre z.B.
 
     ImplementedMapping fieldDef = searchContext.createFieldDefinitionFor(ImplementedMapping.class);
-    query.add(query.term(implementedMapping.getExampleMethod()).value("hello world"));
+    query.add(
+        query.term(implementedMapping.getExampleMethod()).value("hello world")
+    );
 
 Suchergebnisse erzeugen mittels Mappings
 ----------------------------------------
 Die dritte Verwendung dieses Mapping findet sich in den Suchergebnissen. Wenn man ein Suchergebnis vorliegen hat enthält
-dies eine Funktion ***getResultsForMapping(Mapping.class)***, welche einen `Iterator<Mapping>` zurück liefert.
+dies eine Funktion `getResultsForMapping(Mapping.class)`, welche einen `Iterator<Mapping>` zurück liefert.
 In diesem Fall bekommt man einen Iterator auf alle gefundenen Suchergebnisse (die eine Seiteneinschränkung besitzen) welcher
 die Suchresultate in Form von Mapping Instanzen zurück gibt.
 Eine Verwendung dieses Ansatzes wäre z.B.
