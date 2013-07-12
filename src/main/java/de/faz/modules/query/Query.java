@@ -97,29 +97,6 @@ public class Query {
 
     /**
      *
-     * @param fieldDescription
-     * @param value
-     * @return
-     * @deprecated  use {@link Query#term(Object)} to get a {@link de.faz.modules.query.TermQueryPart} object and use method {@link de.faz.modules.query.TermQueryPart#value(Query.ValueItem)}
-     *              be aware of the fact that you must call {@link Query#add(Query.QueryItem)} now to add a term to the query
-     */
-    @Deprecated
-    public Query term(Object fieldDescription, ValueItem value) {
-        if(definitionGenerator.isEmpty()) {
-            throw new InvalidQueryException("The field description of method term was null.");
-        }
-        FieldDefinition fieldDefinition = definitionGenerator.pop();
-        if(fieldDefinition != null && value != null) {
-            pushTermItemWithDefinitionAndValue(fieldDefinition, value);
-        } else {
-            return null;
-        }
-
-        return this;
-    }
-
-    /**
-     *
      * @param element
      * @param elements
      * @return
@@ -134,21 +111,6 @@ public class Query {
         QueryItem[] items = getLastItemsOf(elements.length + 1);
         pushItemsWithSeparatorWhenHasItems(items, Operator.AND.getRepresentation());
         return this;
-    }
-
-    /**
-
-     * @param values
-     * @return
-     * @deprecated  use {@link Query#term(Object)} to get a {@link de.faz.modules.query.TermQueryPart} object and use method {@link de.faz.modules.query.TermQueryPart#values(de.faz.modules.query.TermQueryPart.Operator, String...)}
-     *              with the operator {@link de.faz.modules.query.TermQueryPart.Operator#AND}
-     */
-    @Deprecated
-    public ValueItem and(String... values) {
-        if(values == null || values.length < 2) {
-            throw new IllegalArgumentException("You need a minimum of two values for an 'and' query");
-        }
-        return new OperatorValue(Operator.AND.getRepresentation(), values);
     }
 
     /**
@@ -170,28 +132,6 @@ public class Query {
     }
 
     /**
-     * @param values
-     * @return
-     * @deprecated use {@link Query#term(Object)} to get a {@link de.faz.modules.query.TermQueryPart} object and call {@link de.faz.modules.query.TermQueryPart#values(CharSequence...)}
-     */
-    @Deprecated
-    public ValueItem or(String... values) {
-        if(values == null || values.length == 0) {
-//            throw new IllegalArgumentException("You need a minimum of one value for an 'or' query");
-            return null;
-        }
-
-        ValueItem result;
-        if(values.length == 1) {
-            result = new DeprecatedStringValue(values[0]);
-        } else {
-            result = new OperatorValue(Operator.OR.getRepresentation(), values);
-        }
-
-        return result;
-    }
-
-    /**
      *
      * @param element
      * @deprecated use {@link Query#not(Query.QueryItem)} instead
@@ -205,31 +145,6 @@ public class Query {
 
         QueryItem elem = queryElementStack.pop();
         queryElementStack.push(new OperatorItem(Operator.NOT.getRepresentation(), elem));
-        return this;
-    }
-
-    public Query conditional(final boolean condition, final Query element) {
-        if(element == null) {
-//            throw new IllegalArgumentException("you need a query element for a conditional query");
-            return null;
-        }
-        if(!condition) {
-            queryElementStack.pop();
-        }
-
-        return this;
-    }
-
-    public Query conditional(final boolean condition, final Query thenElement, final Query elseElement) {
-        if(thenElement == null || elseElement == null) {
-//            throw new IllegalArgumentException("you need a 'then and a 'else' query element for a conditional query");
-            return null;
-        }
-        QueryItem elseItem = queryElementStack.pop();
-        QueryItem thenItem = queryElementStack.pop();
-
-        queryElementStack.push(condition ? thenItem : elseItem);
-
         return this;
     }
 

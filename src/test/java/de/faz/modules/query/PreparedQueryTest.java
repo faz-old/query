@@ -36,7 +36,7 @@ public class PreparedQueryTest {
 
     @Test
     public void prepare_withValue_returnsTipOfMissingParameterValue() {
-        q.term(fieldDefinition.getField1(), q.param("testParam"));
+        q.add(q.term(fieldDefinition.getField1()).value(q.param("testParam")));
         assertEquals("field1:<unset parameter 'testParam'>", q.toString());
     }
 
@@ -62,7 +62,7 @@ public class PreparedQueryTest {
 
     @Test
     public void toString_WithParamAndValue_returnsReplacedValue() {
-        q.term(fieldDefinition.getField1(), q.param("param"));
+        q.add(q.term(fieldDefinition.getField1()).value(q.param("param")));
         q.setParamValue("param", "value");
 
         assertEquals("field1:value", q.toString());
@@ -70,9 +70,12 @@ public class PreparedQueryTest {
 
     @Test
     public void toString_WithParamAndValueInExpression_returnsReplacedValue() {
-        q.and(
-            q.term(fieldDefinition.getField1(), q.param("param1")),
-            q.term(fieldDefinition.getField2(), q.param("param2")));
+        q.add(
+            q.and(
+                q.term(fieldDefinition.getField1()).value(q.param("param1")),
+                q.term(fieldDefinition.getField2()).value(q.param("param2"))
+            )
+        );
         q.setParamValue("param1", "value1");
         q.setParamValue("param2", "value2");
 
@@ -81,7 +84,7 @@ public class PreparedQueryTest {
 
     @Test
     public void reset_withParamValueSet_clearParameterValue() {
-        q.term(fieldDefinition.getField1(), q.param("param"));
+        q.add(q.term(fieldDefinition.getField1()).value(q.param("param")));
         q.setParamValue("param", "value");
         q.reset();
         assertEquals("field1:<unset parameter 'param'>", q.toString());

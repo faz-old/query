@@ -21,9 +21,7 @@ public class QueryTest {
         QueryExecutor executor = mock(QueryExecutor.class);
         context = new DefaultSearchContext(executor);
         q = context.createQuery();
-
         fieldDefinition = context.createFieldDefinitionFor(TestMapping.class);
-
     }
 
     @Test
@@ -86,18 +84,6 @@ public class QueryTest {
         assertEquals("(field1:value1 AND field2:value2)", q.toString());
     }
 
-
-    @Test
-    public void and_withManyValuesArray_returnsAndString() {
-        q.term(fieldDefinition.getField1(), q.and("value1", "value2", "value3"));
-        assertEquals("field1:(value1 AND value2 AND value3)", q.toString());
-    }
-
-    @Test
-    public void or_withoutItem_returnsNull() {
-        assertNull("or should return null when argument is null", q.or((String[])null));
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void or_withOnlyOneItem_throwsInvalidQueryException() {
         q.or(
@@ -113,12 +99,6 @@ public class QueryTest {
         );
 
         assertEquals("(field1:value1 OR field2:value2)", q.toString());
-    }
-
-    @Test
-    public void or_withManyValuesArray_returnsOrString() {
-        q.term(fieldDefinition.getField1(), q.or("value1", "value2", "value3"));
-        assertEquals("field1:(value1 OR value2 OR value3)", q.toString());
     }
 
     @Test
@@ -141,44 +121,6 @@ public class QueryTest {
             )
         );
         assertEquals("NOT (field1:value1 AND field2:value2)", q.toString());
-    }
-
-    @Test
-    public void conditional_withFalse_removeLastQueryItem() {
-        q.conditional(
-            false,
-            q.term(fieldDefinition.getField1(), "value1")
-        );
-        assertEquals("", q.toString());
-    }
-
-    @Test
-    public void conditional_withTrue_doNotRemoveLastQueryItem() {
-        q.conditional(
-            true,
-            q.term(fieldDefinition.getField1(), "value1")
-        );
-        assertEquals("field1:value1", q.toString());
-    }
-
-    @Test
-    public void conditional_withElseConditionAndTrue_doRemoveElseQueryItem() {
-        q.conditional(
-                true,
-                q.term(fieldDefinition.getField1(), "value1"),
-                q.term(fieldDefinition.getField1(), "value2")
-        );
-        assertEquals("field1:value1", q.toString());
-    }
-
-    @Test
-    public void conditional_withElseConditionAndFalse_doRemoveThenQueryItem() {
-        q.conditional(
-                false,
-                q.term(fieldDefinition.getField1(), "value1"),
-                q.term(fieldDefinition.getField1(), "value2")
-        );
-        assertEquals("field1:value2", q.toString());
     }
 
     @Test

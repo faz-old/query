@@ -34,20 +34,8 @@ class QueryDefaultComparator extends Query {
 
     @Override
     @Deprecated
-    public Query term(final Object fieldDescription, final ValueItem value) {
-        return query.term(fieldDescription, value);
-    }
-
-    @Override
-    @Deprecated
     public Query and(final Query element, final Query... elements) {
         return query.and(element, elements);
-    }
-
-    @Override
-    @Deprecated
-    public ValueItem and(final String... values) {
-        return query.and(values);
     }
 
     @Override
@@ -58,24 +46,8 @@ class QueryDefaultComparator extends Query {
 
     @Override
     @Deprecated
-    public ValueItem or(final String... values) {
-        return query.or(values);
-    }
-
-    @Override
-    @Deprecated
     public Query not(final Query element) {
         return query.not(element);
-    }
-
-    @Override
-    public Query conditional(final boolean condition, final Query element) {
-        return query.conditional(condition, element);
-    }
-
-    @Override
-    public Query conditional(final boolean condition, final Query thenElement, final Query elseElement) {
-        return query.conditional(condition, thenElement, elseElement);
     }
 
     @Override
