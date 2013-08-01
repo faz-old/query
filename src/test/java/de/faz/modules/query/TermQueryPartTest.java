@@ -60,6 +60,11 @@ public class TermQueryPartTest {
     }
 
     @Test
+    public void value_withPrefixQuantifier_returnsUnescapedQuantifier() {
+        assertEquals("fieldName:*test", part.value("*test").toString());
+    }
+
+    @Test
     public void values_withValues_returnsNotNull() {
         assertNotNull("the values method should return a Query.QueryItem.", part.values("test1", "test2"));
     }

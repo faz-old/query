@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
@@ -452,6 +453,27 @@ public class Query {
 
     protected static class StringValue extends ValueItem {
 
+        private final static String[] ILLEGAL_CHARACTERS = new String [] {
+
+
+                "+"
+                , "-"
+                , "&&"
+                , "||"
+                , "!"
+                , "("
+                , ")"
+                , "{"
+                , "}"
+                , "["
+                , "]"
+                , "^"
+                , " "
+                , "~"
+                , ":"
+                , "\""
+        };
+
         final CharSequence value;
 
         public StringValue(final CharSequence value) {
@@ -460,7 +482,11 @@ public class Query {
 
         @Override
         public CharSequence toCharSequence() {
-            return ClientUtils.escapeQueryChars(value.toString());
+            String stringValue = value.toString();
+            for(String character : ILLEGAL_CHARACTERS) {
+                stringValue = stringValue.replaceAll(Pattern.quote(character), "\\\\"+ character);
+            }
+            return stringValue;
         }
     }
     protected static class DeprecatedStringValue extends ValueItem {
