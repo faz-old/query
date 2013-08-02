@@ -41,6 +41,14 @@ public class QueryTest {
     }
 
     @Test
+    public void addItemsOf_withQuery_addAllQueryItems() {
+        Query addedQuery = context.createQuery();
+        addedQuery.add(addedQuery.term(fieldDefinition.getField1()).value("value"));
+        addedQuery.add(addedQuery.term(fieldDefinition.getField2()).value("value2"));
+        assertEquals(addedQuery.toString(), q.addItemsOf(addedQuery).toString());
+    }
+
+    @Test
     public void term_withFieldDefinition_returnsNewTermQueryPart() {
         assertNotNull("the 'term' method should return a new TermQueryPart instance.", q.term(fieldDefinition.getField1()));
     }

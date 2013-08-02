@@ -43,6 +43,7 @@ import com.google.common.base.Joiner;
  */
 public class Query {
     private FieldDefinitionGenerator definitionGenerator;
+
     protected final Stack<QueryItem> queryElementStack;
 
     public enum Operator {
@@ -160,7 +161,7 @@ public class Query {
     /**
      * This method add a new {@link QueryItem} object to the current query instance. This method is
      * required when you want to add some query items to your current query. When you forget to add
-     * a created {@link QueryItem} to this querys your final query will not contain your creation.
+     * a created {@link QueryItem} to this query your final query will not contain your creation.
      *
      * @param item a desired part of your query
      * @return the current {@link Query} instance
@@ -169,6 +170,20 @@ public class Query {
         queryElementStack.push(item);
         return this;
     }
+
+    /**
+     * This method adds all elements of the given {@link Query} instance. This method is required
+     * when you have an existing query and you want to combine your existing query with this.
+     * @param query an existing query you want to add
+     * @return the current {@link Query} instance
+     */
+    public Query addItemsOf(final Query query) {
+        for(QueryItem item : query.queryElementStack) {
+            queryElementStack.push(item);
+        }
+        return this;
+    }
+
 
     /**
      * This method creates a new instance of {@link de.faz.modules.query.TermQueryPart} with the given {@code fieldDefinition}.
