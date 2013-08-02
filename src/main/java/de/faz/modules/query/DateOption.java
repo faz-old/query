@@ -33,6 +33,8 @@ public abstract class DateOption {
         , HOURS
         , DAY
         , DAYS
+        , WEEK
+        , WEEKS
         , MONTH
         , MONTHS
         , YEAR

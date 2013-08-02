@@ -44,12 +44,6 @@ public class QueryDefaultComparatorTest {
     }
 
     @Test
-    public void term_withValue_delegateCallToQuery() {
-        underTest.term(null, "value");
-        verify(originalQuery).term(null, "value");
-    }
-
-    @Test
     public void and_delegateCallToQuery() {
         Query.QueryItem item = mock(Query.QueryItem.class);
         underTest.and(item, item);
@@ -57,24 +51,10 @@ public class QueryDefaultComparatorTest {
     }
 
     @Test
-    public void and_withQueries_delegateCallToQuery() {
-        Query q = mock(Query.class);
-        underTest.and(q, q);
-        verify(originalQuery).and(q, q);
-    }
-
-    @Test
     public void or_withQueryItems_delegateCallToQuery() {
         Query.QueryItem item = mock(Query.QueryItem.class);
         underTest.or(item, item);
         verify(originalQuery).or(item, item);
-    }
-
-    @Test
-    public void or_withQueries_delegateCallToQuery() {
-        Query q = mock(Query.class);
-        underTest.or(q, q);
-        verify(originalQuery).or(q, q);
     }
 
     @Test

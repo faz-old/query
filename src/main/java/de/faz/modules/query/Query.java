@@ -76,79 +76,6 @@ public class Query {
         definitionGenerator = generator;
     }
 
-    /**
-     *
-     * @param fieldDescription
-     * @param value
-     * @return
-     * @deprecated use {@link Query#term(Object)} to get a {@link de.faz.modules.query.TermQueryPart} object and use method {@link de.faz.modules.query.TermQueryPart#value(CharSequence)}
-     */
-    @Deprecated
-    public Query term(Object fieldDescription, CharSequence value) {
-        if(definitionGenerator.isEmpty()) {
-            throw new InvalidQueryException("The field description of method term was null.");
-        }
-        FieldDefinition fieldDefinition = definitionGenerator.pop();
-        if(fieldDefinition != null && value != null) {
-            pushTermItemWithDefinitionAndValue(fieldDefinition, new DeprecatedStringValue(value));
-        }
-
-        return this;
-    }
-
-    /**
-     *
-     * @param element
-     * @param elements
-     * @return
-     * @deprecated  use {@link Query#and(Query.QueryItem, Query.QueryItem...)} to get a new {@link QueryItem} where all items are combined with AND and add it to
-     *              the query with {@link Query#add(Query.QueryItem)}
-     */
-    @Deprecated
-    public Query and(Query element, Query... elements) {
-        if(element == null || elements == null || elements.length == 0) {
-            throw new IllegalArgumentException("you need a minimum of two elements for an 'or' query");
-        }
-        QueryItem[] items = getLastItemsOf(elements.length + 1);
-        pushItemsWithSeparatorWhenHasItems(items, Operator.AND.getRepresentation());
-        return this;
-    }
-
-    /**
-     *
-     * @param element
-     * @param elements
-     * @return
-     * @deprecated  use {@link Query#or(Query.QueryItem, Query.QueryItem...)} to get a new {@link QueryItem} where all items are combined with OR and add it to
-     *              the query with {@link Query#add(Query.QueryItem)}
-     */
-    @Deprecated
-    public Query or(Query element, Query... elements) {
-        if(element == null || elements == null || elements.length == 0) {
-            throw new IllegalArgumentException("you need a minimum of two elements for an 'or' query");
-        }
-        pushItemsWithSeparatorWhenHasItems(getLastItemsOf(elements.length + 1), Operator.OR.getRepresentation());
-
-        return this;
-    }
-
-    /**
-     *
-     * @param element
-     * @deprecated use {@link Query#not(Query.QueryItem)} instead
-     */
-    @Deprecated
-    public Query not(Query element) {
-        if(element == null) {
-//            throw new IllegalArgumentException("You need an element for this function.");
-            return null;
-        }
-
-        QueryItem elem = queryElementStack.pop();
-        queryElementStack.push(new OperatorItem(Operator.NOT.getRepresentation(), elem));
-        return this;
-    }
-
     @Override
     public String toString() {
         String flattenItems = "";
@@ -454,8 +381,6 @@ public class Query {
     protected static class StringValue extends ValueItem {
 
         private final static String[] ILLEGAL_CHARACTERS = new String [] {
-
-
                 "+"
                 , "-"
                 , "&&"

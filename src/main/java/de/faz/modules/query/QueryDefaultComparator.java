@@ -27,30 +27,6 @@ class QueryDefaultComparator extends Query {
     }
 
     @Override
-    @Deprecated
-    public Query term(final Object fieldDescription, final CharSequence value) {
-        return query.term(fieldDescription, value);
-    }
-
-    @Override
-    @Deprecated
-    public Query and(final Query element, final Query... elements) {
-        return query.and(element, elements);
-    }
-
-    @Override
-    @Deprecated
-    public Query or(final Query element, final Query... elements) {
-        return query.or(element, elements);
-    }
-
-    @Override
-    @Deprecated
-    public Query not(final Query element) {
-        return query.not(element);
-    }
-
-    @Override
     public String toString() {
         switch(operator) {
             case AND:
