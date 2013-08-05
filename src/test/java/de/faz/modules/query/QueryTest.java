@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -200,6 +201,14 @@ public class QueryTest {
 
     @Test
     public void isEmpty_withoutElements_returnsTrue() {
-        assertTrue("isEmpty should return true because the query instance doesn't have elements.", q.isEmpty());
+        assertTrue("isEmpty should return true because the query instance doesn't has elements.", q.isEmpty());
+    }
+
+    @Test
+    public void isEmpty_withElements_returnsFalse() {
+        q.add(
+                q.term(fieldDefinition.getField1()).value("field1")
+        );
+        assertFalse("isEmpty should return false because the query instance has elements.", q.isEmpty());
     }
 }
