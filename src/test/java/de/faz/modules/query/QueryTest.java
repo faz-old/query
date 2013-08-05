@@ -197,4 +197,9 @@ public class QueryTest {
 
         assertNotEquals(item1, item2);
     }
+
+    @Test
+    public void isEmpty_withoutElements_returnsTrue() {
+        assertTrue("isEmpty should return true because the query instance doesn't have elements.", q.isEmpty());
+    }
 }

@@ -32,6 +32,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,6 +77,13 @@ public class SolrQueryExecutorTest {
     @Test(expected = IllegalArgumentException.class)
     public void executeQuery_withoutSettings_throwsIllegalArgumentException() {
         executor.executeQuery(q, null);
+    }
+
+    @Test
+    public void executeQuery_withEmptyQuery_returnsDefaultResult() {
+        when(q.isEmpty()).thenReturn(true);
+        executor.executeQuery(q, settings);
+        verify(searchClient, times(0)).search(any(SolrQuery.class), anyInt());
     }
 
     @Test

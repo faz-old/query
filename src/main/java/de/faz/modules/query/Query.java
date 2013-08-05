@@ -46,6 +46,7 @@ public class Query {
 
     protected final Stack<QueryItem> queryElementStack;
 
+
     public enum Operator {
         AND("AND", true),
         OR("OR", true),
@@ -202,6 +203,17 @@ public class Query {
         }
         return new TermQueryPart(definitionGenerator.pop());
     }
+
+    /**
+     * This method returns a boolean whether this query has elements or not. It returns true when you doesn't add
+     * a {@link QueryItem} to this instance.
+     *
+     * @return true when this query has element. Otherwise it returns false.
+     */
+    public boolean isEmpty() {
+        return queryElementStack != null && queryElementStack.isEmpty();
+    }
+
 
     @Override
     public int hashCode() {

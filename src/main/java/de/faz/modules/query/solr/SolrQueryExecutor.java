@@ -54,34 +54,41 @@ class SolrQueryExecutor extends QueryExecutor {
     protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
         if(query == null) { throw new IllegalArgumentException("A query instance is required to perform a search."); }
         if(settings == null) { throw new IllegalArgumentException("Settings are required to perform a search."); }
-        if(client == null) { return new SolrSearchResult(null, settings.getPageSize()); }
+        if(client == null) { return createDefaultResult(settings.getPageSize()); }
 
         int numOfElementsOnPage = settings.getPageSize();
-        SolrQuery solrQuery = createQuery(query, settings);
-        com.polopoly.search.solr.SearchResult solrResult = client.search(solrQuery, numOfElementsOnPage);
         SolrSearchResult result;
-        try {
-            int page = 0;
-            if(settings.getOffset().isPresent()) {
-                page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
+        if(!query.isEmpty()) {
+            SolrQuery solrQuery = createQuery(query, settings);
+            com.polopoly.search.solr.SearchResult solrResult = client.search(solrQuery, numOfElementsOnPage);
+            try {
+                int page = 0;
+                if(settings.getOffset().isPresent()) {
+                    page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
+                }
+
+                result =  new SolrSearchResult(
+                        solrResult.getPage(page).getQueryResponses().get(0)
+                        , numOfElementsOnPage
+                        , page
+                        , settings.getCustomCallbackFactory()
+                );
+            } catch (SolrServerException e) {
+                LOG.warn("got exception when execute a search to solr", e);
+                result = createDefaultResult(numOfElementsOnPage);
+            } catch (ServiceNotAvailableException e) {
+                LOG.warn("solr service isn't available", e);
+                result = createDefaultResult(numOfElementsOnPage);
             }
-
-            result =  new SolrSearchResult(
-                    solrResult.getPage(page).getQueryResponses().get(0)
-                    , numOfElementsOnPage
-                    , page
-                    , settings.getCustomCallbackFactory()
-            );
-
-        } catch (SolrServerException e) {
-            LOG.warn("got exception when execute a search to solr", e);
-            result = new SolrSearchResult(null, numOfElementsOnPage);
-        } catch (ServiceNotAvailableException e) {
-            LOG.warn("solr service isn't available", e);
-            result = new SolrSearchResult(null, numOfElementsOnPage);
+        } else {
+            result = createDefaultResult(numOfElementsOnPage);
         }
 
         return result;
+    }
+
+    private SolrSearchResult createDefaultResult(final int numOfElementsOnPage) {
+        return new SolrSearchResult(null, numOfElementsOnPage);
     }
 
     private SolrQuery createQuery(Query q, SearchSettings settings) {
@@ -98,7 +105,7 @@ class SolrQueryExecutor extends QueryExecutor {
             super(result, pageSize);
         }
 
-        private SolrSearchResult(final QueryResponse result, final int pageSize, final int offset, SolrResponseCallbackFactory callbackFactory) {
+        private SolrSearchResult(final QueryResponse result, final int pageSize, final int offset, final SolrResponseCallbackFactory callbackFactory) {
             super(result, pageSize, offset);
             this.callbackFactory = callbackFactory;
         }
