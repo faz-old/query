@@ -91,4 +91,9 @@ class QueryDefaultComparator extends Query {
     public boolean contains(final QueryItem item) {
         return query.contains(item);
     }
+
+	@Override
+	public boolean isEmpty() {
+		return query.isEmpty();
+	}
 }
