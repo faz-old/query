@@ -14,6 +14,8 @@
 
 package de.faz.modules.query;
 
+import com.google.common.base.Joiner;
+
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -22,10 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.regex.Pattern;
-
-import org.apache.solr.client.solrj.util.ClientUtils;
-
-import com.google.common.base.Joiner;
 
 /**
  * This Query class represents a possibility to construct
@@ -462,9 +460,12 @@ public class Query {
 
         public OperatorValue(final String operator, final CharSequence[] values) {
             this.operator = operator;
-            List<CharSequence> valueList = new ArrayList<>(Arrays.asList(values));
+            List<CharSequence> valueList = new ArrayList<>(values.length);
+	        for(CharSequence value : values) {
+		        valueList.add(new StringValue(value).toCharSequence());
+	        }
             valueList.removeAll(Collections.singleton(null));
-            this.values = valueList.toArray(new CharSequence[0]);
+            this.values = valueList.toArray(new CharSequence[valueList.size()]);
         }
 
         @Override

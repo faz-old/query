@@ -1,19 +1,16 @@
 package de.faz.modules.query;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.apache.solr.common.util.DateUtil;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import de.faz.modules.query.DateOption;
-import de.faz.modules.query.FieldDefinition;
-import de.faz.modules.query.TermQueryPart;
-import org.apache.solr.common.util.DateUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class TermQueryPartTest {
@@ -63,6 +60,11 @@ public class TermQueryPartTest {
     public void value_withPrefixQuantifier_returnsUnescapedQuantifier() {
         assertEquals("fieldName:*test", part.value("*test").toString());
     }
+
+	@Test
+	public void values_withSpaceSeparatedValues_returnEscaptedToString() {
+		assertEquals("fieldName:(space\\ value1 OR space\\ value2)", part.values("space value1", "space value2").toString());
+	}
 
     @Test
     public void values_withValues_returnsNotNull() {
