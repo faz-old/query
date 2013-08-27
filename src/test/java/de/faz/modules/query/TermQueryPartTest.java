@@ -66,6 +66,11 @@ public class TermQueryPartTest {
 		assertEquals("fieldName:(space\\ value1 OR space\\ value2)", part.values("space value1", "space value2").toString());
 	}
 
+	@Test
+	public void values_withQuantifiers_returnsUnescapedQuantifier() {
+		assertEquals("fieldName:(space\\ value1* OR *space\\ value2)", part.values("space value1*", "*space value2").toString());
+	}
+
     @Test
     public void values_withValues_returnsNotNull() {
         assertNotNull("the values method should return a Query.QueryItem.", part.values("test1", "test2"));
