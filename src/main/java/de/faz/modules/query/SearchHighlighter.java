@@ -14,21 +14,20 @@
 
 package de.faz.modules.query;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
 import de.faz.modules.query.solr.SolrResponseCallbackFactory;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class SearchHighlighter implements SearchOption,SolrResponseCallbackFactory {
