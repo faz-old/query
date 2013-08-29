@@ -1,13 +1,16 @@
 package de.faz.modules.query;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.solr.common.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -105,6 +108,22 @@ public class TermQueryPartTest {
         assertEquals("fieldName:["+ fromString +" TO "+ toString +"]", part.range(from, to).toString());
     }
 
+	@Test
+	public void range_withHours_checkUtcConversion() {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+		Calendar from = DateUtils.truncate(Calendar.getInstance(TimeZone.getTimeZone("GMT+2")), Calendar.HOUR_OF_DAY);
+		from.set(Calendar.HOUR_OF_DAY, 3);
+		Calendar to = DateUtils.truncate(Calendar.getInstance(TimeZone.getTimeZone("GMT+2")), Calendar.HOUR_OF_DAY);
+		to.set(Calendar.HOUR_OF_DAY, 4);
+
+		String fromString = format.format(from.getTime());
+		String toString = format.format(to.getTime());
+
+		assertEquals("fieldName:[" + fromString + " TO " + toString + "]", part.range(from, to).toString());
+	}
+
     @Test
     public void range_WithFromAndWildcardValue_returnsCorrectToString() {
         DateFormat format = DateUtil.getThreadLocalDateFormat();
@@ -118,7 +137,6 @@ public class TermQueryPartTest {
         DateFormat format = DateUtil.getThreadLocalDateFormat();
         Date from = new Date();
         assertEquals("fieldName:["+format.format(from) + " TO NOW]", part.range(DateOption.from(from), DateOption.NOW).toString());
-
     }
 
     @Test
@@ -144,7 +162,6 @@ public class TermQueryPartTest {
         Query.QueryItem item = part.range(DateOption.from(now), DateOption.NOW);
         Query.QueryItem item2 = part.range(DateOption.from(now), DateOption.NOW);
         Assert.assertEquals(item, item2);
-
     }
 
 }

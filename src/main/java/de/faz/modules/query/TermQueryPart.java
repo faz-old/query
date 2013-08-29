@@ -15,7 +15,9 @@
 package de.faz.modules.query;
 
 import de.faz.modules.query.FieldDefinition;
+import de.faz.modules.query.Query.QueryItem;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
@@ -28,7 +30,7 @@ public class TermQueryPart {
 
         private String value;
 
-        private Operator(String opValue) {
+        private Operator(final String opValue) {
             this.value = opValue;
         }
 
@@ -69,19 +71,23 @@ public class TermQueryPart {
         return new Query.TermItem(definition, new DateValue(fromOption, toOption));
     }
 
+	public QueryItem range(final Calendar startDate, final Calendar endDate) {
+		return range(startDate.getTime(), endDate.getTime());
+	}
+
     private class DateValue extends Query.ValueItem {
 
         private DateOption from, to;
 
 
-        public DateValue(DateOption from, DateOption to) {
+        public DateValue(final DateOption from, final DateOption to) {
             this.from = from;
             this.to = to;
         }
 
         @Override
         CharSequence toCharSequence() {
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer sb = new StringBuffer();
             sb.append('[').append(from.flatten()).append(" TO ").append(to.flatten()).append(']');
             return sb;
         }
@@ -89,12 +95,10 @@ public class TermQueryPart {
         @Override
         public boolean equals(final Object obj) {
             if(obj instanceof DateValue) {
-                DateValue value = (DateValue) obj;
+                final DateValue value = (DateValue) obj;
                 return from.equals(value.from) && to.equals(value.to);
             }
             return super.equals(obj);
         }
     }
-
-
 }
