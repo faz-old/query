@@ -94,7 +94,6 @@ public class SearchHighlighter implements SearchOption,SolrResponseCallbackFacto
 	}
 
 	@Override
-	//TODO: Change it to use new query framework
 	public Callback createCallbackForDocument(final QueryResponse response, final SolrDocument document) {
 		return new MethodInterceptor() {
 			@Override

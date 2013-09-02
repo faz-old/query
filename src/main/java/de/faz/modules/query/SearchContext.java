@@ -138,10 +138,6 @@ public interface SearchContext {
             this.offset = offset;
         }
 
-        protected Optional<T> getImplementationResult() {
-            return implementedSearchResult;
-        }
-
         public int getPageSize() {
             return pageSize;
         }

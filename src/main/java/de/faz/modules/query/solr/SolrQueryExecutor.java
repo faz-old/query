@@ -14,61 +14,78 @@
 
 package de.faz.modules.query.solr;
 
-import com.polopoly.management.ServiceNotAvailableException;
-import com.polopoly.search.solr.SolrSearchClient;
+import com.polopoly.search.solr.QueryDecorator;
 import de.faz.modules.query.FieldDefinitionGenerator;
-import de.faz.modules.query.Mapping;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class SolrQueryExecutor extends QueryExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SolrQueryExecutor.class);
 
-    private final SolrSearchClient client;
     private final FieldDefinitionGenerator generator;
 
-    SolrQueryExecutor(SolrSearchClient client) {
-        this(client, new FieldDefinitionGenerator());
-    }
+	private final SolrServer server;
 
-    SolrQueryExecutor(SolrSearchClient client, FieldDefinitionGenerator generator) {
-        this.client = client;
-        this.generator = generator;
-    }
+	private List<QueryDecorator> decoratorList;
+
+//    SolrQueryExecutor(SolrSearchClient client) {
+//        this(client, new FieldDefinitionGenerator());
+//    }
+//
+//    SolrQueryExecutor(SolrSearchClient client, FieldDefinitionGenerator generator) {
+//        this(((SolrClientImpl)client.getServiceControl()).getSolrServer(), generator);
+//    }
+
+	SolrQueryExecutor(SolrServer server) {
+		this(server, new FieldDefinitionGenerator());
+	}
+
+	SolrQueryExecutor(SolrServer server, FieldDefinitionGenerator generator) {
+		this.server = server;
+		this.generator = generator;
+		this.decoratorList = new ArrayList<>();
+	}
+
+	public void addQueryDecorator(QueryDecorator decorator) {
+		this.decoratorList.add(decorator);
+	}
 
     @Override
     @Nonnull
     protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
         if(query == null) { throw new IllegalArgumentException("A query instance is required to perform a search."); }
         if(settings == null) { throw new IllegalArgumentException("Settings are required to perform a search."); }
-        if(client == null) { return createDefaultResult(settings.getPageSize()); }
+        if(server == null) { return createDefaultResult(settings.getPageSize()); }
 
         int numOfElementsOnPage = settings.getPageSize();
         SolrSearchResult result;
         if(!query.isEmpty()) {
             SolrQuery solrQuery = createQuery(query, settings);
-            com.polopoly.search.solr.SearchResult solrResult = client.search(solrQuery, numOfElementsOnPage);
+
             try {
-                int page = 0;
+	            QueryResponse solrResult = server.query(solrQuery);
+	            int page = 0;
                 if(settings.getOffset().isPresent()) {
                     page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
                 }
 
                 result =  new SolrSearchResult(
-                        solrResult.getPage(page).getQueryResponses().get(0)
+		                generator
+                        , solrResult
                         , numOfElementsOnPage
                         , page
                         , settings.getCustomCallbackFactory()
@@ -76,9 +93,9 @@ class SolrQueryExecutor extends QueryExecutor {
             } catch (SolrServerException e) {
                 LOG.warn("got exception when execute a search to solr", e);
                 result = createDefaultResult(numOfElementsOnPage);
-            } catch (ServiceNotAvailableException e) {
-                LOG.warn("solr service isn't available", e);
-                result = createDefaultResult(numOfElementsOnPage);
+//            } catch (ServiceNotAvailableException e) {
+//                LOG.warn("solr service isn't available", e);
+//                result = createDefaultResult(numOfElementsOnPage);
             }
         } else {
             result = createDefaultResult(numOfElementsOnPage);
@@ -94,79 +111,9 @@ class SolrQueryExecutor extends QueryExecutor {
     private SolrQuery createQuery(Query q, SearchSettings settings) {
         SolrQuery solrQuery = new SolrQuery(q.toString());
         settings.getQueryExecutor().enrich(solrQuery);
+	    for(QueryDecorator decorator :decoratorList) {
+		    decorator.decorate(solrQuery);
+	    }
         return solrQuery;
-    }
-
-    private class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
-
-        private SolrResponseCallbackFactory callbackFactory;
-
-        public SolrSearchResult(final QueryResponse result, int pageSize) {
-            super(result, pageSize);
-        }
-
-        private SolrSearchResult(final QueryResponse result, final int pageSize, final int offset, final SolrResponseCallbackFactory callbackFactory) {
-            super(result, pageSize, offset);
-            this.callbackFactory = callbackFactory;
-        }
-
-        public long getNumCount() {
-            long numCount = 0;
-            if(implementedSearchResult.isPresent()) {
-                numCount = implementedSearchResult.get().getResults().getNumFound();
-            }
-
-            return numCount;
-        }
-
-        public long getNumberOfPages() {
-            int numPages = 0;
-            if(implementedSearchResult.isPresent()) {
-                numPages = (int) Math.ceil(implementedSearchResult.get().getResults().getNumFound() / pageSize);
-            }
-            return numPages;
-        }
-
-        @Override
-        public <S extends Mapping> Iterator<S> getResultsForMapping(final Class<S> mapping) {
-            if(implementedSearchResult.isPresent()) {
-                final QueryResponse response = implementedSearchResult.get();
-                final Iterator<SolrDocument> solrIt = response.getResults().iterator();
-                return new Iterator<S>() {
-                    @Override
-                    public boolean hasNext() {
-                        return solrIt.hasNext();
-                    }
-
-                    @Override
-                    public S next() {
-                        final SolrDocument doc = solrIt.next();
-                        S result = generator.enhanceWithInterceptor(mapping, callbackFactory.createCallbackForDocument(response, doc));
-                        return result;
-                    }
-
-                    @Override
-                    public void remove() {
-
-                    }
-                };
-            } else {
-                return new Iterator<S>() {
-                    @Override
-                    public boolean hasNext() {
-                        return false;
-                    }
-
-                    @Override
-                    public S next() {
-                        return null;
-                    }
-
-                    @Override
-                    public void remove() {
-                    }
-                };
-            }
-        }
     }
 }

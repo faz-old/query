@@ -14,18 +14,16 @@
 
 package de.faz.modules.query;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.google.common.base.Optional;
 import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
 import de.faz.modules.query.solr.SolrResponseCallbackFactory;
 import de.faz.modules.query.solr.StandardCallbackFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 
-import com.google.common.base.Optional;
-
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class SearchSettings implements SearchOption {
@@ -97,6 +95,12 @@ public class SearchSettings implements SearchOption {
 
         return highlighter;
     }
+
+	public GroupingSearchOption addGrouping() {
+		GroupingSearchOption option = new GroupingSearchOption(generator);
+		optionCollection.add(option);
+		return option;
+	}
 
     public Collection<SortBy> getSort() {
         return sort;

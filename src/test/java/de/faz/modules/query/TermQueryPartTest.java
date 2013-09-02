@@ -65,12 +65,22 @@ public class TermQueryPartTest {
     }
 
 	@Test
-	public void values_withSpaceSeparatedValues_returnEscaptedToString() {
+	public void values_withOneValue_returnsQueryLikeValueMethod() {
+		assertEquals("fieldName:value1", part.values("value1").toString());
+	}
+
+	@Test
+	public void values_withOneValueAndOperator_returnsQueryWithoutOperator() {
+		assertEquals("fieldName:value1", part.values(TermQueryPart.Operator.AND, "value1").toString());
+	}
+
+	@Test
+	public void values_withSpaceSeparatedValues_returnEscapedToString() {
 		assertEquals("fieldName:(space\\ value1 OR space\\ value2)", part.values("space value1", "space value2").toString());
 	}
 
 	@Test
-	public void values_withQuantifiers_returnsUnescapedQuantifier() {
+	public void values_withQuantifiers_returnsNotEscapedQuantifier() {
 		assertEquals("fieldName:(space\\ value1* OR *space\\ value2)", part.values("space value1*", "*space value2").toString());
 	}
 

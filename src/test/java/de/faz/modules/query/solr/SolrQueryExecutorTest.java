@@ -2,15 +2,14 @@ package de.faz.modules.query.solr;
 
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SearchResult;
-import com.polopoly.search.solr.SolrSearchClient;
 import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
 import de.faz.modules.query.TestMapping;
-import de.faz.modules.query.solr.SolrQueryExecutor;
 import net.sf.cglib.proxy.Callback;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -27,7 +26,6 @@ import java.util.Iterator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -40,29 +38,26 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SolrQueryExecutorTest {
 
-    @Mock SolrSearchClient searchClient;
+    @Mock SolrServer searchClient;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchResult polopolyResult;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) QueryResponse solrResponse;
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchSettings settings;
 
-    @Mock
-    Query q;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    SearchSettings settings;
-    @Mock
-    FieldDefinitionGenerator generator;
+	@Mock Query q;
+    @Mock FieldDefinitionGenerator generator;
+
     private SolrQueryExecutor executor;
 
     @Before
     public void setUp() throws ServiceNotAvailableException, SolrServerException {
-        when(searchClient.search(any(SolrQuery.class), anyInt())).thenReturn(polopolyResult);
-        when(polopolyResult.getPage(0).getQueryResponses().get(0)).thenReturn(solrResponse);
+        when(searchClient.query(any(SolrQuery.class))).thenReturn(solrResponse);
 
         executor = new SolrQueryExecutor(searchClient, generator);
     }
 
     @Test
     public void executeQuery_withoutSearchClient_returnsDefaultResult() {
-        executor = new SolrQueryExecutor(null);
+        executor = new SolrQueryExecutor(null, generator);
         when(settings.getPageSize()).thenReturn(10);
         SearchContext.SearchResult result = executor.executeQuery(q, settings);
         Iterator it = result.getResultsForMapping(Object.class);
@@ -80,31 +75,31 @@ public class SolrQueryExecutorTest {
     }
 
     @Test
-    public void executeQuery_withEmptyQuery_returnsDefaultResult() {
+    public void executeQuery_withEmptyQuery_returnsDefaultResult() throws SolrServerException {
         when(q.isEmpty()).thenReturn(true);
         executor.executeQuery(q, settings);
-        verify(searchClient, times(0)).search(any(SolrQuery.class), anyInt());
+        verify(searchClient, times(0)).query(any(SolrQuery.class));
     }
 
     @Test
     public void executeQuery_withQueryAndSettings_callSearchClient() throws ServiceNotAvailableException, SolrServerException {
         executor.executeQuery(q, settings);
-        verify(searchClient).search(any(SolrQuery.class), anyInt());
+        verify(searchClient).query(any(SolrQuery.class));
     }
 
     @Test
-    public void executeQuery_withQueryAndSettings_verifySolrQueryHasQueryString() {
+    public void executeQuery_withQueryAndSettings_verifySolrQueryHasQueryString() throws SolrServerException {
         executor.executeQuery(q, settings);
         ArgumentCaptor<SolrQuery> queryArg = ArgumentCaptor.forClass(SolrQuery.class);
-        verify(searchClient).search(queryArg.capture(), anyInt());
+        verify(searchClient).query(queryArg.capture());
         Assert.assertEquals(queryArg.getValue().getQuery(), q.toString());
     }
 
     @Test
-    public void executeQuery_withSettings_verifyEnrichisCalled() {
+    public void executeQuery_withSettings_verifyEnrichisCalled() throws SolrServerException {
         executor.executeQuery(q, settings);
         ArgumentCaptor<SolrQuery> queryArg = ArgumentCaptor.forClass(SolrQuery.class);
-        verify(searchClient).search(queryArg.capture(), anyInt());
+        verify(searchClient).query(queryArg.capture());
         verify(settings.getQueryExecutor()).enrich(queryArg.getValue());
     }
 

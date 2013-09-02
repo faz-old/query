@@ -17,6 +17,12 @@
             <classifier>api</classifier>
             <scope>provided</scope>
         </dependency>
+		<dependency>
+			<groupId>de.faz</groupId>
+			<artifactId>polopoly-private</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>

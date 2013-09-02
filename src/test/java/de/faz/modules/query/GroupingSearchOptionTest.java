@@ -8,7 +8,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)
@@ -54,10 +56,33 @@ public class GroupingSearchOptionTest {
 	}
 
 	@Test
-	public void getQueryExecutor_withQuery_enableGroupingMain() {
+	public void getQueryExecutor_withGroupQuery_addGroupQuery() {
+		Query q = createQueryMockWithStringValue("testQuery");
+
 		underTest
+			.groupBy(q)
 			.getQueryExecutor()
 			.enrich(query);
+		verify(query).setParam(GroupParams.GROUP_QUERY, "testQuery");
+	}
+
+	@Test
+	public void getQueryExecutor_withMultipleGroupQueries_addAllGroupQueries() {
+		Query q1 = createQueryMockWithStringValue("query1");
+		Query q2 = createQueryMockWithStringValue("query2");
+
+		underTest
+				.groupBy(q1)
+				.groupBy(q2)
+				.getQueryExecutor()
+				.enrich(query);
+		verify(query).setParam(GroupParams.GROUP_QUERY, "query1");
+		verify(query).setParam(GroupParams.GROUP_QUERY, "query2");
+	}
+
+	@Test
+	public void getQueryExecutor_withMergedResults_addMergeParam() {
+		underTest.mergeResults().getQueryExecutor().enrich(query);
 		verify(query).setParam(GroupParams.GROUP_MAIN, true);
 	}
 
@@ -74,5 +99,16 @@ public class GroupingSearchOptionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void limitGroupResultsTo_withZeroLimit_throwsIllegalArgumentException() {
 		underTest.limitGroupResultsTo(0);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void groupBy_withoutQuery_throwsIllegalArgumentException() {
+		underTest.groupBy(null);
+	}
+
+	private Query createQueryMockWithStringValue(String value) {
+		Query q = mock(Query.class);
+		when(q.toString()).thenReturn(value);
+		return q;
 	}
 }

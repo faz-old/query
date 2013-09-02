@@ -14,7 +14,6 @@
 
 package de.faz.modules.query;
 
-import de.faz.modules.query.FieldDefinition;
 import de.faz.modules.query.Query.QueryItem;
 
 import java.util.Calendar;
@@ -53,13 +52,13 @@ public class TermQueryPart {
     }
 
     public Query.QueryItem values(final CharSequence... values) {
-        if(values.length == 1) {
-            return value(values[0]);
-        }
-        return new Query.TermItem(definition, new Query.OperatorValue(Operator.OR.toString(), values));
+        return values(Operator.OR, values);
     }
 
-    public Query.QueryItem values(final Operator operator, final String... values) {
+    public Query.QueryItem values(final Operator operator, final CharSequence... values) {
+	    if(values.length == 1) {
+		    return value(values[0]);
+	    }
         return new Query.TermItem(definition, new Query.OperatorValue(operator.toString(), values));
     }
 
