@@ -63,7 +63,7 @@ public class GroupingSearchOptionTest {
 			.groupBy(q)
 			.getQueryExecutor()
 			.enrich(query);
-		verify(query).setParam(GroupParams.GROUP_QUERY, "testQuery");
+		verify(query).add(GroupParams.GROUP_QUERY, "testQuery");
 	}
 
 	@Test
@@ -76,8 +76,8 @@ public class GroupingSearchOptionTest {
 				.groupBy(q2)
 				.getQueryExecutor()
 				.enrich(query);
-		verify(query).setParam(GroupParams.GROUP_QUERY, "query1");
-		verify(query).setParam(GroupParams.GROUP_QUERY, "query2");
+		verify(query).add(GroupParams.GROUP_QUERY, "query1");
+		verify(query).add(GroupParams.GROUP_QUERY, "query2");
 	}
 
 	@Test
