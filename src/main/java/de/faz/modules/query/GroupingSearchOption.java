@@ -40,7 +40,7 @@ public class GroupingSearchOption implements SearchOption {
 				}
 
 				for(Query groupQuery : groupQueries) {
-					query.setParam(GroupParams.GROUP_QUERY, groupQuery.toString());
+					query.add(GroupParams.GROUP_QUERY, groupQuery.toString());
 				}
 			}
 		};

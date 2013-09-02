@@ -75,7 +75,7 @@ class SolrQueryExecutor extends QueryExecutor {
         SolrSearchResult result;
         if(!query.isEmpty()) {
             SolrQuery solrQuery = createQuery(query, settings);
-
+			solrQuery.setRows(numOfElementsOnPage);
             try {
 	            QueryResponse solrResult = server.query(solrQuery);
 	            int page = 0;
