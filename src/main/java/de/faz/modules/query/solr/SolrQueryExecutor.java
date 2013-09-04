@@ -34,21 +34,13 @@ import java.util.List;
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class SolrQueryExecutor extends QueryExecutor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SolrQueryExecutor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SolrQueryExecutor.class);
 
-    private final FieldDefinitionGenerator generator;
+	private final FieldDefinitionGenerator generator;
 
 	private final SolrServer server;
 
 	private List<QueryDecorator> decoratorList;
-
-//    SolrQueryExecutor(SolrSearchClient client) {
-//        this(client, new FieldDefinitionGenerator());
-//    }
-//
-//    SolrQueryExecutor(SolrSearchClient client, FieldDefinitionGenerator generator) {
-//        this(((SolrClientImpl)client.getServiceControl()).getSolrServer(), generator);
-//    }
 
 	SolrQueryExecutor(final SolrServer server) {
 		this(server, new FieldDefinitionGenerator());
@@ -64,57 +56,54 @@ class SolrQueryExecutor extends QueryExecutor {
 		this.decoratorList.add(decorator);
 	}
 
-    @Override
-    @Nonnull
-    protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
-        if(query == null) { throw new IllegalArgumentException("A query instance is required to perform a search."); }
-        if(settings == null) { throw new IllegalArgumentException("Settings are required to perform a search."); }
-        if(server == null) { return createDefaultResult(settings.getPageSize()); }
+	@Override
+	@Nonnull
+	protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
+		if(query == null) { throw new IllegalArgumentException("A query instance is required to perform a search."); }
+		if(settings == null) { throw new IllegalArgumentException("Settings are required to perform a search."); }
+		if(server == null) { return createDefaultResult(settings.getPageSize()); }
 
-        int numOfElementsOnPage = settings.getPageSize();
-        SolrSearchResult result;
-        if(!query.isEmpty()) {
-            SolrQuery solrQuery = createQuery(query, settings);
+		int numOfElementsOnPage = settings.getPageSize();
+		SolrSearchResult result;
+		if(!query.isEmpty()) {
+			SolrQuery solrQuery = createQuery(query, settings);
 			solrQuery.setRows(numOfElementsOnPage);
-            try {
+			try {
 				LOG.debug("Executing query: {}", solrQuery.toString());
-	            QueryResponse solrResult = server.query(solrQuery);
-	            int page = 0;
-                if(settings.getOffset().isPresent()) {
-                    page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
-                }
+				QueryResponse solrResult = server.query(solrQuery);
+				int page = 0;
+				if(settings.getOffset().isPresent()) {
+					page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
+				}
 
-                result =  new SolrSearchResult(
-		                generator
-                        , solrResult
-                        , numOfElementsOnPage
-                        , page
-                        , settings.getCustomCallbackFactory()
-                );
-            } catch (SolrServerException e) {
-                LOG.warn("got exception when execute a search to solr", e);
-                result = createDefaultResult(numOfElementsOnPage);
-//            } catch (ServiceNotAvailableException e) {
-//                LOG.warn("solr service isn't available", e);
-//                result = createDefaultResult(numOfElementsOnPage);
-            }
-        } else {
-            result = createDefaultResult(numOfElementsOnPage);
-        }
+				result =  new SolrSearchResult(
+						generator
+						, solrResult
+						, numOfElementsOnPage
+						, page
+						, settings.getCustomCallbackFactory()
+				);
+			} catch (SolrServerException e) {
+				LOG.warn("got exception when execute a search to solr", e);
+				result = createDefaultResult(numOfElementsOnPage);
+			}
+		} else {
+			result = createDefaultResult(numOfElementsOnPage);
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    private SolrSearchResult createDefaultResult(final int numOfElementsOnPage) {
-        return new SolrSearchResult(null, numOfElementsOnPage);
-    }
+	private SolrSearchResult createDefaultResult(final int numOfElementsOnPage) {
+		return new SolrSearchResult(null, numOfElementsOnPage);
+	}
 
-    private SolrQuery createQuery(final Query q, final SearchSettings settings) {
-        SolrQuery solrQuery = new SolrQuery(q.toString());
-        settings.getQueryExecutor().enrich(solrQuery);
-	    for(QueryDecorator decorator :decoratorList) {
-		    decorator.decorate(solrQuery);
-	    }
-        return solrQuery;
-    }
+	private SolrQuery createQuery(final Query q, final SearchSettings settings) {
+		SolrQuery solrQuery = new SolrQuery(q.toString());
+		settings.getQueryExecutor().enrich(solrQuery);
+		for(QueryDecorator decorator :decoratorList) {
+			decorator.decorate(solrQuery);
+		}
+		return solrQuery;
+	}
 }
