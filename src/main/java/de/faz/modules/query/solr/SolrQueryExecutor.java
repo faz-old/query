@@ -50,17 +50,17 @@ class SolrQueryExecutor extends QueryExecutor {
 //        this(((SolrClientImpl)client.getServiceControl()).getSolrServer(), generator);
 //    }
 
-	SolrQueryExecutor(SolrServer server) {
+	SolrQueryExecutor(final SolrServer server) {
 		this(server, new FieldDefinitionGenerator());
 	}
 
-	SolrQueryExecutor(SolrServer server, FieldDefinitionGenerator generator) {
+	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
 		this.server = server;
 		this.generator = generator;
 		this.decoratorList = new ArrayList<>();
 	}
 
-	public void addQueryDecorator(QueryDecorator decorator) {
+	public void addQueryDecorator(final QueryDecorator decorator) {
 		this.decoratorList.add(decorator);
 	}
 
@@ -77,6 +77,7 @@ class SolrQueryExecutor extends QueryExecutor {
             SolrQuery solrQuery = createQuery(query, settings);
 			solrQuery.setRows(numOfElementsOnPage);
             try {
+				LOG.debug("Executing query: {}", solrQuery.toString());
 	            QueryResponse solrResult = server.query(solrQuery);
 	            int page = 0;
                 if(settings.getOffset().isPresent()) {
@@ -108,7 +109,7 @@ class SolrQueryExecutor extends QueryExecutor {
         return new SolrSearchResult(null, numOfElementsOnPage);
     }
 
-    private SolrQuery createQuery(Query q, SearchSettings settings) {
+    private SolrQuery createQuery(final Query q, final SearchSettings settings) {
         SolrQuery solrQuery = new SolrQuery(q.toString());
         settings.getQueryExecutor().enrich(solrQuery);
 	    for(QueryDecorator decorator :decoratorList) {
