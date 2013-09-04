@@ -147,11 +147,12 @@ public class SearchSettings implements SearchOption {
         SolrQuery.ORDER getSolrOrder() {
             switch(order) {
                 case ASC:
-                    return SolrQuery.ORDER.asc;
-                case DESC:
+	            default:
+		            return SolrQuery.ORDER.asc;
+	            case DESC:
                     return SolrQuery.ORDER.desc;
+
             }
-            return SolrQuery.ORDER.asc;
         }
 
     }
