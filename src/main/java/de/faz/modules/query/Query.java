@@ -421,7 +421,7 @@ public class Query {
                 , " "
                 , "~"
                 , ":"
-                , "\""
+//                , "\""
         };
 
         final CharSequence value;
