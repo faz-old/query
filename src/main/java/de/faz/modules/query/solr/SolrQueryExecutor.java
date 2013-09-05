@@ -42,10 +42,6 @@ class SolrQueryExecutor extends QueryExecutor {
 
 	private List<QueryDecorator> decoratorList;
 
-	SolrQueryExecutor(final SolrServer server) {
-		this(server, new FieldDefinitionGenerator());
-	}
-
 	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
 		this.server = server;
 		this.generator = generator;

@@ -25,7 +25,7 @@ public class DefaultSearchContext implements SearchContext {
         this(executor, new FieldDefinitionGenerator());
     }
 
-    DefaultSearchContext(QueryExecutor executor, FieldDefinitionGenerator generator) {
+    public DefaultSearchContext(QueryExecutor executor, FieldDefinitionGenerator generator) {
         this.generator = generator;
         this.executor = executor;
     }
