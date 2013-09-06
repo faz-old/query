@@ -13,9 +13,6 @@
  */
 package de.faz.modules.query;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +20,9 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)
@@ -38,62 +38,14 @@ public class QueryDefaultComparatorTest {
     }
 
     @Test
-    public void term_delegateCallToQuery() {
-        underTest.term(null);
-        verify(originalQuery).term(null);
-    }
-
-    @Test
-    public void and_delegateCallToQuery() {
-        Query.QueryItem item = mock(Query.QueryItem.class);
-        underTest.and(item, item);
-        verify(originalQuery).and(item, item);
-    }
-
-    @Test
-    public void or_withQueryItems_delegateCallToQuery() {
-        Query.QueryItem item = mock(Query.QueryItem.class);
-        underTest.or(item, item);
-        verify(originalQuery).or(item, item);
-    }
-
-    @Test
-    public void modify_delegateCallToQuery() {
-        underTest.modify();
-        verify(originalQuery).modify();
-    }
-
-    @Test
-    public void getItemStack_delegateCallToQuery() {
-        underTest.getItemStack();
-        verify(originalQuery).getItemStack();
-    }
-
-    @Test
-    public void not_delegateCallToQuery() {
-        Query.QueryItem item = mock(Query.QueryItem.class);
-        underTest.not(item);
-        verify(originalQuery).not(item);
-    }
-
-    @Test
     public void toString_callModifyAllWithAnd() {
         underTest.toString();
         verify(originalQuery.modify().all().surroundWith()).and();
     }
 
-    @Test
-    public void add_delegateCallToQuery() {
-        Query.QueryItem item = mock(Query.QueryItem.class);
-        underTest.add(item);
-        verify(originalQuery).add(item);
-    }
-
-    @Test
-    public void contains_delegateCallToQuery() {
-        Query.QueryItem item = mock(Query.QueryItem.class);
-        underTest.contains(item);
-        verify(originalQuery).contains(item);
-    }
-
+	@Test
+	public void equals_withOtherInstance_callsQueryEqualsWithOtherContainingQuery() {
+		QueryDefaultComparator otherInstance = new QueryDefaultComparator(originalQuery, operator);
+		assertTrue(underTest.equals(otherInstance));
+	}
 }

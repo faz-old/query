@@ -92,6 +92,12 @@ public class AbstractQueryDecoratorTest {
 		underTest.contains(null);
 		verify(delegate).contains(null);
 	}
+
+	@Test
+	public void getItemStack_callDelegate() {
+		underTest.getItemStack();
+		verify(delegate).getItemStack();
+	}
 }
 
 class QueryDecorator extends AbstractQueryDecorator {

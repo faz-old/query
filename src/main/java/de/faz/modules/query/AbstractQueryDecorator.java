@@ -13,12 +13,15 @@
  */
 package de.faz.modules.query;
 
+import javax.annotation.Nonnull;
+import java.util.Stack;
+
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public abstract class AbstractQueryDecorator extends Query {
 
 	private final Query delegate;
 
-	public AbstractQueryDecorator(Query q) {
+	public AbstractQueryDecorator(@Nonnull Query q) {
 		delegate = q;
 	}
 
@@ -80,5 +83,10 @@ public abstract class AbstractQueryDecorator extends Query {
 	@Override
 	public boolean contains(final QueryItem item) {
 		return delegate.contains(item);
+	}
+
+	@Override
+	Stack<QueryItem> getItemStack() {
+		return delegate.getItemStack();
 	}
 }

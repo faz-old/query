@@ -29,4 +29,6 @@ public class DisableSolrCaching extends AbstractQueryDecorator {
 		String delegateString = super.toString();
 		return StringUtils.isEmpty(delegateString) ? delegateString : "{!cache=false}" + delegateString;
 	}
+
+
 }

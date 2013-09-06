@@ -13,15 +13,14 @@
  */
 package de.faz.modules.query;
 
-import java.util.Stack;
-
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-class QueryDefaultComparator extends Query {
+class QueryDefaultComparator extends AbstractQueryDecorator {
 
     private Query query;
     private Operator operator;
 
     QueryDefaultComparator(Query q, Operator op) {
+	    super(q);
         this.query = q;
         this.operator = op;
     }
@@ -43,57 +42,11 @@ class QueryDefaultComparator extends Query {
     }
 
     @Override
-    public QueryModification modify() {
-        return query.modify();
-    }
-
-    @Override
-    Stack<QueryItem> getItemStack() {
-        return query.getItemStack();
-    }
-
-    @Override
-    public QueryItem and(final QueryItem item, final QueryItem... items) {
-        return query.and(item, items);
-    }
-
-    @Override
-    public QueryItem or(final QueryItem item, final QueryItem... items) {
-        return query.or(item, items);
-    }
-
-    @Override
-    public QueryItem not(final QueryItem item) {
-        return query.not(item);
-    }
-
-    @Override
-    public Query add(final QueryItem item) {
-        return query.add(item);
-    }
-
-    @Override
-    public TermQueryPart term(final Object fieldDefinition) {
-        return query.term(fieldDefinition);
-    }
-
-    @Override
-    public int hashCode() {
-        return query.hashCode();
-    }
-
-    @Override
     public boolean equals(final Object obj) {
-        return query.equals(obj);
+	    if(obj instanceof QueryDefaultComparator) {
+		    QueryDefaultComparator other = (QueryDefaultComparator) obj;
+		    return operator.equals(other.operator) && query.equals(other.query);
+	    }
+	    return super.equals(obj);
     }
-
-    @Override
-    public boolean contains(final QueryItem item) {
-        return query.contains(item);
-    }
-
-	@Override
-	public boolean isEmpty() {
-		return query.isEmpty();
-	}
 }

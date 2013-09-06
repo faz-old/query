@@ -223,7 +223,7 @@ public class Query {
     @Override
     public boolean equals(final Object obj) {
         if(obj instanceof Query) {
-            return ((Query) obj).queryElementStack.containsAll(queryElementStack);
+            return ((Query) obj).getItemStack().containsAll(queryElementStack);
         }
         return super.equals(obj);
     }

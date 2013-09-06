@@ -47,4 +47,9 @@ public class DisableSolrCachingTest {
 		when(q.toString()).thenReturn("");
 		assertEquals("", underTest.toString());
 	}
+
+	@Test
+	public void equals_withQuery_isEqualToDelegate() {
+		assertEquals(underTest, q);
+	}
 }
