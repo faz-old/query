@@ -7,6 +7,7 @@ import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
 import de.faz.modules.query.TestMapping;
+import de.faz.modules.query.decoration.SearchDecorator;
 import net.sf.cglib.proxy.Callback;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -20,7 +21,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.Iterator;
 
@@ -33,6 +36,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)
@@ -133,4 +137,29 @@ public class SolrQueryExecutorTest {
         SearchContext.SearchResult result = executor.executeQuery(q, settings);
         assertEquals(0, result.getNumCount());
     }
+
+	@Test
+	public void executeQuery_withAddedSearchDecorator_callQueryDecoration() {
+		SearchDecorator decorator = createSearchDecoratorMock();
+		executor.addSearchDecorator(decorator);
+		executor.executeQuery(q, settings);
+		verify(decorator).decorateQuery(q);
+	}
+
+	@Test
+	public void executeQuery_withAddedSearchDecorator_callSettingsDecoration() {
+		SearchDecorator decorator = createSearchDecoratorMock();
+		executor.addSearchDecorator(decorator);
+		executor.executeQuery(q, settings);
+		verify(decorator).decorateSettings(settings);
+	}
+
+	private SearchDecorator createSearchDecoratorMock() {
+		return mock(SearchDecorator.class, withSettings().defaultAnswer(new Answer() {
+				@Override
+				public Object answer(final InvocationOnMock invocation) throws Throwable {
+					return invocation.getArguments()[0];
+				}
+			}));
+	}
 }

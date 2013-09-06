@@ -11,11 +11,18 @@
  * is strictly forbidden unless prior written permission is obtained
  * from F.A.Z. Electronic Media GmbH.
  */
-package de.faz.modules.query;
+package de.faz.modules.query.decoration;
+
+import de.faz.modules.query.Query;
+import de.faz.modules.query.SearchSettings;
+
+import javax.annotation.Nonnull;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public interface SearchDecorator {
+	@Nonnull
+	Query decorateQuery(@Nonnull Query q);
 
-	Query decorateQuery(SearchContext context, Query q);
-	SearchSettings decorateSettings(SearchContext context, SearchSettings settings);
+	@Nonnull
+	SearchSettings decorateSettings(@Nonnull SearchSettings settings);
 }

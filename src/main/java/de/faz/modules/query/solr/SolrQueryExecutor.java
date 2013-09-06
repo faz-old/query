@@ -20,6 +20,7 @@ import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
+import de.faz.modules.query.decoration.SearchDecorator;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -40,16 +41,23 @@ class SolrQueryExecutor extends QueryExecutor {
 
 	private final SolrServer server;
 
-	private List<QueryDecorator> decoratorList;
+	private final List<QueryDecorator> decoratorList;
+
+	private final List<SearchDecorator> searchDecoratorList;
 
 	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
 		this.server = server;
 		this.generator = generator;
 		this.decoratorList = new ArrayList<>();
+		this.searchDecoratorList = new ArrayList<>();
 	}
 
 	public void addQueryDecorator(final QueryDecorator decorator) {
 		this.decoratorList.add(decorator);
+	}
+
+	public void addSearchDecorator(final SearchDecorator decorator) {
+		this.searchDecoratorList.add(decorator);
 	}
 
 	@Override
@@ -57,15 +65,16 @@ class SolrQueryExecutor extends QueryExecutor {
 	protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
 		if(query == null) { throw new IllegalArgumentException("A query instance is required to perform a search."); }
 		if(settings == null) { throw new IllegalArgumentException("Settings are required to perform a search."); }
-		if(server == null) { return createDefaultResult(settings.getPageSize()); }
 
 		int numOfElementsOnPage = settings.getPageSize();
-		SolrSearchResult result;
-		if(!query.isEmpty()) {
+		SolrSearchResult result = createDefaultResult(settings.getPageSize());
+		if(server != null && !query.isEmpty()) {
 			SolrQuery solrQuery = createQuery(query, settings);
 			solrQuery.setRows(numOfElementsOnPage);
 			try {
-				LOG.debug("Executing query: {}", solrQuery.toString());
+				if(LOG.isDebugEnabled()) {
+					LOG.debug("Executing query: {}", solrQuery.toString());
+				}
 				QueryResponse solrResult = server.query(solrQuery);
 				int page = 0;
 				if(settings.getOffset().isPresent()) {
@@ -81,10 +90,7 @@ class SolrQueryExecutor extends QueryExecutor {
 				);
 			} catch (SolrServerException e) {
 				LOG.warn("got exception when execute a search to solr", e);
-				result = createDefaultResult(numOfElementsOnPage);
 			}
-		} else {
-			result = createDefaultResult(numOfElementsOnPage);
 		}
 
 		return result;
@@ -95,8 +101,16 @@ class SolrQueryExecutor extends QueryExecutor {
 	}
 
 	private SolrQuery createQuery(final Query q, final SearchSettings settings) {
-		SolrQuery solrQuery = new SolrQuery(q.toString());
-		settings.getQueryExecutor().enrich(solrQuery);
+		Query decoratedQuery = q;
+		SearchSettings decoratedSettings = settings;
+
+		for(SearchDecorator decorator : searchDecoratorList) {
+			decoratedQuery = decorator.decorateQuery(decoratedQuery);
+			decoratedSettings = decorator.decorateSettings(settings);
+		}
+
+		SolrQuery solrQuery = new SolrQuery(decoratedQuery.toString());
+		decoratedSettings.getQueryExecutor().enrich(solrQuery);
 		for(QueryDecorator decorator :decoratorList) {
 			decorator.decorate(solrQuery);
 		}
