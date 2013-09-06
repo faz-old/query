@@ -1,5 +1,6 @@
 package de.faz.modules.query;
 
+import com.google.common.base.Optional;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,6 +8,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,4 +65,21 @@ public class SearchSettingsTest {
         underTest.enrichQuery(query);
         verify(query).setRows(SearchSettings.DEFAULT_ROWS);
     }
+
+	@Test
+	public void addParameter_withKeyAndValue_storesKeyValue() {
+		underTest.addParameter("key", "value");
+		assertEquals("value", underTest.getParameter("key").get());
+	}
+
+	@Test
+	public void addParameter_withKeyAndValue_returnSameInstance() {
+		assertSame(underTest, underTest.addParameter("key", "value"));
+	}
+
+	@Test
+	public void getParameter_withoutStoredParameter_returnsOptionalAbsent() {
+		Optional<Object> param = underTest.getParameter("key");
+		assertFalse(param.isPresent());
+	}
 }

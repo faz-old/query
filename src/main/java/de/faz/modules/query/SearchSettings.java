@@ -23,7 +23,9 @@ import org.apache.solr.client.solrj.SolrQuery;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class SearchSettings implements SearchOption {
@@ -31,37 +33,27 @@ public class SearchSettings implements SearchOption {
     public static final int DEFAULT_ROWS = 10;
     private static final int DEFAULT_OFFSET = 0;
 
-    public int getPageSize() {
-        return pageSize.or(DEFAULT_ROWS);
-    }
-
-    public Optional<Integer> getOffset() {
-        return offset;
-    }
-
-    public enum Order {
+	public enum Order {
         ASC,
-        DESC
-    }
+        DESC;
+	}
 
     private Collection<SearchOption> optionCollection;
-
     private Collection<SortBy> sort;
-
-
     private Optional<SolrResponseCallbackFactory> customCallbackFactory = Optional.absent();
-    private Optional<Integer> pageSize = Optional.absent();
-    private Optional<Integer> offset = Optional.absent();
-
+	private Optional<Integer> pageSize = Optional.absent();
+	private Optional<Integer> offset = Optional.absent();
     private List<Query> filterList;
+	private Map<String, Object> parameterMap;
 
     protected FieldDefinitionGenerator generator;
 
     SearchSettings(FieldDefinitionGenerator generator) {
-        sort = new ArrayList<>();
-        filterList = new ArrayList<>();
-        this.generator = generator;
-        optionCollection = new ArrayList<>();
+	    sort = new ArrayList<>();
+	    filterList = new ArrayList<>();
+	    optionCollection = new ArrayList<>();
+	    parameterMap = new HashMap<>();
+	    this.generator = generator;
     }
 
     public SearchSettings withPageSize(int size) {
@@ -110,7 +102,24 @@ public class SearchSettings implements SearchOption {
         return customCallbackFactory.or(new StandardCallbackFactory());
     }
 
-    void enrichQuery(SolrQuery query) {
+	public SearchSettings addParameter(final String key, final Object value) {
+		parameterMap.put(key, value);
+		return this;
+	}
+
+	public <T> Optional<T> getParameter(final String key) {
+		return (Optional<T>) Optional.fromNullable(parameterMap.get(key));
+	}
+
+	public int getPageSize() {
+		return pageSize.or(DEFAULT_ROWS);
+	}
+
+	public Optional<Integer> getOffset() {
+		return offset;
+	}
+
+	void enrichQuery(SolrQuery query) {
         query.setStart(offset.or(DEFAULT_OFFSET));
         query.setRows(pageSize.or(DEFAULT_ROWS));
         Collection<SearchSettings.SortBy> sortCollection = getSort();
@@ -127,8 +136,8 @@ public class SearchSettings implements SearchOption {
         }
 
     }
-    class SortBy {
-        private CharSequence fieldName;
+	class SortBy {
+		private CharSequence fieldName;
 
         private Order order;
 
@@ -140,7 +149,7 @@ public class SearchSettings implements SearchOption {
         CharSequence getFieldName() {
             return fieldName;
         }
-        Order getOrder() {
+		Order getOrder() {
             return order;
         }
 
