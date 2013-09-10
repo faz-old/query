@@ -84,7 +84,7 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 
 			@Override
 			public void remove() {
-
+				//do not enable feature to remove an entry from result
 			}
 		};
 	}
@@ -103,6 +103,7 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 
 			@Override
 			public void remove() {
+				//there are no result so removing makes no sense
 			}
 		};
 	}

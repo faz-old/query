@@ -308,9 +308,9 @@ public class Query {
             if(valueSequence.length() > 0) {
                 boolean hasBracket = valueSequence.charAt(0) == '(';
                 sb.append(operator);
-                if(!hasBracket) sb.append('(');
+                if(!hasBracket) { sb.append('('); }
                 sb.append(valueSequence);
-                if(!hasBracket) sb.append(')');
+                if(!hasBracket) { sb.append(')'); }
             }
             return sb;
         }

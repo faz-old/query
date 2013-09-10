@@ -46,7 +46,7 @@ public class ModificationSelection {
         return new SurroundAction(this);
     }
 
-    public class SurroundAction {
+    public static class SurroundAction {
         private ModificationSelection selection;
 
         private SurroundAction(ModificationSelection selection) {
@@ -72,7 +72,7 @@ public class ModificationSelection {
         }
     }
 
-    private class Range {
+    private static class Range {
         Integer from;
         Integer to;
 

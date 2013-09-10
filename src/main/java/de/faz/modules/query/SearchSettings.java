@@ -136,7 +136,7 @@ public class SearchSettings implements SearchOption {
         }
 
     }
-	class SortBy {
+	static class SortBy {
 		private CharSequence fieldName;
 
         private Order order;
@@ -155,12 +155,11 @@ public class SearchSettings implements SearchOption {
 
         SolrQuery.ORDER getSolrOrder() {
             switch(order) {
-                case ASC:
-	            default:
-		            return SolrQuery.ORDER.asc;
 	            case DESC:
                     return SolrQuery.ORDER.desc;
-
+	            case ASC:
+	            default:
+		            return SolrQuery.ORDER.asc;
             }
         }
 

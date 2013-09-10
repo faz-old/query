@@ -14,14 +14,12 @@
 
 package de.faz.modules.query;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import de.faz.modules.query.FieldDefinitionGenerator;
-import org.apache.commons.lang3.StringUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class PreparedQuery extends Query implements Cloneable {
@@ -53,7 +51,7 @@ public class PreparedQuery extends Query implements Cloneable {
         parameterValues.clear();
     }
 
-    private class PreparedValue extends ValueItem {
+    private static class PreparedValue extends ValueItem {
         private Valuable<CharSequence> parameterValue;
         private String paramName;
         public PreparedValue(@Nonnull String paramName, @Nonnull Valuable<CharSequence> value) {
@@ -72,7 +70,7 @@ public class PreparedQuery extends Query implements Cloneable {
         }
     }
 
-    private class ParameterValues implements Valuable<CharSequence> {
+    private static class ParameterValues implements Valuable<CharSequence> {
 
         private ThreadLocal<Map<String, CharSequence>> paramMap;
 
@@ -105,7 +103,7 @@ public class PreparedQuery extends Query implements Cloneable {
         }
     }
 
-    private interface Valuable<T> {
+    private static interface Valuable<T> {
         T getValueOf(String key);
     }
 }
