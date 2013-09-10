@@ -123,8 +123,8 @@ public class SearchSettings implements SearchOption {
         query.setStart(offset.or(DEFAULT_OFFSET));
         query.setRows(pageSize.or(DEFAULT_ROWS));
         Collection<SearchSettings.SortBy> sortCollection = getSort();
-        for(SearchSettings.SortBy sort : sortCollection) {
-            query.addSortField(sort.getFieldName().toString(), sort.getSolrOrder());
+        for(SearchSettings.SortBy sortBy : sortCollection) {
+            query.addSortField(sortBy.getFieldName().toString(), sortBy.getSolrOrder());
         }
 
         for(SearchOption option : optionCollection) {

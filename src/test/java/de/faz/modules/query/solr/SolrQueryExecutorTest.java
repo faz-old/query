@@ -138,22 +138,6 @@ public class SolrQueryExecutorTest {
         assertEquals(0, result.getNumCount());
     }
 
-	@Test
-	public void executeQuery_withAddedSearchDecorator_callQueryDecoration() {
-		SearchDecorator decorator = createSearchDecoratorMock();
-		executor.addSearchDecorator(decorator);
-		executor.executeQuery(q, settings);
-		verify(decorator).decorateQuery(q);
-	}
-
-	@Test
-	public void executeQuery_withAddedSearchDecorator_callSettingsDecoration() {
-		SearchDecorator decorator = createSearchDecoratorMock();
-		executor.addSearchDecorator(decorator);
-		executor.executeQuery(q, settings);
-		verify(decorator).decorateSettings(settings);
-	}
-
 	private SearchDecorator createSearchDecoratorMock() {
 		return mock(SearchDecorator.class, withSettings().defaultAnswer(new Answer() {
 				@Override

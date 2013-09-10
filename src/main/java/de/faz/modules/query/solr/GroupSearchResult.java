@@ -36,9 +36,9 @@ public class GroupSearchResult {
 	public <T extends Mapping> Iterator<T> getGroup(final int index, final Class<T> mappingClass) {
 		Iterator<T> it = result.createDefaultIterator();
 		if(getGroupCount() > index) {
-			QueryResponse response = this.response.get();
-			Group group = response.getGroupResponse().getValues().get(index).getValues().get(0);
-			it = result.createIteratorFromDocumentList(response, mappingClass, group.getResult());
+			QueryResponse queryResponse = this.response.get();
+			Group group = queryResponse.getGroupResponse().getValues().get(index).getValues().get(0);
+			it = result.createIteratorFromDocumentList(queryResponse, mappingClass, group.getResult());
 		}
 		return it;
 	}

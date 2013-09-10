@@ -14,11 +14,19 @@
 
 package de.faz.modules.query;
 
+import de.faz.modules.query.decoration.SearchDecorator;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class DefaultSearchContext implements SearchContext {
 
-    private FieldDefinitionGenerator generator;
-    private QueryExecutor executor;
+    private final FieldDefinitionGenerator generator;
+    private final QueryExecutor executor;
+
+	private final List<SearchDecorator> decoratorList;
 
 
     public DefaultSearchContext(QueryExecutor executor) {
@@ -28,9 +36,15 @@ public class DefaultSearchContext implements SearchContext {
     public DefaultSearchContext(QueryExecutor executor, FieldDefinitionGenerator generator) {
         this.generator = generator;
         this.executor = executor;
+	    this.decoratorList = new ArrayList<>();
     }
 
-    @Override
+	@Override
+	public void addSearchDecorator(@Nonnull final SearchDecorator decorator) {
+		this.decoratorList.add(decorator);
+	}
+
+	@Override
     public Query createQuery() {
         return new Query(generator);
     }
@@ -60,6 +74,12 @@ public class DefaultSearchContext implements SearchContext {
     }
 
     public SearchResult execute(Query query, SearchSettings settings) {
+	    Query decoratedQuery = query;
+	    SearchSettings decoratedSettings = settings;
+	    for(SearchDecorator decorator : decoratorList) {
+		    decoratedQuery = decorator.decorateQuery(decoratedQuery);
+		    decoratedSettings = decorator.decorateSettings(decoratedSettings);
+	    }
         return executor.execute(query, settings);
     }
 

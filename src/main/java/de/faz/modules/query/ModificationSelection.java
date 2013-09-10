@@ -18,11 +18,11 @@ import java.util.Stack;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class ModificationSelection {
-    private Query q;
+    private Query query;
     private Range range;
 
     ModificationSelection(Query q, Integer lowerLimit, Integer upperLimit) {
-        this.q = q;
+        this.query = q;
         this.range = new Range(lowerLimit, upperLimit);
     }
 
@@ -36,7 +36,7 @@ public class ModificationSelection {
 
     public void remove() {
         if(range.isAll()) {
-            q.getItemStack().removeAllElements();
+            query.getItemStack().removeAllElements();
         }
 
 
@@ -54,7 +54,7 @@ public class ModificationSelection {
         }
 
         public void and() {
-            Query q = selection.q;
+            Query q = selection.query;
             if(selection.range.isAll() && q.getItemStack().size() > 1) {
                 Stack<Query.QueryItem> savedItems = (Stack<Query.QueryItem>)q.getItemStack().clone();
                 selection.remove();
@@ -63,7 +63,7 @@ public class ModificationSelection {
         }
 
         public void or() {
-            Query q = selection.q;
+            Query q = selection.query;
             if(selection.range.isAll()) {
                 Stack<Query.QueryItem> savedItems = (Stack<Query.QueryItem>)q.getItemStack().clone();
                 selection.remove();

@@ -20,7 +20,6 @@ import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
-import de.faz.modules.query.decoration.SearchDecorator;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -43,21 +42,14 @@ class SolrQueryExecutor extends QueryExecutor {
 
 	private final List<QueryDecorator> decoratorList;
 
-	private final List<SearchDecorator> searchDecoratorList;
-
 	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
 		this.server = server;
 		this.generator = generator;
 		this.decoratorList = new ArrayList<>();
-		this.searchDecoratorList = new ArrayList<>();
 	}
 
 	public void addQueryDecorator(final QueryDecorator decorator) {
 		this.decoratorList.add(decorator);
-	}
-
-	public void addSearchDecorator(final SearchDecorator decorator) {
-		this.searchDecoratorList.add(decorator);
 	}
 
 	@Override
@@ -103,11 +95,6 @@ class SolrQueryExecutor extends QueryExecutor {
 	private SolrQuery createQuery(final Query q, final SearchSettings settings) {
 		Query decoratedQuery = q;
 		SearchSettings decoratedSettings = settings;
-
-		for(SearchDecorator decorator : searchDecoratorList) {
-			decoratedQuery = decorator.decorateQuery(decoratedQuery);
-			decoratedSettings = decorator.decorateSettings(settings);
-		}
 
 		SolrQuery solrQuery = new SolrQuery(decoratedQuery.toString());
 		decoratedSettings.getQueryExecutor().enrich(solrQuery);

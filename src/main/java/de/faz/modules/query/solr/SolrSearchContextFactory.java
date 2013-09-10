@@ -6,14 +6,14 @@ import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.SearchContext;
 import org.apache.solr.client.solrj.SolrServer;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class SolrSearchContextFactory {
 
     private SolrSearchContextFactory(){}
 
-	public static SearchContext createSearchContext(@Nonnull SolrServer server, QueryDecorator... decorators) {
+	public static SearchContext createSearchContext(@Nullable SolrServer server, QueryDecorator... decorators) {
 		FieldDefinitionGenerator generator = new FieldDefinitionGenerator();
 		SolrQueryExecutor executor = new SolrQueryExecutor(server, generator);
 		if(decorators != null) {
