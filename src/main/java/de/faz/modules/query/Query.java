@@ -53,7 +53,7 @@ public class Query {
         private String representation;
         private boolean bothSides;
 
-        private Operator(String stringRepresentation, boolean separateOnBothSides) {
+        private Operator(final String stringRepresentation, final boolean separateOnBothSides) {
             this.representation = stringRepresentation;
             this.bothSides = separateOnBothSides;
         }
@@ -67,12 +67,8 @@ public class Query {
         }
     }
 
-    protected Query() {
-        queryElementStack = new Stack<>();
-    }
-
-    Query(FieldDefinitionGenerator generator) {
-        this();
+    Query(final FieldDefinitionGenerator generator) {
+	    queryElementStack = new Stack<>();
         definitionGenerator = generator;
     }
 
@@ -88,27 +84,6 @@ public class Query {
         }
 
         return flattenItems;
-    }
-
-    private void pushItemsWithSeparatorWhenHasItems(QueryItem[] items, String separator) {
-        if(items.length > 0) {
-            queryElementStack.push(new ItemChain(separator, items));
-        }
-    }
-
-    private void pushTermItemWithDefinitionAndValue(final FieldDefinition fieldDefinition, final ValueItem value) {
-        queryElementStack.push(new TermItem(fieldDefinition, value));
-    }
-
-    private QueryItem[] getLastItemsOf(int length) {
-        QueryItem[] items = new QueryItem[length];
-        for(int i = length -1; i > -1; i--) {
-            if(!queryElementStack.empty()) {
-                items[i] = queryElementStack.pop();
-            }
-        }
-
-        return items;
     }
 
     public QueryModification modify() {
@@ -130,7 +105,7 @@ public class Query {
      * @param items additional {@link QueryItem} objects
      * @return a new {@link QueryItem} that combines item and items with an 'and' operator.
      */
-    public QueryItem and(QueryItem item, QueryItem... items) {
+    public QueryItem and(final QueryItem item, final QueryItem... items) {
         return new ItemChain(Operator.AND.getRepresentation(), mergeItems(item, items));
     }
 
@@ -142,7 +117,7 @@ public class Query {
      * @param items additional {@link QueryItem} objects
      * @return a new {@link QueryItem} that combines item and items with an 'or' operator.
      */
-    public QueryItem or(QueryItem item, QueryItem... items) {
+    public QueryItem or(final QueryItem item, final QueryItem... items) {
         return new ItemChain(Operator.OR.getRepresentation(), mergeItems(item, items));
     }
 
@@ -153,7 +128,7 @@ public class Query {
      * @param item a required{@link QueryItem} object that will be negated
      * @return a new instance of {@link QueryItem} object that negates the {@code item} param
      */
-    public QueryItem not(QueryItem item) {
+    public QueryItem not(final QueryItem item) {
         return new OperatorItem(Operator.NOT.getRepresentation(), item);
     }
 

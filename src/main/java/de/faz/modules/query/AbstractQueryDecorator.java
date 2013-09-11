@@ -22,6 +22,7 @@ public abstract class AbstractQueryDecorator extends Query {
 	private final Query delegate;
 
 	public AbstractQueryDecorator(@Nonnull Query q) {
+		super(null);
 		delegate = q;
 	}
 
