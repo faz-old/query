@@ -94,6 +94,10 @@ public class SearchSettings implements SearchOption {
 		return option;
 	}
 
+	Collection<SearchOption> getOptions() {
+		return optionCollection;
+	}
+
     public Collection<SortBy> getSort() {
         return sort;
     }

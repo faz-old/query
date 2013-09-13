@@ -38,15 +38,13 @@ public class ModificationSelection {
         if(range.isAll()) {
             query.getItemStack().removeAllElements();
         }
-
-
     }
 
     public SurroundAction surroundWith() {
         return new SurroundAction(this);
     }
 
-    public static class SurroundAction {
+    public static final class SurroundAction {
         private ModificationSelection selection;
 
         private SurroundAction(ModificationSelection selection) {
@@ -72,7 +70,7 @@ public class ModificationSelection {
         }
     }
 
-    private static class Range {
+    private static final class Range {
         Integer from;
         Integer to;
 

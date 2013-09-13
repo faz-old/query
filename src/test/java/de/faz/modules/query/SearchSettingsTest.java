@@ -10,7 +10,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,4 +84,35 @@ public class SearchSettingsTest {
 		Optional<Object> param = underTest.getParameter("key");
 		assertFalse(param.isPresent());
 	}
+
+	@Test
+	public void addHighlighting_returnsNewSearchHighlighterInstance() {
+		SearchHighlighter highlighter = underTest.addHighlighting();
+		assertNotNull(highlighter);
+	}
+
+	@Test
+	public void addHighlighting_addHighlighterAsCallbackFactory() {
+		SearchHighlighter highlighter = underTest.addHighlighting();
+		assertSame(highlighter, underTest.getCustomCallbackFactory());
+	}
+
+	@Test
+	public void addHiglighting_addsHighlightingToOptions() {
+		SearchHighlighter highlighter = underTest.addHighlighting();
+		assertTrue(underTest.getOptions().contains(highlighter));
+	}
+
+	@Test
+	public void addGrouping_returnsNewGroupingSearchOption() {
+		GroupingSearchOption grouping = underTest.addGrouping();
+		assertNotNull(grouping);
+	}
+
+	@Test
+	public void addGrouping_addsGroupingToOptions() {
+		GroupingSearchOption grouping = underTest.addGrouping();
+		assertTrue(underTest.getOptions().contains(grouping));
+	}
+
 }

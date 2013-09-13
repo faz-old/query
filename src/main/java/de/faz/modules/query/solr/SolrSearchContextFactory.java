@@ -9,7 +9,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import javax.annotation.Nullable;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public class SolrSearchContextFactory {
+public final class SolrSearchContextFactory {
 
     private SolrSearchContextFactory(){}
 
