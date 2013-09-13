@@ -99,5 +99,12 @@ public class TermQueryPart {
             }
             return super.equals(obj);
         }
+
+	    @Override
+	    public int hashCode() {
+		    int result = from.hashCode();
+		    result = 31 * result + to.hashCode();
+		    return result;
+	    }
     }
 }

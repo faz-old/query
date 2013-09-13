@@ -49,4 +49,12 @@ class QueryDefaultComparator extends AbstractQueryDecorator {
 	    }
 	    return super.equals(obj);
     }
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + query.hashCode();
+		result = 31 * result + operator.hashCode();
+		return result;
+	}
 }

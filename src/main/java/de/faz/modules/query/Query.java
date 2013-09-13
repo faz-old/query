@@ -490,6 +490,13 @@ public class Query {
             return super.equals(obj);
         }
 
+	    @Override
+	    public int hashCode() {
+		    int result = super.hashCode();
+		    result = 31 * result + toCharSequence().hashCode();
+		    return result;
+	    }
+
         public abstract boolean contains(QueryItem item);
     }
 
@@ -508,5 +515,12 @@ public class Query {
             }
             return super.equals(obj);
         }
+
+	    @Override
+	    public int hashCode() {
+		    int result = super.hashCode();
+		    result = 31 * result + toCharSequence().hashCode();
+		    return result;
+	    }
     }
 }

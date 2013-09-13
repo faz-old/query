@@ -14,9 +14,9 @@
 
 package de.faz.modules.query;
 
-import java.util.Date;
-
 import org.apache.solr.common.util.DateUtil;
+
+import java.util.Date;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public abstract class DateOption {
@@ -99,5 +99,10 @@ public abstract class DateOption {
             }
             return super.equals(obj);
         }
+
+	    @Override
+	    public int hashCode() {
+		    return date.hashCode();
+	    }
     }
 }

@@ -14,15 +14,15 @@
 
 package de.faz.modules.query;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.Stack;
-
-import javax.annotation.Nonnull;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Stack;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class FieldDefinitionGenerator {
@@ -164,5 +164,12 @@ class FieldDefinition {
 			return name.equals(def.name) && boost == def.boost;
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + boost;
+		return result;
 	}
 }
