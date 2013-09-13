@@ -17,23 +17,30 @@ package de.faz.modules.query;
 import de.faz.modules.query.decoration.SearchDecorator;
 
 import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class DefaultSearchContext implements SearchContext {
 
-    private final FieldDefinitionGenerator generator;
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultSearchContext.class);
+
+	private static final int DEFAULT_ROWS = 10;
+	private final FieldDefinitionGenerator generator;
     private final QueryExecutor executor;
 
 	private final List<SearchDecorator> decoratorList;
 
 
-    public DefaultSearchContext(QueryExecutor executor) {
+    public DefaultSearchContext(final QueryExecutor executor) {
         this(executor, new FieldDefinitionGenerator());
     }
 
-    public DefaultSearchContext(QueryExecutor executor, FieldDefinitionGenerator generator) {
+    public DefaultSearchContext(final QueryExecutor executor, final FieldDefinitionGenerator generator) {
         this.generator = generator;
         this.executor = executor;
 	    this.decoratorList = new ArrayList<>();
@@ -49,7 +56,8 @@ public class DefaultSearchContext implements SearchContext {
         return new Query(generator);
     }
 
-    public Query createQuery(Query.Operator operator) {
+    @Override
+	public Query createQuery(final Query.Operator operator) {
         return new QueryDefaultComparator(createQuery(), operator);
     }
 
@@ -59,38 +67,40 @@ public class DefaultSearchContext implements SearchContext {
     }
 
     @Override
-    public <T extends Mapping> T createFieldDefinitionFor(Class<T> mappingClass) {
+    public <T extends Mapping> T createFieldDefinitionFor(final Class<T> mappingClass) {
         if(mappingClass == null) {
             throw new IllegalArgumentException("a mapping class is required to create a field definition object.");
         }
         return generator.createFieldDefinition(mappingClass);
     }
 
-    public SearchResult execute(Query query) {
+    @Override
+	public SearchResult execute(final Query query) {
         if(query == null) {
             throw new IllegalArgumentException("A Query instance is required.");
         }
+		LOG.warn("No Pagesize has been set. Default value is set to {}.", DEFAULT_ROWS);
         return executor.execute(query, withSettings());
     }
 
-    public SearchResult execute(Query query, SearchSettings settings) {
+    @Override
+	public SearchResult execute(final Query query, final SearchSettings settings) {
 	    Query decoratedQuery = query;
 	    SearchSettings decoratedSettings = settings;
-	    for(SearchDecorator decorator : decoratorList) {
+	    for(final SearchDecorator decorator : decoratorList) {
 		    decoratedQuery = decorator.decorateQuery(decoratedQuery);
 		    decoratedSettings = decorator.decorateSettings(decoratedSettings);
 	    }
         return executor.execute(query, settings);
     }
 
-    public SearchSettings withSettings() {
+    @Override
+	public SearchSettings withSettings() {
         return createDefaultSettings();
     }
 
-    private SearchSettings createDefaultSettings() {
-        return new SearchSettings(generator)
-                .withPageSize(10)
-                .startAt(0);
-    }
+	private SearchSettings createDefaultSettings() {
+		return new SearchSettings(generator).withPageSize(DEFAULT_ROWS).startAt(0);
+	}
 
 }
