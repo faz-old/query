@@ -13,9 +13,6 @@
  */
 package de.faz.modules.query;
 
-import de.faz.modules.query.Query;
-import de.faz.modules.query.SearchSettings;
-
 import javax.annotation.Nonnull;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
