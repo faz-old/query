@@ -13,7 +13,6 @@
  */
 package de.faz.modules.query;
 
-import de.faz.modules.query.decoration.SearchDecorator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

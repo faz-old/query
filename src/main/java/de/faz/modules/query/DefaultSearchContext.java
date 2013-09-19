@@ -14,8 +14,6 @@
 
 package de.faz.modules.query;
 
-import de.faz.modules.query.decoration.SearchDecorator;
-
 import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;

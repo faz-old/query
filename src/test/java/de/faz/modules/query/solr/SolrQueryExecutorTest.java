@@ -7,7 +7,7 @@ import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
 import de.faz.modules.query.TestMapping;
-import de.faz.modules.query.decoration.SearchDecorator;
+import de.faz.modules.query.SearchDecorator;
 import net.sf.cglib.proxy.Callback;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;

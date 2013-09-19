@@ -15,7 +15,6 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Optional;
-import de.faz.modules.query.decoration.SearchDecorator;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;

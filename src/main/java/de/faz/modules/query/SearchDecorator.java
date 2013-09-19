@@ -11,7 +11,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from F.A.Z. Electronic Media GmbH.
  */
-package de.faz.modules.query.decoration;
+package de.faz.modules.query;
 
 import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchSettings;
