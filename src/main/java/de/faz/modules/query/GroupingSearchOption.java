@@ -1,15 +1,12 @@
 package de.faz.modules.query;
 
-import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.common.params.GroupParams;
+import de.faz.modules.query.capabilities.SearchOption;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public class GroupingSearchOption implements SearchOption {
+public abstract class GroupingSearchOption implements SearchOption {
 
 	private final FieldDefinitionGenerator generator;
 
@@ -22,28 +19,6 @@ public class GroupingSearchOption implements SearchOption {
 	public GroupingSearchOption(FieldDefinitionGenerator generator) {
 		this.generator = generator;
 		groupQueries = new ArrayList<>();
-	}
-
-	@Override
-	public EnrichQueryExecutor getQueryExecutor() {
-		return new SolrEnrichQueryExecutor() {
-			@Override
-			public void enrich(final SolrQuery query) {
-				query.setParam(GroupParams.GROUP, true);
-				query.setParam(GroupParams.GROUP_MAIN, merge);
-				if(StringUtils.isNotEmpty(fieldName)) {
-					query.setParam(GroupParams.GROUP_FIELD, fieldName.toString());
-				}
-
-				if(limit != null) {
-					query.setParam(GroupParams.GROUP_LIMIT, String.valueOf(limit));
-				}
-
-				for(Query groupQuery : groupQueries) {
-					query.add(GroupParams.GROUP_QUERY, groupQuery.toString());
-				}
-			}
-		};
 	}
 
 	public GroupingSearchOption groupByField(final Object fieldDefinition) {
@@ -71,5 +46,21 @@ public class GroupingSearchOption implements SearchOption {
 	public GroupingSearchOption mergeResults() {
 		merge = true;
 		return this;
+	}
+
+	public CharSequence getFieldName() {
+		return fieldName;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public List<Query> getGroupQueries() {
+		return groupQueries;
+	}
+
+	public boolean isMerge() {
+		return merge;
 	}
 }

@@ -12,11 +12,11 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
-
-import de.faz.modules.query.EnrichQueryExecutor;
+package de.faz.modules.query.exception;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public interface SearchOption {
-    EnrichQueryExecutor getQueryExecutor();
+public class InvalidQueryException extends RuntimeException {
+    public InvalidQueryException(final String message) {
+        super(message);
+    }
 }

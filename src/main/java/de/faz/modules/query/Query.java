@@ -15,6 +15,7 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Joiner;
+import de.faz.modules.query.exception.InvalidQueryException;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -30,12 +31,12 @@ import java.util.regex.Pattern;
  * dynamic queries for a search database (i.e. Solr or Lucene)
  * and produce readable source code.
  *
- * This class throws an {@link de.faz.modules.query.InvalidQueryException} when you use this
+ * This class throws an {@link de.faz.modules.query.exception.InvalidQueryException} when you use this
  * class in a wrong way. Please keep in mind that you need a prepared
  * {@link de.faz.modules.query.Mapping} object before you can use that with the query syntax.
  * When you forget to call {@link de.faz.modules.query.DefaultSearchContext#createFieldDefinitionFor(Class)} or
  * you don't use that returned object your queries doesn't work and you
- * will get an {@link de.faz.modules.query.InvalidQueryException}.
+ * will get an {@link de.faz.modules.query.exception.InvalidQueryException}.
  *
  * @author Andreas Kaubisch <a.kaubisch@faz.de>
  */
@@ -162,13 +163,13 @@ public class Query {
     /**
      * This method creates a new instance of {@link de.faz.modules.query.TermQueryPart} with the given {@code fieldDefinition}.
      * To use this method in the defined way you must create a field definition first. This is done by calling
-     * {@link de.faz.modules.query.SearchContext#createFieldDefinitionFor(Class)}. This method will throw a {@link InvalidQueryException}
+     * {@link de.faz.modules.query.SearchContext#createFieldDefinitionFor(Class)}. This method will throw a {@link de.faz.modules.query.exception.InvalidQueryException}
      * when you don't use the field definition created with the {@link de.faz.modules.query.SearchContext}
      *
      * @param fieldDefinition a Method call of the field definition defined with {@link de.faz.modules.query.SearchContext}
      * @return a new instance of {@link de.faz.modules.query.TermQueryPart} that represents the previously called field definition
      *         method.
-     * @throws InvalidQueryException when you don't called a field definition first
+     * @throws de.faz.modules.query.exception.InvalidQueryException when you don't called a field definition first
      */
     public TermQueryPart term(final Object fieldDefinition) {
         if(definitionGenerator.isEmpty()) {

@@ -15,9 +15,12 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Optional;
+import de.faz.modules.query.capabilities.SearchOption;
+import de.faz.modules.query.exception.InvalidQueryException;
 import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
 import de.faz.modules.query.solr.SolrResponseCallbackFactory;
 import de.faz.modules.query.solr.StandardCallbackFactory;
+import de.faz.modules.query.solr.capabilities.SolrGroupingSearchOption;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import javax.annotation.Nonnull;
@@ -89,7 +92,7 @@ public class SearchSettings implements SearchOption {
     }
 
 	public GroupingSearchOption addGrouping() {
-		GroupingSearchOption option = new GroupingSearchOption(generator);
+		GroupingSearchOption option = new SolrGroupingSearchOption(generator);
 		optionCollection.add(option);
 		return option;
 	}

@@ -22,22 +22,23 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 
 	private SolrResponseCallbackFactory callbackFactory;
-	private FieldDefinitionGenerator generator;
+	private FieldDefinitionGenerator fieldGenerator;
 
 
 	SolrSearchResult(final QueryResponse result, int pageSize) {
 		super(result, pageSize);
 	}
 
-	SolrSearchResult(final FieldDefinitionGenerator generator, final QueryResponse result, final int pageSize, final int offset, final SolrResponseCallbackFactory callbackFactory) {
+	SolrSearchResult(final FieldDefinitionGenerator generator, final QueryResponse result, final int pageSize, final int offset, final SolrResponseCallbackFactory factory) {
 		super(result, pageSize, offset);
-		this.callbackFactory = callbackFactory;
-		this.generator = generator;
+		this.callbackFactory = factory;
+		this.fieldGenerator = generator;
 	}
 
 	public long getNumCount() {
@@ -52,7 +53,7 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 	public long getNumberOfPages() {
 		int numPages = 0;
 		if(implementedSearchResult.isPresent()) {
-			numPages = (int) Math.ceil(implementedSearchResult.get().getResults().getNumFound() / pageSize);
+			numPages = (int) Math.ceil(implementedSearchResult.get().getResults().getNumFound() / (double)pageSize);
 		}
 		return numPages;
 	}
@@ -78,7 +79,7 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 			@Override
 			public S next() {
 				final SolrDocument doc = solrIt.next();
-				S result = generator.enhanceWithInterceptor(mappingClass, callbackFactory.createCallbackForDocument(response, doc));
+				S result = fieldGenerator.enhanceWithInterceptor(mappingClass, callbackFactory.createCallbackForDocument(response, doc));
 				return result;
 			}
 
@@ -98,7 +99,7 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 
 			@Override
 			public S next() {
-				return null;
+				throw new NoSuchElementException();
 			}
 
 			@Override
