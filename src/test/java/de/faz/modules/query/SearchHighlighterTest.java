@@ -1,27 +1,26 @@
 package de.faz.modules.query;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import net.sf.cglib.proxy.MethodInterceptor;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.params.HighlightParams;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.faz.modules.query.FieldDefinitionGenerator;
-import net.sf.cglib.proxy.MethodInterceptor;
-
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)
@@ -89,6 +88,16 @@ public class SearchHighlighterTest {
         highlighter.getQueryExecutor().enrich(query);
         verify(query).addHighlightField("field1");
     }
+
+	@Test
+	public void getQueryExecutor_withQueryAndHighlightingQuery_setsHighlightingQuery() {
+		SolrQuery query = mock(SolrQuery.class);
+		Query q = mock(Query.class);
+		when(q.toString()).thenReturn("highlightingQuery");
+
+		highlighter.withQuery(q).getQueryExecutor().enrich(query);
+		verify(query).setParam(HighlightParams.Q, "highlightingQuery");
+	}
 
     @Test
     public void createCallbackForDocument_withResponseAndDocument_createsProxyThatChecksHighlightingForDoc() throws Throwable {

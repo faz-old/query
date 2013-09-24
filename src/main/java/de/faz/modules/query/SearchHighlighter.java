@@ -23,6 +23,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.params.HighlightParams;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ public class SearchHighlighter implements SearchOption,SolrResponseCallbackFacto
 
 	private CharSequence prefix;
 	private CharSequence postfix;
+
+	private Query highlightingQuery;
 
 
 	SearchHighlighter(final FieldDefinitionGenerator generator) {
@@ -65,6 +68,11 @@ public class SearchHighlighter implements SearchOption,SolrResponseCallbackFacto
 		return this;
 	}
 
+	public SearchHighlighter withQuery(final Query highlightingQuery) {
+		this.highlightingQuery = highlightingQuery;
+		return this;
+	}
+
 	List<FieldDefinition> getFields() {
 		return Collections.unmodifiableList(definitionList);
 	}
@@ -89,6 +97,10 @@ public class SearchHighlighter implements SearchOption,SolrResponseCallbackFacto
 
 				for(final FieldDefinition definition : definitionList) {
 					query.addHighlightField(definition.name.toString());
+				}
+
+				if(highlightingQuery != null) {
+					query.setParam(HighlightParams.Q, highlightingQuery.toString());
 				}
 			}
 		};
