@@ -14,7 +14,6 @@
 package de.faz.modules.query;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.verify;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class QueryDefaultComparatorTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) Query originalQuery;
     Query.Operator operator;
