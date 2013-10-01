@@ -52,6 +52,17 @@ public class SearchSettingsTest {
         verify(query).addSortField("fieldName", SolrQuery.ORDER.asc);
     }
 
+	@Test
+	public void restrictByField_withFieldDefinition_addFieldToSolrQuery() {
+		when(generator.pop()).thenReturn(new FieldDefinition("fieldName", 1));
+		when(generator.isEmpty()).thenReturn(false);
+		underTest.restrictByField(null);
+
+		SolrQuery query = mock(SolrQuery.class);
+		underTest.enrichQuery(query);
+		verify(query).addField("fieldName");
+	}
+
     @Test
     public void withPageSize_withSize_addRowsToSolrQuery() {
         underTest.withPageSize(50);

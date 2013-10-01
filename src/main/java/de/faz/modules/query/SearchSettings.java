@@ -39,14 +39,16 @@ public class SearchSettings implements SearchOption {
 	public enum Order {
         ASC,
         DESC;
-	}
 
+	}
     private Collection<SearchOption> optionCollection;
-    private Collection<SortBy> sort;
-    private Optional<SolrResponseCallbackFactory> customCallbackFactory = Optional.absent();
+
+	private Collection<SortBy> sort;
+	private Optional<SolrResponseCallbackFactory> customCallbackFactory = Optional.absent();
 	private Optional<Integer> pageSize = Optional.absent();
 	private Optional<Integer> offset = Optional.absent();
-    private List<Query> filterList;
+	private List<Query> filterList;
+	private Collection<String> fieldList;
 	private Map<String, Object> parameterMap;
 
     protected FieldDefinitionGenerator generator;
@@ -56,6 +58,7 @@ public class SearchSettings implements SearchOption {
 	    filterList = new ArrayList<>();
 	    optionCollection = new ArrayList<>();
 	    parameterMap = new HashMap<>();
+	    fieldList = new ArrayList<>();
 	    this.generator = generator;
     }
 
@@ -126,11 +129,19 @@ public class SearchSettings implements SearchOption {
 		return offset;
 	}
 
+	public SearchSettings restrictByField(final Object fieldDefinition) {
+		if(!generator.isEmpty()) {
+			fieldList.add(generator.pop().getName().toString());
+		}
+		return this;
+	}
+
 	void enrichQuery(SolrQuery query) {
         query.setStart(offset.or(DEFAULT_OFFSET));
         query.setRows(pageSize.or(DEFAULT_ROWS));
         Collection<SearchSettings.SortBy> sortCollection = getSort();
-        for(SearchSettings.SortBy sortBy : sortCollection) {
+
+		for(SearchSettings.SortBy sortBy : sortCollection) {
             query.addSortField(sortBy.getFieldName().toString(), sortBy.getSolrOrder());
         }
 
@@ -141,6 +152,10 @@ public class SearchSettings implements SearchOption {
         for(Query filter : filterList) {
             query.addFilterQuery(filter.toString());
         }
+
+		for(String field : fieldList) {
+			query.addField(field);
+		}
 
     }
 	static class SortBy {
