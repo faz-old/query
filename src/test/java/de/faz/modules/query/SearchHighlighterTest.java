@@ -1,6 +1,7 @@
 package de.faz.modules.query;
 
 import net.sf.cglib.proxy.MethodInterceptor;
+
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -118,7 +119,7 @@ public class SearchHighlighterTest {
         MethodInterceptor interceptor = (MethodInterceptor) highlighter.createCallbackForDocument(response, document);
         assertEquals("highlightValue", interceptor.intercept(null, TestMapping.class.getDeclaredMethod("getField1", null), null, null));
     }
-    
+
     private SolrDocument prepareSolrDocument() {
         SolrDocument document  = mock(SolrDocument.class);
         when(document.getFieldValue("contentId")).thenReturn("1.234");
