@@ -410,7 +410,7 @@ public class Query {
         public CharSequence toCharSequence() {
             String stringValue = value.toString();
             for(String character : ILLEGAL_CHARACTERS) {
-                stringValue = stringValue.replaceAll(Pattern.quote(character), "\\\\"+ character);
+                stringValue = stringValue.replaceAll("("+Pattern.quote(character)+")(?=([^\\\\\"]*[\\\\\"][^\\\\\"]*[\\\\\"])*[^\\\\\"]*$)", "\\\\"+ character);
             }
             return stringValue;
         }
