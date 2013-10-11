@@ -25,19 +25,19 @@ import java.util.Map;
 public class PreparedQuery extends Query implements Cloneable {
     private final ParameterValues parameterValues;
 
-    PreparedQuery(FieldDefinitionGenerator generator) {
+    PreparedQuery(final FieldDefinitionGenerator generator) {
         super(generator);
         parameterValues = new ParameterValues();
     }
 
-    public ValueItem param(String paramName) {
+    public ValueItem param(final String paramName) {
         if(StringUtils.isEmpty(paramName)) {
             throw new IllegalArgumentException("You need a parameter name for a prepared parameter in a query.");
         }
         return new PreparedValue(paramName, parameterValues);
     }
 
-    public void setParamValue(String paramName, CharSequence value) {
+    public void setParamValue(final String paramName, final CharSequence value) {
         if(StringUtils.isEmpty(paramName)) {
             throw new IllegalArgumentException("The name of the parameter is missing.");
         }
@@ -52,9 +52,9 @@ public class PreparedQuery extends Query implements Cloneable {
     }
 
     private static class PreparedValue extends ValueItem {
-        private Valuable<CharSequence> parameterValue;
-        private String paramName;
-        public PreparedValue(@Nonnull String paramName, @Nonnull Valuable<CharSequence> value) {
+        private final Valuable<CharSequence> parameterValue;
+        private final String paramName;
+        public PreparedValue(@Nonnull final String paramName, @Nonnull final Valuable<CharSequence> value) {
             this.paramName = paramName;
             this.parameterValue = value;
         }
@@ -72,10 +72,10 @@ public class PreparedQuery extends Query implements Cloneable {
 
     private static class ParameterValues implements Valuable<CharSequence> {
 
-        private ThreadLocal<Map<String, CharSequence>> paramMap;
+        private final ThreadLocal<Map<String, CharSequence>> paramMap;
 
         public ParameterValues() {
-            paramMap = new ThreadLocal<Map<String, CharSequence>>();
+            paramMap = new ThreadLocal<>();
         }
 
         @Override
@@ -84,17 +84,17 @@ public class PreparedQuery extends Query implements Cloneable {
             return paramMap.get() != null ? paramMap.get().get(key) : null;
         }
 
-        public void setParameter(@Nonnull String key, @Nonnull CharSequence value) {
+        public void setParameter(@Nonnull final String key, @Nonnull final CharSequence value) {
             Map<String, CharSequence> parameterMap = paramMap.get();
             if(parameterMap == null) {
-                parameterMap = new HashMap<String, CharSequence>();
+                parameterMap = new HashMap<>();
                 paramMap.set(parameterMap);
             }
 
             parameterMap.put(key, value);
         }
 
-        public void addAllParameter(@Nonnull Map<String, CharSequence> allParams) {
+        public void addAllParameter(@Nonnull final Map<String, CharSequence> allParams) {
             paramMap.set(allParams);
         }
 
@@ -104,6 +104,6 @@ public class PreparedQuery extends Query implements Cloneable {
     }
 
     private static interface Valuable<T> {
-        T getValueOf(String key);
+        T getValueOf(final String key);
     }
 }

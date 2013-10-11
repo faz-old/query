@@ -53,7 +53,7 @@ public class SearchSettings implements SearchOption {
 
 	protected FieldDefinitionGenerator generator;
 
-	SearchSettings(FieldDefinitionGenerator generator) {
+	SearchSettings(final FieldDefinitionGenerator generator) {
 		sort = new ArrayList<>();
 		filterList = new ArrayList<>();
 		optionCollection = new ArrayList<>();
@@ -62,17 +62,17 @@ public class SearchSettings implements SearchOption {
 		this.generator = generator;
 	}
 
-	public SearchSettings withPageSize(int size) {
+	public SearchSettings withPageSize(final int size) {
 		this.pageSize = Optional.of(size);
 		return this;
 	}
 
-	public SearchSettings startAt(int offset) {
+	public SearchSettings startAt(final int offset) {
 		this.offset = Optional.of(offset);
 		return this;
 	}
 
-	public SearchSettings sortBy(Object fieldDefinition, Order order) {
+	public SearchSettings sortBy(final Object fieldDefinition, final Order order) {
 		if (generator.isEmpty()) {
 			throw new InvalidQueryException("The field description of sortBy was null.");
 		}
@@ -81,7 +81,7 @@ public class SearchSettings implements SearchOption {
 		return this;
 	}
 
-	public SearchSettings filterBy(@Nonnull Query filter) {
+	public SearchSettings filterBy(@Nonnull final Query filter) {
 		filterList.add(filter);
 		return this;
 	}
@@ -136,7 +136,7 @@ public class SearchSettings implements SearchOption {
 		return this;
 	}
 
-	void enrichQuery(SolrQuery query) {
+	void enrichQuery(final SolrQuery query) {
 		query.setStart(offset.or(DEFAULT_OFFSET));
 		query.setRows(pageSize.or(DEFAULT_ROWS));
 		Collection<SearchSettings.SortBy> sortCollection = getSort();

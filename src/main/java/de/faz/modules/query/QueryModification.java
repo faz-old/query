@@ -14,14 +14,12 @@
 
 package de.faz.modules.query;
 
-import de.faz.modules.query.ModificationSelection;
-
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class QueryModification {
 
-    private Query q;
+    private final Query q;
 
-    QueryModification(Query q) {
+    QueryModification(final Query q) {
         this.q = q;
     }
 
@@ -59,7 +57,7 @@ public class QueryModification {
         return createSelection(numElements, null);
     }
 
-    private ModificationSelection createSelection(Integer lower, Integer upper) {
+    private ModificationSelection createSelection(final Integer lower, final Integer upper) {
         return new ModificationSelection(q, lower, upper);
     }
 }

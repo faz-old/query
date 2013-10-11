@@ -19,7 +19,7 @@ public class SolrContextCapabilities implements ContextCapabilities {
 
 	public SolrContextCapabilities() {
 		supportMap = new HashMap<>();
-		supportMap.put(GroupingSupport.class, new SolrGroupingSupportFactory());
+		supportMap.put(GroupingSupport.class, null);
 		supportMap.put(HighlightingSupport.class, null);
 	}
 

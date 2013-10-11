@@ -9,14 +9,14 @@ import java.util.List;
 public abstract class GroupingSearchOption implements SearchOption {
 
 	private final FieldDefinitionGenerator generator;
+	private final List<Query> groupQueries;
 
 	private CharSequence fieldName;
 	private Integer limit;
-	private final List<Query> groupQueries;
 
 	private boolean merge;
 
-	public GroupingSearchOption(FieldDefinitionGenerator generator) {
+	public GroupingSearchOption(final FieldDefinitionGenerator generator) {
 		this.generator = generator;
 		groupQueries = new ArrayList<>();
 	}

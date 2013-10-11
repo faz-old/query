@@ -13,7 +13,7 @@ public final class SolrSearchContextFactory {
 
     private SolrSearchContextFactory(){}
 
-	public static SearchContext createSearchContext(@Nullable SolrServer server, QueryDecorator... decorators) {
+	public static SearchContext createSearchContext(@Nullable final SolrServer server, final QueryDecorator... decorators) {
 		FieldDefinitionGenerator generator = new FieldDefinitionGenerator();
 		SolrQueryExecutor executor = new SolrQueryExecutor(server, generator);
 		if(decorators != null) {

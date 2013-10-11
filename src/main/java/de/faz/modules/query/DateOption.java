@@ -42,7 +42,7 @@ public abstract class DateOption {
 
 
     }
-    public static DateOption from(Date date) {
+    public static DateOption from(final Date date) {
         return new NativeDateOption(date);
     }
 
@@ -57,8 +57,8 @@ public abstract class DateOption {
     protected abstract CharSequence flatten();
 
     private static final class PredefinedValueOption extends DateOption {
-        private CharSequence value;
-        private PredefinedValueOption(CharSequence value) {
+        private final CharSequence value;
+        private PredefinedValueOption(final CharSequence value) {
             this.value = value;
         }
 
@@ -82,8 +82,8 @@ public abstract class DateOption {
     }
 
     private final static class NativeDateOption extends DateOption {
-        private Date date;
-        private NativeDateOption(Date date) {
+        private final Date date;
+        private NativeDateOption(final Date date) {
             this.date = date;
         }
 
