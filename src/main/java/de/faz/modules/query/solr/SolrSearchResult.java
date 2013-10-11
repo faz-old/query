@@ -31,7 +31,7 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 	private FieldDefinitionGenerator fieldGenerator;
 
 
-	SolrSearchResult(final QueryResponse result, int pageSize) {
+	SolrSearchResult(final QueryResponse result, final int pageSize) {
 		super(result, pageSize);
 	}
 

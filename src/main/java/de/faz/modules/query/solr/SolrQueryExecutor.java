@@ -36,7 +36,7 @@ class SolrQueryExecutor extends QueryExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SolrQueryExecutor.class);
 
-	private final FieldDefinitionGenerator generator;
+	private final FieldDefinitionGenerator fieldGenerator;
 
 	private final SolrServer server;
 
@@ -44,7 +44,7 @@ class SolrQueryExecutor extends QueryExecutor {
 
 	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
 		this.server = server;
-		this.generator = generator;
+		this.fieldGenerator = generator;
 		this.decoratorList = new ArrayList<>();
 	}
 
@@ -74,7 +74,7 @@ class SolrQueryExecutor extends QueryExecutor {
 				}
 
 				result =  new SolrSearchResult(
-						generator
+						fieldGenerator
 						, solrResult
 						, numOfElementsOnPage
 						, page

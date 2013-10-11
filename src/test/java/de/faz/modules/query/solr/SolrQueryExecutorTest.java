@@ -2,15 +2,13 @@ package de.faz.modules.query.solr;
 
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SearchResult;
-
 import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
+import de.faz.modules.query.SearchDecorator;
 import de.faz.modules.query.SearchSettings;
 import de.faz.modules.query.TestMapping;
-import de.faz.modules.query.SearchDecorator;
 import net.sf.cglib.proxy.Callback;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -18,7 +16,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -111,7 +108,6 @@ public class SolrQueryExecutorTest {
     }
 
     @Test
-	@Ignore
     public void executeQuery_withResult_createIteratorWithEnhancement() {
         SearchContext.SearchResult searchResult = executor.executeQuery(q, settings);
         SolrDocument doc = mock(SolrDocument.class);

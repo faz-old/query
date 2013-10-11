@@ -17,10 +17,10 @@ package de.faz.modules.query;
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class QueryModification {
 
-    private final Query q;
+    private final Query query;
 
     QueryModification(final Query q) {
-        this.q = q;
+        this.query = q;
     }
 
     public ModificationSelection all() {
@@ -58,6 +58,6 @@ public class QueryModification {
     }
 
     private ModificationSelection createSelection(final Integer lower, final Integer upper) {
-        return new ModificationSelection(q, lower, upper);
+        return new ModificationSelection(query, lower, upper);
     }
 }
