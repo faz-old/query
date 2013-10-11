@@ -3,6 +3,7 @@ package de.faz.modules.query.solr;
 import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.GroupingSearchOption;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
+import de.faz.modules.query.solr.capabilities.SolrGroupingSearchOption;
 
 import javax.annotation.Nonnull;
 
@@ -11,6 +12,7 @@ public class SolrGroupingSupportFactory implements SearchOptionFactory<GroupingS
 
 	@Override
 	public GroupingSearchOption createInstance(@Nonnull final FieldDefinitionGenerator generator) {
-		return null;
+		if(generator == null) { throw new IllegalArgumentException("a FieldDefinitionGenerator is required"); }
+		return new SolrGroupingSearchOption(generator);
 	}
 }
