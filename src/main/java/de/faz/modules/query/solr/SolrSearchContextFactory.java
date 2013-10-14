@@ -1,7 +1,6 @@
 package de.faz.modules.query.solr;
 
 import com.polopoly.search.solr.QueryDecorator;
-import de.faz.modules.query.DefaultSearchContext;
 import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.SearchContext;
 import org.apache.solr.client.solrj.SolrServer;
@@ -11,7 +10,9 @@ import javax.annotation.Nullable;
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public final class SolrSearchContextFactory {
 
-    private SolrSearchContextFactory(){}
+    private SolrSearchContextFactory(){
+	    //empty constructor
+    }
 
 	public static SearchContext createSearchContext(@Nullable final SolrServer server, final QueryDecorator... decorators) {
 		FieldDefinitionGenerator generator = new FieldDefinitionGenerator();

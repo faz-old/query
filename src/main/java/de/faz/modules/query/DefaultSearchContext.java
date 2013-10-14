@@ -26,7 +26,7 @@ public abstract class DefaultSearchContext implements SearchContext {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultSearchContext.class);
 
-	private static final int DEFAULT_ROWS = 10;
+
 	protected final FieldDefinitionGenerator generator;
 	protected final QueryExecutor executor;
 
@@ -48,40 +48,40 @@ public abstract class DefaultSearchContext implements SearchContext {
 		this.decoratorList.add(decorator);
 	}
 
-	@Override
-    public Query createQuery() {
-        return new Query(generator);
-    }
-
+	@Nonnull
     @Override
-	public Query createQuery(final Query.Operator operator) {
+	public Query createQuery(@Nonnull final Query.Operator operator) {
         return new QueryDefaultComparator(createQuery(), operator);
     }
 
+	@Nonnull
     @Override
     public PreparedQuery createPreparedQuery() {
         return new PreparedQuery(generator);
     }
 
+	@Nonnull
     @Override
-    public <T extends Mapping> T createFieldDefinitionFor(final Class<T> mappingClass) {
+    public <T extends Mapping> T createFieldDefinitionFor(@Nonnull final Class<T> mappingClass) {
         if(mappingClass == null) {
             throw new IllegalArgumentException("a mapping class is required to create a field definition object.");
         }
         return generator.createFieldDefinition(mappingClass);
     }
 
+	@Nonnull
     @Override
-	public SearchResult execute(final Query query) {
+	public SearchResult execute(@Nonnull final Query query) {
         if(query == null) {
             throw new IllegalArgumentException("A Query instance is required.");
         }
-		LOG.warn("No Pagesize has been set. Default value is set to {}.", DEFAULT_ROWS);
+		LOG.info("No Pagesize has been set.");
         return executor.execute(query, withSettings());
     }
 
+	@Nonnull
     @Override
-	public SearchResult execute(final Query query, final SearchSettings settings) {
+	public SearchResult execute(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
 	    Query decoratedQuery = query;
 	    SearchSettings decoratedSettings = settings;
 	    for(final SearchDecorator decorator : decoratorList) {
@@ -90,14 +90,4 @@ public abstract class DefaultSearchContext implements SearchContext {
 	    }
         return executor.execute(query, settings);
     }
-
-    @Override
-	public SearchSettings withSettings() {
-        return createDefaultSettings();
-    }
-
-	private SearchSettings createDefaultSettings() {
-		return new SearchSettings(generator).withPageSize(DEFAULT_ROWS).startAt(0);
-	}
-
 }

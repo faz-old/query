@@ -17,12 +17,12 @@ import static org.junit.Assert.assertNotNull;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class TermQueryPartTest {
-    private FieldDefinition definition;
+    private FieldDefinitionGenerator.FieldDefinition definition;
     private TermQueryPart part;
 
     @Before
     public void setUp() {
-        definition = new FieldDefinition("fieldName", 1);
+        definition = new FieldDefinitionGenerator.FieldDefinition("fieldName", 1);
         part = new TermQueryPart(definition);
     }
 
@@ -38,7 +38,7 @@ public class TermQueryPartTest {
 
     @Test
     public void value_withStringAndBoost_returnsItemWithCorrectToString() {
-        FieldDefinition newDef = definition.setBoost(2);
+        FieldDefinitionGenerator.FieldDefinition newDef = definition.setBoost(2);
         part = new TermQueryPart(newDef);
         assertEquals("fieldName:test^2", part.value("test").toString());
     }

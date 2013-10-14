@@ -6,8 +6,12 @@ import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
 import de.faz.modules.query.SearchSettings;
 
+import javax.annotation.Nonnull;
+
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class SolrSearchContext extends DefaultSearchContext {
+
+	public static final int DEFAULT_ROWS = 10;
 
 	public SolrSearchContext(final QueryExecutor executor) {
 		super(executor);
@@ -17,13 +21,20 @@ public class SolrSearchContext extends DefaultSearchContext {
 		super(executor, generator);
 	}
 
+	@Nonnull
 	@Override
 	public Query createQuery() {
 		return new SolrQuery(generator);
 	}
 
+	@Nonnull
 	@Override
 	public SearchSettings withSettings() {
-		return new SearchSettings(generator, new SolrContextCapabilities());
+		return createDefaultSettings();
+	}
+
+	@Nonnull
+	private SearchSettings createDefaultSettings() {
+		return new SolrSearchSettings(generator).withPageSize(DEFAULT_ROWS).startAt(0);
 	}
 }

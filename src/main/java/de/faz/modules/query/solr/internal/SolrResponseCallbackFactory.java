@@ -12,7 +12,7 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query.solr;
+package de.faz.modules.query.solr.internal;
 
 import net.sf.cglib.proxy.Callback;
 import org.apache.solr.client.solrj.response.QueryResponse;

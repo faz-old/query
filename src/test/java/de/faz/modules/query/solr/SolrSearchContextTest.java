@@ -3,6 +3,7 @@ package de.faz.modules.query.solr;
 import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
+import de.faz.modules.query.SearchSettings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,5 +29,17 @@ public class SolrSearchContextTest {
 	public void createQuery_returnsNewInstanceOfSolrQuery() {
 		Query q = underTest.createQuery();
 		assertEquals(SolrQuery.class, q.getClass());
+	}
+
+	@Test
+	public void withSettings_createSettingsWithDefaultRows() {
+		SearchSettings settings = underTest.withSettings();
+		assertEquals(SolrSearchContext.DEFAULT_ROWS, settings.getPageSize());
+	}
+
+	@Test
+	public void withSettings_returnsNewInstanceOfSolrSearchSettings() {
+		SearchSettings settings = underTest.withSettings();
+		assertEquals(SolrSearchSettings.class, settings.getClass());
 	}
 }

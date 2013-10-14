@@ -24,7 +24,7 @@ public abstract class GroupingSearchOption implements SearchOption {
 	public GroupingSearchOption groupByField(final Object fieldDefinition) {
 		if(generator.isEmpty()) { throw new IllegalArgumentException("a field definition is required to group by fieldname."); }
 
-		FieldDefinition definition = generator.pop();
+		FieldDefinitionGenerator.FieldDefinition definition = generator.pop();
 		fieldName = definition.getName();
 		return this;
 	}

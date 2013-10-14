@@ -39,9 +39,9 @@ public class TermQueryPart {
         }
 
     }
-    private final FieldDefinition definition;
+    private final FieldDefinitionGenerator.FieldDefinition definition;
 
-    public TermQueryPart(@Nonnull final FieldDefinition definition) {
+    public TermQueryPart(@Nonnull final FieldDefinitionGenerator.FieldDefinition definition) {
         this.definition = definition;
     }
 

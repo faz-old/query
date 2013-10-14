@@ -73,13 +73,16 @@ class SolrQueryExecutor extends QueryExecutor {
 					page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
 				}
 
-				result =  new SolrSearchResult(
-						fieldGenerator
-						, solrResult
-						, numOfElementsOnPage
-						, page
-						, settings.getCustomCallbackFactory()
-				);
+				//TODO ugly but it works. refactor this instanceof to a method that handles SolrSearchSettings only
+				if(settings instanceof SolrSearchSettings) {
+					result =  new SolrSearchResult(
+							fieldGenerator
+							, solrResult
+							, numOfElementsOnPage
+							, page
+							, ((SolrSearchSettings)settings).getCustomCallbackFactory()
+					);
+				}
 			} catch (SolrServerException e) {
 				LOG.warn("got exception when execute a search to solr", e);
 			}

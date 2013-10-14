@@ -1,26 +1,18 @@
 package de.faz.modules.query;
 
-import net.sf.cglib.proxy.MethodInterceptor;
-
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.params.HighlightParams;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
@@ -66,69 +58,4 @@ public class SearchHighlighterTest {
         highlighter.surroundWith("<span>", null);
     }
 
-    @Test
-    public void getQueryExecutor_withQuery_enabledHighlighting() {
-        SolrQuery query = mock(SolrQuery.class);
-        highlighter.getQueryExecutor().enrich(query);
-        verify(query).setHighlight(true);
-    }
-
-    @Test
-    public void getQueryExecutor_withQueryAndPrefixAndPostfix_setHighlightPrefixAndPostfix() {
-        SolrQuery query = mock(SolrQuery.class);
-        highlighter.surroundWith("prefix", "postfix");
-        highlighter.getQueryExecutor().enrich(query);
-        verify(query).setHighlightSimplePre("prefix");
-        verify(query).setHighlightSimplePost("postfix");
-    }
-
-    @Test
-    public void getQueryExecutor_withQueryAndField_setHighlightField() {
-        SolrQuery query = mock(SolrQuery.class);
-        highlighter.withField(fieldDef.getField1());
-        highlighter.getQueryExecutor().enrich(query);
-        verify(query).addHighlightField("field1");
-    }
-
-	@Test
-	public void getQueryExecutor_withQueryAndHighlightingQuery_setsHighlightingQuery() {
-		SolrQuery query = mock(SolrQuery.class);
-		Query q = mock(Query.class);
-		when(q.toString()).thenReturn("highlightingQuery");
-
-		highlighter.withQuery(q).getQueryExecutor().enrich(query);
-		verify(query).setParam(HighlightParams.Q, "highlightingQuery");
-	}
-
-    @Test
-    public void createCallbackForDocument_withResponseAndDocument_createsProxyThatChecksHighlightingForDoc() throws Throwable {
-        Map<String, List<String>> highlightingDoc = new HashMap<>();
-        QueryResponse response = prepareQueryResponseMock(highlightingDoc);
-        SolrDocument document = prepareSolrDocument();
-        MethodInterceptor interceptor = (MethodInterceptor) highlighter.createCallbackForDocument(response, document);
-        interceptor.intercept(null, TestMapping.class.getDeclaredMethod("getField1", null), null, null);
-        verify(response.getHighlighting()).get("1.234");
-    }
-
-    @Test
-    public void createCallbackForDocument_withResponseAndDocument_returnHighlightValue() throws Throwable {
-        Map<String, List<String>> highlightingDoc = new HashMap<>();
-        highlightingDoc.put("field1", Arrays.asList("highlightValue"));
-        QueryResponse response = prepareQueryResponseMock(highlightingDoc);
-        SolrDocument document = prepareSolrDocument();
-        MethodInterceptor interceptor = (MethodInterceptor) highlighter.createCallbackForDocument(response, document);
-        assertEquals("highlightValue", interceptor.intercept(null, TestMapping.class.getDeclaredMethod("getField1", null), null, null));
-    }
-
-    private SolrDocument prepareSolrDocument() {
-        SolrDocument document  = mock(SolrDocument.class);
-        when(document.getFieldValue("contentId")).thenReturn("1.234");
-        return document;
-    }
-
-    private QueryResponse prepareQueryResponseMock(final Map<String, List<String>> highlightingDoc) {
-        QueryResponse response = mock(QueryResponse.class, RETURNS_DEEP_STUBS);
-        when(response.getHighlighting().get("1.234")).thenReturn(highlightingDoc);
-        return response;
-    }
 }

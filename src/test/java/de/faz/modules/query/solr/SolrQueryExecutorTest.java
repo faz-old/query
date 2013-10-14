@@ -6,7 +6,6 @@ import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchDecorator;
-import de.faz.modules.query.SearchSettings;
 import de.faz.modules.query.TestMapping;
 import net.sf.cglib.proxy.Callback;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -45,7 +44,7 @@ public class SolrQueryExecutorTest {
     @Mock SolrServer searchClient;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchResult polopolyResult;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) QueryResponse solrResponse;
-	@Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchSettings settings;
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS) SolrSearchSettings settings;
 
 	@Mock Query q;
     @Mock FieldDefinitionGenerator generator;

@@ -2,6 +2,7 @@ package de.faz.modules.query.solr;
 
 import java.lang.reflect.Method;
 
+import de.faz.modules.query.solr.internal.SolrResponseCallbackFactory;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

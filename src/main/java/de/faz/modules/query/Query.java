@@ -228,10 +228,10 @@ public class Query {
 
     protected static class TermItem extends QueryItem {
 
-        private final FieldDefinition field;
+        private final FieldDefinitionGenerator.FieldDefinition field;
         private final ValueItem value;
 
-        public TermItem(final FieldDefinition fieldDefinition, final ValueItem value) {
+        public TermItem(final FieldDefinitionGenerator.FieldDefinition fieldDefinition, final ValueItem value) {
             this.field = fieldDefinition;
             this.value = value;
         }
@@ -413,19 +413,6 @@ public class Query {
                 stringValue = stringValue.replaceAll("("+Pattern.quote(character)+")(?=([^\\\\\"]*[\\\\\"][^\\\\\"]*[\\\\\"])*[^\\\\\"]*$)", "\\\\"+ character);
             }
             return stringValue;
-        }
-    }
-    protected static class DeprecatedStringValue extends ValueItem {
-
-        final CharSequence value;
-
-        public DeprecatedStringValue(final CharSequence value) {
-            this.value = value;
-        }
-
-        @Override
-        public CharSequence toCharSequence() {
-            return value;
         }
     }
 

@@ -52,8 +52,7 @@ public interface SearchContext {
      *
      * @return a new {@link Query} instance
      */
-    @Nonnull
-    Query createQuery();
+    @Nonnull Query createQuery();
 
     /**
      * This function works like {@link de.faz.modules.query.SearchContext#createQuery()}
@@ -64,8 +63,7 @@ public interface SearchContext {
      *                 to combine all query items
      * @return a new {@link Query} instance
      */
-    @Nonnull
-    Query createQuery(@Nonnull Query.Operator operator);
+    @Nonnull Query createQuery(@Nonnull Query.Operator operator);
 
     /**
      * This function creates a new {@link PreparedQuery} instance that
@@ -74,8 +72,7 @@ public interface SearchContext {
      *
      * @return a new {@link PreparedQuery} instance
      */
-    @Nonnull
-    PreparedQuery createPreparedQuery();
+    @Nonnull PreparedQuery createPreparedQuery();
 
     /**
      * This function is one of the primary function you will use when you
@@ -91,8 +88,7 @@ public interface SearchContext {
      * @return  a new class of type T that is decorated to be used
      *          in other framework classes.
      */
-    @Nonnull
-    <T extends Mapping> T createFieldDefinitionFor(@Nonnull Class<T> mappingClass);
+    @Nonnull <T extends Mapping> T createFieldDefinitionFor(@Nonnull Class<T> mappingClass);
 
     /**
      * This function takes a {@link Query} instance an call a execute this
@@ -107,8 +103,7 @@ public interface SearchContext {
      * @param query a {@link Query} instance
      * @return a new {@link SearchResult} that contains the search results
      */
-    @Nonnull
-    SearchResult execute(@Nonnull Query query);
+    @Nonnull SearchResult execute(@Nonnull Query query);
 
     /**
      * This function works similar to {@link SearchContext#execute(Query)}
@@ -122,8 +117,7 @@ public interface SearchContext {
      * @param settings a custom {@link SearchSettings} instance
      * @return a new {@link SearchResult} that contains the search results
      */
-    @Nonnull
-    SearchResult execute(@Nonnull Query query, @Nonnull SearchSettings settings);
+    @Nonnull SearchResult execute(@Nonnull Query query, @Nonnull SearchSettings settings);
 
     /**
      * This function creates a new instance of {@link SearchSettings}.
@@ -135,8 +129,7 @@ public interface SearchContext {
      *
      * @return a new {@link SearchSettings} instance
      */
-    @Nonnull
-    SearchSettings withSettings();
+    @Nonnull SearchSettings withSettings();
 
     abstract class SearchResult<T> {
         protected Optional<T> implementedSearchResult;
