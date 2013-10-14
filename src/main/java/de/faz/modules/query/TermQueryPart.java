@@ -16,12 +16,12 @@ package de.faz.modules.query;
 
 import de.faz.modules.query.Query.QueryItem;
 
+import javax.annotation.Nonnull;
 import java.util.Calendar;
 import java.util.Date;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class TermQueryPart {
-
 
     public enum Operator {
         AND(" AND "),
@@ -39,38 +39,47 @@ public class TermQueryPart {
         }
 
     }
-    private FieldDefinition definition;
-    public TermQueryPart(final FieldDefinition definition) {
+    private final FieldDefinition definition;
+
+    public TermQueryPart(@Nonnull final FieldDefinition definition) {
         this.definition = definition;
     }
 
-    public Query.QueryItem value(final CharSequence value) {
+	@Nonnull
+    public Query.QueryItem value(@Nonnull final CharSequence value) {
         return value(new Query.StringValue(value));
     }
-    public Query.QueryItem value(final Query.ValueItem value) {
+
+	@Nonnull
+    public Query.QueryItem value(@Nonnull final Query.ValueItem value) {
         return new Query.TermItem(definition, value);
     }
 
-    public Query.QueryItem values(final CharSequence... values) {
+	@Nonnull
+	public Query.QueryItem values(@Nonnull final CharSequence... values) {
         return values(Operator.OR, values);
     }
 
-    public Query.QueryItem values(final Operator operator, final CharSequence... values) {
+	@Nonnull
+	public Query.QueryItem values(@Nonnull final Operator operator, @Nonnull final CharSequence... values) {
 	    if(values.length == 1) {
 		    return value(values[0]);
 	    }
         return new Query.TermItem(definition, new Query.OperatorValue(operator.toString(), values));
     }
 
-    public Query.QueryItem range(final Date from, final Date to) {
+	@Nonnull
+    public Query.QueryItem range(@Nonnull final Date from, @Nonnull final Date to) {
         return range(DateOption.from(from), DateOption.from(to));
     }
 
-    public Query.QueryItem range(final DateOption fromOption, final DateOption toOption) {
+	@Nonnull
+    public Query.QueryItem range(@Nonnull final DateOption fromOption, @Nonnull final DateOption toOption) {
         return new Query.TermItem(definition, new DateValue(fromOption, toOption));
     }
 
-	public QueryItem range(final Calendar startDate, final Calendar endDate) {
+	@Nonnull
+	public QueryItem range(@Nonnull final Calendar startDate, @Nonnull final Calendar endDate) {
 		return range(startDate.getTime(), endDate.getTime());
 	}
 
