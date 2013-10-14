@@ -1,19 +1,13 @@
 package de.faz.modules.query;
 
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)

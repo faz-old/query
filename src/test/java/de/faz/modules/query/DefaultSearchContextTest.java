@@ -13,6 +13,7 @@
  */
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +34,8 @@ public class DefaultSearchContextTest {
 	@Mock SearchSettings settings;
 
 	@Mock QueryExecutor executor;
-	@Mock FieldDefinitionGenerator generator;
+	@Mock
+	FieldDefinitionGenerator generator;
 
 	private DefaultSearchContext underTest;
 

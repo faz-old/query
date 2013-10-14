@@ -1,6 +1,6 @@
 package de.faz.modules.query.solr.capabilities;
 
-import de.faz.modules.query.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.TestMapping;
 import org.apache.solr.client.solrj.SolrQuery;

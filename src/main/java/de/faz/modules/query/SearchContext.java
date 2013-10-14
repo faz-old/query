@@ -15,6 +15,7 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Optional;
+import de.faz.modules.query.fields.Mapping;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -77,14 +78,14 @@ public interface SearchContext {
     /**
      * This function is one of the primary function you will use when you
      * work with this framework. It generates a new instance of a given
-     * {@link Mapping} class and decorates this instance that the framework
-     * get the field definition from this {@link Mapping} instead of any
+     * {@link de.faz.modules.query.fields.Mapping} class and decorates this instance that the framework
+     * get the field definition from this {@link de.faz.modules.query.fields.Mapping} instead of any
      * values defined in the getter methods.
-     * You need to annotate that function with {@link MapToField} annotation
+     * You need to annotate that function with {@link de.faz.modules.query.fields.MapToField} annotation
      * that this function works correctly.
      *
-     * @param mappingClass a class that implement {@link Mapping}
-     * @param <T> a class that implements {@link Mapping}
+     * @param mappingClass a class that implement {@link de.faz.modules.query.fields.Mapping}
+     * @param <T> a class that implements {@link de.faz.modules.query.fields.Mapping}
      * @return  a new class of type T that is decorated to be used
      *          in other framework classes.
      */

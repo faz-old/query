@@ -12,7 +12,7 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.fields;
 
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
@@ -145,15 +145,15 @@ public class FieldDefinitionGenerator {
 			return name;
 		}
 
-		FieldDefinition setName(final String name) {
+		public FieldDefinition setName(final String name) {
 			return new FieldDefinition(name, boost);
 		}
 
-		int getBoost() {
+		public int getBoost() {
 			return boost;
 		}
 
-		FieldDefinition setBoost(final int boost) {
+		public FieldDefinition setBoost(final int boost) {
 			return new FieldDefinition(name, boost);
 		}
 

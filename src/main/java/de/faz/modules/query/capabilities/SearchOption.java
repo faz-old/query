@@ -14,8 +14,6 @@
 
 package de.faz.modules.query.capabilities;
 
-import de.faz.modules.query.EnrichQueryExecutor;
-
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public interface SearchOption {
     EnrichQueryExecutor getQueryExecutor();

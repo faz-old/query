@@ -1,5 +1,6 @@
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.junit.Before;
 import org.junit.Test;
 

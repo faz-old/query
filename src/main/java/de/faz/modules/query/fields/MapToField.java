@@ -12,7 +12,7 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.fields;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,19 +21,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * With this Annotation you indicate that this Field
- * represented with that annotated method should be
- * boosted. The default value is '1' that means that
- * this field isn't boosted in a query.
+ * With that annotation you define your search mapping
+ * and link your get-Method to a field in the search index.
  *
- * This annotation is a runtime annotation so you
- * have access to it at runtime
+ * This annotation have two behaviours. Number one is the documentation
+ * of course and the second one is the mapping at runtime.
+ * A {@link de.faz.modules.query.Query} object uses this annotation to build
+ * the query syntax. So this annotation is required when
+ * you want to use the {@link de.faz.modules.query.Query} class.
  *
  * @author Andreas Kaubisch <a.kaubisch@faz.de>
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface BoostResult {
-    int value() default 1;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MapToField {
+    String value();
 }

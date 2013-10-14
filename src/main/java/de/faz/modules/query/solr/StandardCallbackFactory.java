@@ -10,7 +10,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 
-import de.faz.modules.query.MapToField;
+import de.faz.modules.query.fields.MapToField;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class StandardCallbackFactory implements SolrResponseCallbackFactory {

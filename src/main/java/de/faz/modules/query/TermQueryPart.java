@@ -15,6 +15,7 @@
 package de.faz.modules.query;
 
 import de.faz.modules.query.Query.QueryItem;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import javax.annotation.Nonnull;
 import java.util.Calendar;

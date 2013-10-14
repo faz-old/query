@@ -16,6 +16,7 @@ package de.faz.modules.query;
 
 import com.google.common.base.Joiner;
 import de.faz.modules.query.exception.InvalidQueryException;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -33,7 +34,7 @@ import java.util.regex.Pattern;
  *
  * This class throws an {@link de.faz.modules.query.exception.InvalidQueryException} when you use this
  * class in a wrong way. Please keep in mind that you need a prepared
- * {@link de.faz.modules.query.Mapping} object before you can use that with the query syntax.
+ * {@link de.faz.modules.query.fields.Mapping} object before you can use that with the query syntax.
  * When you forget to call {@link de.faz.modules.query.DefaultSearchContext#createFieldDefinitionFor(Class)} or
  * you don't use that returned object your queries doesn't work and you
  * will get an {@link de.faz.modules.query.exception.InvalidQueryException}.
@@ -239,9 +240,9 @@ public class Query {
         @Override
         public CharSequence toCharSequence() {
             StringBuffer sb = new StringBuffer();
-            sb.append(field.name).append(':').append(value.toCharSequence());
-            if(field.boost != 1) {
-                sb.append('^').append(field.boost);
+            sb.append(field.getName()).append(':').append(value.toCharSequence());
+            if(field.getBoost() != 1) {
+                sb.append('^').append(field.getBoost());
             }
             return sb;
         }

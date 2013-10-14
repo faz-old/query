@@ -14,6 +14,8 @@
 
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.Mapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,8 +1,8 @@
 package de.faz.modules.query.solr.capabilities;
 
-import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.SearchHighlighter;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import javax.annotation.Nonnull;
 

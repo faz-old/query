@@ -1,5 +1,6 @@
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.solr.common.util.DateUtil;
 import org.junit.Assert;

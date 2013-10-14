@@ -1,10 +1,10 @@
 package de.faz.modules.query.solr;
 
 import de.faz.modules.query.DefaultSearchContext;
-import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
 import de.faz.modules.query.SearchSettings;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import javax.annotation.Nonnull;
 

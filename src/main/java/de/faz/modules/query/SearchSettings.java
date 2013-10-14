@@ -17,12 +17,14 @@ package de.faz.modules.query;
 import com.google.common.base.Optional;
 import de.faz.modules.query.capabilities.ContextCapabilities;
 import de.faz.modules.query.capabilities.DefaultContextCapabilities;
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
 import de.faz.modules.query.capabilities.GroupingSupport;
 import de.faz.modules.query.capabilities.HighlightingSupport;
 import de.faz.modules.query.capabilities.SearchOption;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
 import de.faz.modules.query.exception.InvalidQueryException;
 import de.faz.modules.query.exception.UnsupportedFeatureException;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -85,7 +87,7 @@ public class SearchSettings implements SearchOption {
 			throw new InvalidQueryException("The field description of sortBy was null.");
 		}
 		FieldDefinitionGenerator.FieldDefinition definition = generator.pop();
-		this.sort.add(new SortBy(definition.name, order));
+		this.sort.add(new SortBy(definition.getName(), order));
 		return this;
 	}
 

@@ -1,12 +1,12 @@
 package de.faz.modules.query.solr;
 
 import com.google.common.base.Optional;
-import de.faz.modules.query.EnrichQueryExecutor;
-import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchHighlighter;
 import de.faz.modules.query.SearchSettings;
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
 import de.faz.modules.query.capabilities.SearchOption;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import de.faz.modules.query.solr.internal.SolrEnrichQueryExecutor;
 import de.faz.modules.query.solr.internal.SolrResponseCallbackFactory;
 import org.apache.solr.client.solrj.SolrQuery;

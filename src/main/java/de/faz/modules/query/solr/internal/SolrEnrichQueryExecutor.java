@@ -14,7 +14,7 @@
 
 package de.faz.modules.query.solr.internal;
 
-import de.faz.modules.query.EnrichQueryExecutor;
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
 import org.apache.solr.client.solrj.SolrQuery;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */

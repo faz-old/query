@@ -14,7 +14,9 @@
 
 package de.faz.modules.query;
 
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
 import de.faz.modules.query.capabilities.SearchOption;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;

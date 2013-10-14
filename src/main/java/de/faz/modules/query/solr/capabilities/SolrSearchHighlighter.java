@@ -1,11 +1,11 @@
 package de.faz.modules.query.solr.capabilities;
 
-import de.faz.modules.query.EnrichQueryExecutor;
-import de.faz.modules.query.FieldDefinitionGenerator;
-import de.faz.modules.query.MapToField;
+import de.faz.modules.query.fields.MapToField;
 import de.faz.modules.query.SearchHighlighter;
-import de.faz.modules.query.solr.internal.SolrResponseCallbackFactory;
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import de.faz.modules.query.solr.internal.SolrEnrichQueryExecutor;
+import de.faz.modules.query.solr.internal.SolrResponseCallbackFactory;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

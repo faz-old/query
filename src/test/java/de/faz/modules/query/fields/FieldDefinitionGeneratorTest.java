@@ -1,13 +1,14 @@
-package de.faz.modules.query;
+package de.faz.modules.query.fields;
 
-import static org.junit.Assert.assertEquals;
+import de.faz.modules.query.TestMapping;
+import org.apache.commons.lang3.Validate;
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.Validate;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class FieldDefinitionGeneratorTest {

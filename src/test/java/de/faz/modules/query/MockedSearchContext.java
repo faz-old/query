@@ -1,5 +1,7 @@
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
+
 import javax.annotation.Nonnull;
 
 import static org.mockito.Mockito.mock;

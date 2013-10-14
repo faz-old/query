@@ -12,14 +12,9 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.capabilities;
 
-/**
- * Just a marker interface that marks an implemented class
- * to be a search mapping. This marker interface is used
- * for the {@link Query} object later.
- *
- * @author Andreas Kaubisch <a.kaubisch@faz.de>
- */
-
-public interface Mapping {}
+/** @author Andreas Kaubisch <a.kaubisch@faz.de> */
+public interface EnrichQueryExecutor<T> {
+    public void enrich(T query);
+}

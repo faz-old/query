@@ -1,8 +1,8 @@
 package de.faz.modules.query.solr;
 
 import com.polopoly.search.solr.QueryDecorator;
-import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.SearchContext;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.apache.solr.client.solrj.SolrServer;
 
 import javax.annotation.Nullable;

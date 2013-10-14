@@ -1,6 +1,6 @@
 package de.faz.modules.query.capabilities;
 
-import de.faz.modules.query.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import javax.annotation.Nonnull;
 

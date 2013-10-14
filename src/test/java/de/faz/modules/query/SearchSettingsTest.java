@@ -8,6 +8,7 @@ import de.faz.modules.query.capabilities.HighlightingSupport;
 import de.faz.modules.query.capabilities.SearchOption;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
 import de.faz.modules.query.exception.UnsupportedFeatureException;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +26,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SearchSettingsTest {
 
-    @Mock FieldDefinitionGenerator generator;
+    @Mock
+    FieldDefinitionGenerator generator;
 	@Mock ContextCapabilities capabilities;
 
     private SearchSettings underTest;

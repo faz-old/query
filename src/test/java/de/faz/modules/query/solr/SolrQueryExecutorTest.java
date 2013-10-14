@@ -2,7 +2,7 @@ package de.faz.modules.query.solr;
 
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SearchResult;
-import de.faz.modules.query.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchDecorator;

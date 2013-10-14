@@ -1,6 +1,6 @@
 package de.faz.modules.query.solr.capabilities;
 
-import de.faz.modules.query.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import de.faz.modules.query.SearchHighlighter;
 import org.junit.Before;
 import org.junit.Test;

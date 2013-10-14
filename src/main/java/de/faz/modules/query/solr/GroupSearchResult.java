@@ -14,7 +14,7 @@
 package de.faz.modules.query.solr;
 
 import com.google.common.base.Optional;
-import de.faz.modules.query.Mapping;
+import de.faz.modules.query.fields.Mapping;
 import de.faz.modules.query.SearchContext;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.QueryResponse;

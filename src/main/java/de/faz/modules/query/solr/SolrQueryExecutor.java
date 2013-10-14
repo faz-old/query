@@ -15,11 +15,11 @@
 package de.faz.modules.query.solr;
 
 import com.polopoly.search.solr.QueryDecorator;
-import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;

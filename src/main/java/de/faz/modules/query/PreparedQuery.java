@@ -14,6 +14,7 @@
 
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;

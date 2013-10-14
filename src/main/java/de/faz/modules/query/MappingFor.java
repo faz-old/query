@@ -21,8 +21,8 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation represents a link between
- * a {@link de.faz.modules.query.Mapping} and a Policy that is mapped
- * by the annotated {@link de.faz.modules.query.Mapping}. It's only for
+ * a {@link de.faz.modules.query.fields.Mapping} and a Policy that is mapped
+ * by the annotated {@link de.faz.modules.query.fields.Mapping}. It's only for
  * documentation so you don't need to annotate your
  * mapping class with this. It's just for other
  * developers to read your code easily.
