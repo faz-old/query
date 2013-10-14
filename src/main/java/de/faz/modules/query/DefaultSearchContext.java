@@ -14,22 +14,21 @@
 
 package de.faz.modules.query;
 
-import javax.annotation.Nonnull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public class DefaultSearchContext implements SearchContext {
+public abstract class DefaultSearchContext implements SearchContext {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultSearchContext.class);
 
 	private static final int DEFAULT_ROWS = 10;
-	private final FieldDefinitionGenerator generator;
-    private final QueryExecutor executor;
+	protected final FieldDefinitionGenerator generator;
+	protected final QueryExecutor executor;
 
 	private final List<SearchDecorator> decoratorList;
 

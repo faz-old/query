@@ -19,6 +19,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -36,7 +39,7 @@ public class DefaultSearchContextTest {
 
 	@Before
 	public void setUp() {
-		underTest = new DefaultSearchContext(executor, generator);
+		underTest = new MockedSearchContext(executor, generator);
 	}
 
 	@Test
@@ -47,4 +50,46 @@ public class DefaultSearchContextTest {
 		verify(decorator).decorateQuery(q);
 		verify(decorator).decorateSettings(settings);
 	}
+
+	@Test
+	public void createQuery_createsNewInstance() {
+		assertNotNull(underTest.createQuery());
+	}
+
+	@Test
+	public void createPreparedQuery_createsNewInstance() {
+		assertNotNull(underTest.createPreparedQuery());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void execute_withoutQuery_throwsIllegalArgumentException() {
+		underTest.execute(null);
+	}
+
+	@Test
+	public void execute_withQuery_callsExecutor() {
+		Query q = mock(Query.class);
+		underTest.execute(q);
+		verify(executor).execute(eq(q), any(SearchSettings.class));
+	}
+
+	@Test
+	public void execute_withQueryAndSettings_callsExecutor() {
+		Query q = mock(Query.class);
+		SearchSettings settings = mock(SearchSettings.class);
+		underTest.execute(q, settings);
+		verify(executor).execute(q, settings);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void createFieldDefinitionFor_withoutClass_throwsIllegalArgumentException() {
+		underTest.createFieldDefinitionFor(null);
+	}
+
+	@Test
+	public void createFieldDefinitionFor_WithClass_callsGenerator() {
+		underTest.createFieldDefinitionFor(TestMapping.class);
+		verify(generator).createFieldDefinition(TestMapping.class);
+	}
 }
+

@@ -12,7 +12,7 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query.solr;
+package de.faz.modules.query.solr.internal;
 
 import de.faz.modules.query.EnrichQueryExecutor;
 import org.apache.solr.client.solrj.SolrQuery;

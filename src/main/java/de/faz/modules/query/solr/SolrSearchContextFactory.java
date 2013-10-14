@@ -22,6 +22,6 @@ public final class SolrSearchContextFactory {
 			}
 		}
 
-		return new DefaultSearchContext(executor, generator);
+		return new SolrSearchContext(executor, generator);
 	}
 }

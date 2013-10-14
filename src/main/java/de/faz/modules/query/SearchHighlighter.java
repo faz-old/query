@@ -15,7 +15,7 @@
 package de.faz.modules.query;
 
 import de.faz.modules.query.capabilities.SearchOption;
-import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
+import de.faz.modules.query.solr.internal.SolrEnrichQueryExecutor;
 import de.faz.modules.query.solr.SolrResponseCallbackFactory;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.MethodInterceptor;

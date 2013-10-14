@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -20,7 +19,7 @@ public class QueryTest {
     @Before
     public void setUp() {
         QueryExecutor executor = mock(QueryExecutor.class);
-        context = new DefaultSearchContext(executor);
+        context = new MockedSearchContext(executor, new FieldDefinitionGenerator());
         q = context.createQuery();
         fieldDefinition = context.createFieldDefinitionFor(TestMapping.class);
     }

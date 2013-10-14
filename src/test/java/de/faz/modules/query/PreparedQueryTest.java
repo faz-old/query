@@ -1,8 +1,5 @@
 package de.faz.modules.query;
 
-import de.faz.modules.query.DefaultSearchContext;
-import de.faz.modules.query.PreparedQuery;
-import de.faz.modules.query.QueryExecutor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +15,7 @@ public class PreparedQueryTest {
     @Before
     public void setUp() {
         QueryExecutor executor = mock(QueryExecutor.class);
-        DefaultSearchContext context = new DefaultSearchContext(executor);
+        DefaultSearchContext context = new MockedSearchContext(executor, new FieldDefinitionGenerator());
         q = context.createPreparedQuery();
 
         fieldDefinition = context.createFieldDefinitionFor(TestMapping.class);

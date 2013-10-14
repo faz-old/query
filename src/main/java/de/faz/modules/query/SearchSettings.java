@@ -15,12 +15,16 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Optional;
+import de.faz.modules.query.capabilities.ContextCapabilities;
+import de.faz.modules.query.capabilities.DefaultContextCapabilities;
+import de.faz.modules.query.capabilities.GroupingSupport;
 import de.faz.modules.query.capabilities.SearchOption;
+import de.faz.modules.query.capabilities.SearchOptionFactory;
 import de.faz.modules.query.exception.InvalidQueryException;
-import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
+import de.faz.modules.query.exception.UnsupportedFeatureException;
 import de.faz.modules.query.solr.SolrResponseCallbackFactory;
 import de.faz.modules.query.solr.StandardCallbackFactory;
-import de.faz.modules.query.solr.capabilities.SolrGroupingSearchOption;
+import de.faz.modules.query.solr.internal.SolrEnrichQueryExecutor;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import javax.annotation.Nonnull;
@@ -53,13 +57,23 @@ public class SearchSettings implements SearchOption {
 
 	protected FieldDefinitionGenerator generator;
 
-	SearchSettings(final FieldDefinitionGenerator generator) {
+	private final ContextCapabilities capabilities;
+
+	{
 		sort = new ArrayList<>();
 		filterList = new ArrayList<>();
 		optionCollection = new ArrayList<>();
 		parameterMap = new HashMap<>();
 		fieldList = new ArrayList<>();
+	}
+
+	public SearchSettings(final FieldDefinitionGenerator generator, final ContextCapabilities capabilities) {
+		this.capabilities = capabilities;
 		this.generator = generator;
+	}
+
+	SearchSettings(final FieldDefinitionGenerator generator) {
+		this(generator, new DefaultContextCapabilities());
 	}
 
 	public SearchSettings withPageSize(final int size) {
@@ -95,7 +109,12 @@ public class SearchSettings implements SearchOption {
 	}
 
 	public GroupingSearchOption addGrouping() {
-		GroupingSearchOption option = new SolrGroupingSearchOption(generator);
+		if(!capabilities.hasSupportFor(GroupingSupport.class)) {
+			throw new UnsupportedFeatureException("grouping is not supported with the selected SearchEngine.");
+		}
+
+		SearchOptionFactory<GroupingSearchOption> optionFactory = capabilities.getSearchOptionFactoryFor(GroupingSupport.class);
+		GroupingSearchOption option = optionFactory.createInstance(generator);
 		optionCollection.add(option);
 		return option;
 	}

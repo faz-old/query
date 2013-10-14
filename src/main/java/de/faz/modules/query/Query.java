@@ -68,7 +68,7 @@ public class Query {
         }
     }
 
-    Query(final FieldDefinitionGenerator generator) {
+    protected Query(final FieldDefinitionGenerator generator) {
 	    queryElementStack = new Stack<>();
         definitionGenerator = generator;
     }

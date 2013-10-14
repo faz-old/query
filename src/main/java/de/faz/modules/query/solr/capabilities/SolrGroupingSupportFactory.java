@@ -1,9 +1,8 @@
-package de.faz.modules.query.solr;
+package de.faz.modules.query.solr.capabilities;
 
 import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.GroupingSearchOption;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
-import de.faz.modules.query.solr.capabilities.SolrGroupingSearchOption;
 
 import javax.annotation.Nonnull;
 

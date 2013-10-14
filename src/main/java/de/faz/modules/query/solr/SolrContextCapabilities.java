@@ -7,6 +7,7 @@ import de.faz.modules.query.capabilities.HighlightingSupport;
 import de.faz.modules.query.capabilities.SearchOption;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
 import de.faz.modules.query.exception.UnsupportedFeatureException;
+import de.faz.modules.query.solr.capabilities.SolrGroupingSupportFactory;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;

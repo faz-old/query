@@ -1,4 +1,4 @@
-package de.faz.modules.query.solr;
+package de.faz.modules.query.solr.capabilities;
 
 import de.faz.modules.query.FieldDefinitionGenerator;
 import org.junit.Before;

@@ -1,6 +1,12 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Optional;
+import de.faz.modules.query.capabilities.ContextCapabilities;
+import de.faz.modules.query.capabilities.FeatureSupport;
+import de.faz.modules.query.capabilities.GroupingSupport;
+import de.faz.modules.query.capabilities.SearchOption;
+import de.faz.modules.query.capabilities.SearchOptionFactory;
+import de.faz.modules.query.exception.UnsupportedFeatureException;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,12 +28,13 @@ import static org.mockito.Mockito.when;
 public class SearchSettingsTest {
 
     @Mock FieldDefinitionGenerator generator;
+	@Mock ContextCapabilities capabilities;
 
     private SearchSettings underTest;
 
     @Before
     public void setUp() {
-        underTest = new SearchSettings(generator);
+        underTest = new SearchSettings(generator, capabilities);
     }
 
     @Test
@@ -116,14 +123,32 @@ public class SearchSettingsTest {
 
 	@Test
 	public void addGrouping_returnsNewGroupingSearchOption() {
+		GroupingSearchOption option = mock(GroupingSearchOption.class);
+		createSearchOptionFactoryForFeature(GroupingSupport.class, option);
 		GroupingSearchOption grouping = underTest.addGrouping();
-		assertNotNull(grouping);
+		assertSame(option, grouping);
 	}
 
 	@Test
 	public void addGrouping_addsGroupingToOptions() {
+		createSearchOptionFactoryForFeature(GroupingSupport.class, mock(GroupingSearchOption.class));
 		GroupingSearchOption grouping = underTest.addGrouping();
 		assertTrue(underTest.getOptions().contains(grouping));
 	}
+
+	@Test(expected = UnsupportedFeatureException.class)
+	public void addGrouping_withoutFeatureSupport_throwsUnsupportedFeatureException() {
+		when(capabilities.hasSupportFor(GroupingSupport.class)).thenReturn(false);
+		underTest.addGrouping();
+	}
+
+	private <T extends SearchOption> SearchOptionFactory<T> createSearchOptionFactoryForFeature(Class<? extends FeatureSupport> supportClass, T option) {
+		SearchOptionFactory factory = mock(SearchOptionFactory.class);
+		when(capabilities.getSearchOptionFactoryFor(supportClass)).thenReturn(factory);
+		when(capabilities.hasSupportFor(supportClass)).thenReturn(true);
+		when(factory.createInstance(generator)).thenReturn(option);
+		return factory;
+	}
+
 
 }
