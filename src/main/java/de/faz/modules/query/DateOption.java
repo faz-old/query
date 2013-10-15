@@ -18,27 +18,16 @@ import org.apache.solr.common.util.DateUtil;
 
 import java.util.Date;
 
-/** @author Andreas Kaubisch <a.kaubisch@faz.de> */
+/**
+ * @author Andreas Kaubisch <a.kaubisch@faz.de>
+ */
 public abstract class DateOption {
 
     public static final DateOption WILDCARD = new PredefinedValueOption("*");
     public static final DateOption NOW = new PredefinedValueOption("NOW");
 
     public enum TimeUnit {
-        SECOND
-        , SECONDS
-        , MINUTE
-        , MINUTES
-        , HOUR
-        , HOURS
-        , DAY
-        , DAYS
-        , WEEK
-        , WEEKS
-        , MONTH
-        , MONTHS
-        , YEAR
-        , YEARS;
+        SECOND, SECONDS, MINUTE, MINUTES, HOUR, HOURS, DAY, DAYS, MONTH, MONTHS, YEAR, YEARS;
 
 
     }
@@ -74,8 +63,8 @@ public abstract class DateOption {
 
         @Override
         public boolean equals(final Object obj) {
-            if(obj instanceof PredefinedValueOption) {
-                return value.equals(((PredefinedValueOption)obj).value);
+            if (obj instanceof PredefinedValueOption) {
+                return value.equals(((PredefinedValueOption) obj).value);
             }
             return super.equals(obj);
         }
@@ -94,15 +83,15 @@ public abstract class DateOption {
 
         @Override
         public boolean equals(final Object obj) {
-            if(obj instanceof NativeDateOption) {
-                return date.equals(((NativeDateOption)obj).date);
+            if (obj instanceof NativeDateOption) {
+                return date.equals(((NativeDateOption) obj).date);
             }
             return super.equals(obj);
         }
 
-	    @Override
-	    public int hashCode() {
-		    return date.hashCode();
-	    }
+        @Override
+        public int hashCode() {
+            return date.hashCode();
+        }
     }
 }
