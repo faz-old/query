@@ -13,7 +13,6 @@
  */
 package de.faz.modules.query.solr;
 
-import com.google.common.base.Optional;
 import de.faz.modules.query.TestMapping;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.GroupCommand;
@@ -47,7 +46,7 @@ public class GroupSearchResultTest {
 
 	@Before
 	public void setUp() {
-		when(result.getSolrResponse()).thenReturn(Optional.of(response));
+		when(result.getSolrResponse()).thenReturn(response);
 		underTest = new GroupSearchResult(result);
 	}
 
@@ -64,7 +63,7 @@ public class GroupSearchResultTest {
 
 	@Test
 	public void getGroup_withoutSolrResponse_returnDefaultIterator() {
-		when(result.getSolrResponse()).thenReturn(Optional.<QueryResponse>absent());
+		when(result.getSolrResponse()).thenReturn(null);
 		Iterator<Object> defaultIterator = mock(Iterator.class);
 		when(result.createDefaultIterator()).thenReturn(defaultIterator);
 		assertSame(defaultIterator, underTest.getGroup(0, TestMapping.class));

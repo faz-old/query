@@ -14,7 +14,6 @@
 
 package de.faz.modules.query;
 
-import com.google.common.base.Optional;
 import de.faz.modules.query.fields.Mapping;
 
 import javax.annotation.Nonnull;
@@ -132,19 +131,16 @@ public interface SearchContext {
      */
     @Nonnull SearchSettings withSettings();
 
-    abstract class SearchResult<T> {
-        protected Optional<T> implementedSearchResult;
-
+    abstract class SearchResult {
         protected int pageSize;
         protected int offset;
 
 
-        public SearchResult(T result, int pageSize) {
-            this(result, pageSize, 0);
+        public SearchResult(int pageSize) {
+            this(pageSize, 0);
         }
 
-        public SearchResult(T result, int pageSize, int offset) {
-            this.implementedSearchResult = Optional.fromNullable(result);
+        public SearchResult(int pageSize, int offset) {
             this.pageSize = pageSize;
             this.offset = offset;
         }

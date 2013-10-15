@@ -8,6 +8,7 @@ import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchDecorator;
 import de.faz.modules.query.TestMapping;
+import de.faz.modules.query.fields.Mapping;
 import net.sf.cglib.proxy.Callback;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -65,7 +66,7 @@ public class SolrQueryExecutorTest {
         when(settings.getPageSize()).thenReturn(10);
 
         SearchContext.SearchResult result = executor.executeQuery(q, settings);
-        Iterator it = result.getResultsForMapping(Object.class);
+        Iterator it = result.getResultsForMapping(Mapping.class);
         assertFalse(it.hasNext());
     }
 
