@@ -149,7 +149,9 @@ public interface SearchContext {
             this.offset = offset;
         }
 
-	    protected SearchResult() {}
+	    protected SearchResult() {
+		    //protected default constructor with no function
+	    }
 
 	    public int getPageSize() {
             return pageSize;

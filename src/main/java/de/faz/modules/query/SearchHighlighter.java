@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public class SearchHighlighter implements SearchOption {
+public abstract class SearchHighlighter implements SearchOption {
 
 	private final FieldDefinitionGenerator generator;
 	protected final List<FieldDefinitionGenerator.FieldDefinition> definitionList;
@@ -77,14 +77,7 @@ public class SearchHighlighter implements SearchOption {
 	}
 
 	@Override
-	public EnrichQueryExecutor getQueryExecutor() {
-		return new EnrichQueryExecutor() {
-			@Override
-			public void enrich(final Object query) {
-				//do nothing
-			}
-		};
-	}
+	public abstract EnrichQueryExecutor getQueryExecutor();
 
 
 }

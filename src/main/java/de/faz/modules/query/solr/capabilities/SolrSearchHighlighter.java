@@ -70,4 +70,6 @@ public class SolrSearchHighlighter extends SearchHighlighter implements SolrResp
 	private boolean hasHighlightingForField(final String fieldName, final Map<String, List<String>> highlightingMap) {
 		return highlightingMap != null && highlightingMap.get(fieldName) != null && highlightingMap.get(fieldName).size() > 0;
 	}
+
+
 }

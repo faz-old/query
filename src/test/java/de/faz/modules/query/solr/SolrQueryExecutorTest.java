@@ -1,5 +1,6 @@
 package de.faz.modules.query.solr;
 
+import com.google.common.base.Optional;
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SearchResult;
 import de.faz.modules.query.fields.FieldDefinitionGenerator;
@@ -54,7 +55,7 @@ public class SolrQueryExecutorTest {
     @Before
     public void setUp() throws ServiceNotAvailableException, SolrServerException {
         when(searchClient.query(any(SolrQuery.class))).thenReturn(solrResponse);
-
+	    when(settings.getOffset()).thenReturn(Optional.<Integer>absent());
         executor = new SolrQueryExecutor(searchClient, generator);
     }
 
@@ -62,17 +63,18 @@ public class SolrQueryExecutorTest {
     public void executeQuery_withoutSearchClient_returnsDefaultResult() {
         executor = new SolrQueryExecutor(null, generator);
         when(settings.getPageSize()).thenReturn(10);
+
         SearchContext.SearchResult result = executor.executeQuery(q, settings);
         Iterator it = result.getResultsForMapping(Object.class);
         assertFalse(it.hasNext());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void executeQuery_withoutQuery_throwsIllegalArgumentException() {
         executor.executeQuery(null, settings);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void executeQuery_withoutSettings_throwsIllegalArgumentException() {
         executor.executeQuery(q, null);
     }
