@@ -104,7 +104,7 @@ public class PreparedQuery extends Query implements Cloneable {
         }
     }
 
-    private static interface Valuable<T> {
+    private interface Valuable<T> {
         T getValueOf(final String key);
     }
 }

@@ -16,5 +16,5 @@ package de.faz.modules.query.capabilities;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public interface EnrichQueryExecutor<T> {
-    public void enrich(T query);
+    void enrich(T query);
 }

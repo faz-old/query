@@ -29,7 +29,7 @@ public class QueryTest {
     public void add_withQueryItem_addItemToQuery() {
         QueryItem item = new QueryItem() {
             @Override
-            CharSequence toCharSequence() {
+            public CharSequence toCharSequence() {
                 return "query item";
             }
 

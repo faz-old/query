@@ -1,5 +1,7 @@
 package de.faz.modules.query;
 
+import de.faz.modules.query.util.SequenceSeparatedList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,14 +27,8 @@ class ItemChain extends QueryItem {
 	@Override
 	public CharSequence toCharSequence() {
 		StringBuffer sb = new StringBuffer();
-		sb.append('(');
-		for (int i = 0; i < items.length; i++) {
-			if (i > 0) {
-				sb.append(separator);
-			}
-			sb.append(items[i].toCharSequence());
-		}
-		sb.append(')');
+		SequenceSeparatedList<QueryItem> itemList = new SequenceSeparatedList<>(Arrays.asList(items), separator);
+		sb.append('(').append(itemList.toString()).append(')');
 		return sb;
 	}
 

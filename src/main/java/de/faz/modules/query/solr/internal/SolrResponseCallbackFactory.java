@@ -21,5 +21,5 @@ import org.apache.solr.common.SolrDocument;
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public interface SolrResponseCallbackFactory {
 
-    public Callback createCallbackForDocument(QueryResponse response, SolrDocument document);
+    Callback createCallbackForDocument(final QueryResponse response, final SolrDocument document);
 }

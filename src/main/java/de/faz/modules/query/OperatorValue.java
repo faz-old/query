@@ -1,8 +1,7 @@
 package de.faz.modules.query;
 
-import com.google.common.base.Joiner;
+import de.faz.modules.query.util.SequenceSeparatedList;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,14 +26,9 @@ class OperatorValue extends ValueItem {
 	@Override
 	public CharSequence toCharSequence() {
 		StringBuffer sb = new StringBuffer();
-		sb.append('(');
-		try {
-			Joiner.on(operator).appendTo(sb, values);
-		} catch (IOException e) {
-			return "";
-		}
-		sb.append(')');
-		return sb;
+
+		SequenceSeparatedList<CharSequence> valueList = new SequenceSeparatedList<>(Arrays.asList(values), operator);
+		return sb.append('(').append(valueList.toString()).append(')');
 	}
 
 	@Override

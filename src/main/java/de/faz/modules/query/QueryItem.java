@@ -2,7 +2,8 @@ package de.faz.modules.query;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public abstract class QueryItem {
-	abstract CharSequence toCharSequence();
+	public abstract CharSequence toCharSequence();
+	public abstract boolean contains(QueryItem item);
 
 	@Override
 	public String toString() {
@@ -23,6 +24,4 @@ public abstract class QueryItem {
 		result = 31 * result + toCharSequence().hashCode();
 		return result;
 	}
-
-	public abstract boolean contains(QueryItem item);
 }
