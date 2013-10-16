@@ -54,18 +54,18 @@ public class ModificationSelection {
         public void and() {
             Query q = selection.query;
             if(selection.range.isAll() && q.getItemStack().size() > 1) {
-                Stack<Query.QueryItem> savedItems = (Stack<Query.QueryItem>)q.getItemStack().clone();
+                Stack<QueryItem> savedItems = (Stack<QueryItem>)q.getItemStack().clone();
                 selection.remove();
-                q.getItemStack().push(q.and(savedItems.pop(), savedItems.toArray(new Query.QueryItem[savedItems.size() - 1])));
+                q.getItemStack().push(q.and(savedItems.pop(), savedItems.toArray(new QueryItem[savedItems.size() - 1])));
             }
         }
 
         public void or() {
             Query q = selection.query;
             if(selection.range.isAll()) {
-                Stack<Query.QueryItem> savedItems = (Stack<Query.QueryItem>)q.getItemStack().clone();
+                Stack<QueryItem> savedItems = (Stack<QueryItem>)q.getItemStack().clone();
                 selection.remove();
-                q.getItemStack().push(q.or(savedItems.pop(), savedItems.toArray(new Query.QueryItem[savedItems.size() - 1])));
+                q.getItemStack().push(q.or(savedItems.pop(), savedItems.toArray(new QueryItem[savedItems.size() - 1])));
             }
         }
     }

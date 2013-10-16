@@ -14,7 +14,6 @@
 
 package de.faz.modules.query;
 
-import de.faz.modules.query.Query.QueryItem;
 import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import javax.annotation.Nonnull;
@@ -47,36 +46,36 @@ public class TermQueryPart {
     }
 
 	@Nonnull
-    public Query.QueryItem value(@Nonnull final CharSequence value) {
-        return value(new Query.StringValue(value));
+    public QueryItem value(@Nonnull final CharSequence value) {
+        return value(new StringValue(value));
     }
 
 	@Nonnull
-    public Query.QueryItem value(@Nonnull final Query.ValueItem value) {
-        return new Query.TermItem(definition, value);
+    public QueryItem value(@Nonnull final ValueItem value) {
+        return new TermItem(definition, value);
     }
 
 	@Nonnull
-	public Query.QueryItem values(@Nonnull final CharSequence... values) {
+	public QueryItem values(@Nonnull final CharSequence... values) {
         return values(Operator.OR, values);
     }
 
 	@Nonnull
-	public Query.QueryItem values(@Nonnull final Operator operator, @Nonnull final CharSequence... values) {
+	public QueryItem values(@Nonnull final Operator operator, @Nonnull final CharSequence... values) {
 	    if(values.length == 1) {
 		    return value(values[0]);
 	    }
-        return new Query.TermItem(definition, new Query.OperatorValue(operator.toString(), values));
+        return new TermItem(definition, new OperatorValue(operator.toString(), values));
     }
 
 	@Nonnull
-    public Query.QueryItem range(@Nonnull final Date from, @Nonnull final Date to) {
+    public QueryItem range(@Nonnull final Date from, @Nonnull final Date to) {
         return range(DateOption.from(from), DateOption.from(to));
     }
 
 	@Nonnull
-    public Query.QueryItem range(@Nonnull final DateOption fromOption, @Nonnull final DateOption toOption) {
-        return new Query.TermItem(definition, new DateValue(fromOption, toOption));
+    public QueryItem range(@Nonnull final DateOption fromOption, @Nonnull final DateOption toOption) {
+        return new TermItem(definition, new DateValue(fromOption, toOption));
     }
 
 	@Nonnull
@@ -84,7 +83,7 @@ public class TermQueryPart {
 		return range(startDate.getTime(), endDate.getTime());
 	}
 
-    private class DateValue extends Query.ValueItem {
+    private class DateValue extends ValueItem {
 
         private DateOption from, to;
 

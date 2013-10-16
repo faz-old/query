@@ -51,7 +51,7 @@ public class TermQueryPartTest {
 
     @Test
     public void value_withValueItem_returnsToStringWithValueItem() {
-        Query.ValueItem item = new Query.ValueItem() {
+        ValueItem item = new ValueItem() {
             @Override
             CharSequence toCharSequence() {
                 return "value_from_item";
@@ -162,16 +162,16 @@ public class TermQueryPartTest {
 
     @Test
     public void equals_withEqualDateRange_equalsIsTrue() {
-        Query.QueryItem item = part.range(DateOption.WILDCARD, DateOption.NOW);
-        Query.QueryItem item2 = part.range(DateOption.WILDCARD, DateOption.NOW);
+        QueryItem item = part.range(DateOption.WILDCARD, DateOption.NOW);
+        QueryItem item2 = part.range(DateOption.WILDCARD, DateOption.NOW);
         Assert.assertEquals(item, item2);
     }
 
     @Test
     public void equals_withSpecificDateRange_equalsIsTrue() {
         Date now = new Date();
-        Query.QueryItem item = part.range(DateOption.from(now), DateOption.NOW);
-        Query.QueryItem item2 = part.range(DateOption.from(now), DateOption.NOW);
+        QueryItem item = part.range(DateOption.from(now), DateOption.NOW);
+        QueryItem item2 = part.range(DateOption.from(now), DateOption.NOW);
         Assert.assertEquals(item, item2);
     }
 

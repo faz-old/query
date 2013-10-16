@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Stack;
 
-import de.faz.modules.query.ModificationSelection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,7 @@ public class ModificationSelectionTest {
 
     @Test
     public void remove_withoutRange_removeAllElements() {
-        Stack<Query.QueryItem> itemStack = mock(Stack.class);
+        Stack<QueryItem> itemStack = mock(Stack.class);
         when(q.getItemStack()).thenReturn(itemStack);
 
         selection.remove();
@@ -44,20 +43,20 @@ public class ModificationSelectionTest {
     @Test
     public void surroundWith_withoutRangeAndAndMethod_removeAllItemsAndAddNewChainElementWithElements() {
         ItemStackContainer itemStackContainer = createItemStackContainerWithElementCount(2);
-        Stack<Query.QueryItem> itemStack = itemStackContainer.stack;
+        Stack<QueryItem> itemStack = itemStackContainer.stack;
 
         selection.surroundWith().and();
 
         assertEquals(1, itemStack.size());
         verify(itemStack).removeAllElements();
-        Query.QueryItem[] items = createQueryItemArrayWithCountOf(itemStackContainer);
+        QueryItem[] items = createQueryItemArrayWithCountOf(itemStackContainer);
         verify(q).and(itemStackContainer.item, Arrays.copyOf(items, items.length - 1));
     }
 
     @Test
     public void surroundWith_withAndMethodAndOnlyOneItem_doNotRemoveQueryElements() {
         ItemStackContainer itemStackContainer = createItemStackContainerWithElementCount(1);
-        Stack<Query.QueryItem> itemStack = itemStackContainer.stack;
+        Stack<QueryItem> itemStack = itemStackContainer.stack;
 
         selection.surroundWith().and();
 
@@ -68,19 +67,19 @@ public class ModificationSelectionTest {
     @Test
     public void surroundWith_withoutRangeAndOrMethod_removeAllItemsAndAddNewChainElementWithElements() {
         ItemStackContainer itemStackContainer = createItemStackContainerWithElementCount(2);
-        Stack <Query.QueryItem> itemStack = itemStackContainer.stack;
+        Stack <QueryItem> itemStack = itemStackContainer.stack;
 
         selection.surroundWith().or();
 
         assertEquals(1, itemStack.size());
         verify(itemStack).removeAllElements();
-        Query.QueryItem[] items = createQueryItemArrayWithCountOf(itemStackContainer);
+        QueryItem[] items = createQueryItemArrayWithCountOf(itemStackContainer);
         verify(q).or(itemStackContainer.item, Arrays.copyOf(items, items.length - 1));
     }
 
     private ItemStackContainer createItemStackContainerWithElementCount(int count) {
-        Stack<Query.QueryItem> itemStack = spy(new Stack<Query.QueryItem>());
-        Query.QueryItem item = mock(Query.QueryItem.class);
+        Stack<QueryItem> itemStack = spy(new Stack<QueryItem>());
+        QueryItem item = mock(QueryItem.class);
         for(int i = 0; i++ < count;) {
             itemStack.push(item);
         }
@@ -88,8 +87,8 @@ public class ModificationSelectionTest {
         return new ItemStackContainer(itemStack, item, count);
     }
 
-    private Query.QueryItem[] createQueryItemArrayWithCountOf(ItemStackContainer container) {
-        Query.QueryItem[] items = new Query.QueryItem[container.count];
+    private QueryItem[] createQueryItemArrayWithCountOf(ItemStackContainer container) {
+        QueryItem[] items = new QueryItem[container.count];
         for(int i = 0; i < container.count; i++) {
             items[i] = container.item;
         }
@@ -99,10 +98,10 @@ public class ModificationSelectionTest {
 
     private class ItemStackContainer {
         public final int count;
-        public final Stack<Query.QueryItem> stack;
-        public final Query.QueryItem item;
+        public final Stack<QueryItem> stack;
+        public final QueryItem item;
 
-        private ItemStackContainer(final Stack<Query.QueryItem> stack, final Query.QueryItem item, final int count) {
+        private ItemStackContainer(final Stack<QueryItem> stack, final QueryItem item, final int count) {
             this.stack = stack;
             this.item  = item;
             this.count = count;
