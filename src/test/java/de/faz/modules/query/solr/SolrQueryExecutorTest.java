@@ -1,16 +1,15 @@
 package de.faz.modules.query.solr;
 
+import com.google.common.base.Optional;
 import com.polopoly.management.ServiceNotAvailableException;
 import com.polopoly.search.solr.SearchResult;
-
-import de.faz.modules.query.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.SearchContext;
-import de.faz.modules.query.SearchSettings;
-import de.faz.modules.query.TestMapping;
 import de.faz.modules.query.SearchDecorator;
+import de.faz.modules.query.TestMapping;
+import de.faz.modules.query.fields.Mapping;
 import net.sf.cglib.proxy.Callback;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -18,7 +17,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -48,7 +46,7 @@ public class SolrQueryExecutorTest {
     @Mock SolrServer searchClient;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchResult polopolyResult;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) QueryResponse solrResponse;
-	@Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchSettings settings;
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS) SolrSearchSettings settings;
 
 	@Mock Query q;
     @Mock FieldDefinitionGenerator generator;
@@ -58,7 +56,7 @@ public class SolrQueryExecutorTest {
     @Before
     public void setUp() throws ServiceNotAvailableException, SolrServerException {
         when(searchClient.query(any(SolrQuery.class))).thenReturn(solrResponse);
-
+	    when(settings.getOffset()).thenReturn(Optional.<Integer>absent());
         executor = new SolrQueryExecutor(searchClient, generator);
     }
 
@@ -66,17 +64,18 @@ public class SolrQueryExecutorTest {
     public void executeQuery_withoutSearchClient_returnsDefaultResult() {
         executor = new SolrQueryExecutor(null, generator);
         when(settings.getPageSize()).thenReturn(10);
+
         SearchContext.SearchResult result = executor.executeQuery(q, settings);
-        Iterator it = result.getResultsForMapping(Object.class);
+        Iterator it = result.getResultsForMapping(Mapping.class);
         assertFalse(it.hasNext());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void executeQuery_withoutQuery_throwsIllegalArgumentException() {
         executor.executeQuery(null, settings);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void executeQuery_withoutSettings_throwsIllegalArgumentException() {
         executor.executeQuery(q, null);
     }
@@ -111,7 +110,6 @@ public class SolrQueryExecutorTest {
     }
 
     @Test
-	@Ignore
     public void executeQuery_withResult_createIteratorWithEnhancement() {
         SearchContext.SearchResult searchResult = executor.executeQuery(q, settings);
         SolrDocument doc = mock(SolrDocument.class);

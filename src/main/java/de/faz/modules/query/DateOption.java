@@ -18,31 +18,20 @@ import org.apache.solr.common.util.DateUtil;
 
 import java.util.Date;
 
-/** @author Andreas Kaubisch <a.kaubisch@faz.de> */
+/**
+ * @author Andreas Kaubisch <a.kaubisch@faz.de>
+ */
 public abstract class DateOption {
 
     public static final DateOption WILDCARD = new PredefinedValueOption("*");
     public static final DateOption NOW = new PredefinedValueOption("NOW");
 
     public enum TimeUnit {
-        SECOND
-        , SECONDS
-        , MINUTE
-        , MINUTES
-        , HOUR
-        , HOURS
-        , DAY
-        , DAYS
-        , WEEK
-        , WEEKS
-        , MONTH
-        , MONTHS
-        , YEAR
-        , YEARS;
+        SECOND, SECONDS, MINUTE, MINUTES, HOUR, HOURS, DAY, DAYS, MONTH, MONTHS, YEAR, YEARS;
 
 
     }
-    public static DateOption from(Date date) {
+    public static DateOption from(final Date date) {
         return new NativeDateOption(date);
     }
 
@@ -57,8 +46,8 @@ public abstract class DateOption {
     protected abstract CharSequence flatten();
 
     private static final class PredefinedValueOption extends DateOption {
-        private CharSequence value;
-        private PredefinedValueOption(CharSequence value) {
+        private final CharSequence value;
+        private PredefinedValueOption(final CharSequence value) {
             this.value = value;
         }
 
@@ -74,16 +63,16 @@ public abstract class DateOption {
 
         @Override
         public boolean equals(final Object obj) {
-            if(obj instanceof PredefinedValueOption) {
-                return value.equals(((PredefinedValueOption)obj).value);
+            if (obj instanceof PredefinedValueOption) {
+                return value.equals(((PredefinedValueOption) obj).value);
             }
             return super.equals(obj);
         }
     }
 
     private final static class NativeDateOption extends DateOption {
-        private Date date;
-        private NativeDateOption(Date date) {
+        private final Date date;
+        private NativeDateOption(final Date date) {
             this.date = date;
         }
 
@@ -94,15 +83,15 @@ public abstract class DateOption {
 
         @Override
         public boolean equals(final Object obj) {
-            if(obj instanceof NativeDateOption) {
-                return date.equals(((NativeDateOption)obj).date);
+            if (obj instanceof NativeDateOption) {
+                return date.equals(((NativeDateOption) obj).date);
             }
             return super.equals(obj);
         }
 
-	    @Override
-	    public int hashCode() {
-		    return date.hashCode();
-	    }
+        @Override
+        public int hashCode() {
+            return date.hashCode();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.solr.common.util.DateUtil;
 import org.junit.Assert;
@@ -17,12 +18,12 @@ import static org.junit.Assert.assertNotNull;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class TermQueryPartTest {
-    private FieldDefinition definition;
+    private FieldDefinitionGenerator.FieldDefinition definition;
     private TermQueryPart part;
 
     @Before
     public void setUp() {
-        definition = new FieldDefinition("fieldName", 1);
+        definition = new FieldDefinitionGenerator.FieldDefinition("fieldName", 1);
         part = new TermQueryPart(definition);
     }
 
@@ -38,7 +39,7 @@ public class TermQueryPartTest {
 
     @Test
     public void value_withStringAndBoost_returnsItemWithCorrectToString() {
-        FieldDefinition newDef = definition.setBoost(2);
+        FieldDefinitionGenerator.FieldDefinition newDef = definition.setBoost(2);
         part = new TermQueryPart(newDef);
         assertEquals("fieldName:test^2", part.value("test").toString());
     }
@@ -50,7 +51,7 @@ public class TermQueryPartTest {
 
     @Test
     public void value_withValueItem_returnsToStringWithValueItem() {
-        Query.ValueItem item = new Query.ValueItem() {
+        ValueItem item = new ValueItem() {
             @Override
             CharSequence toCharSequence() {
                 return "value_from_item";
@@ -161,16 +162,16 @@ public class TermQueryPartTest {
 
     @Test
     public void equals_withEqualDateRange_equalsIsTrue() {
-        Query.QueryItem item = part.range(DateOption.WILDCARD, DateOption.NOW);
-        Query.QueryItem item2 = part.range(DateOption.WILDCARD, DateOption.NOW);
+        QueryItem item = part.range(DateOption.WILDCARD, DateOption.NOW);
+        QueryItem item2 = part.range(DateOption.WILDCARD, DateOption.NOW);
         Assert.assertEquals(item, item2);
     }
 
     @Test
     public void equals_withSpecificDateRange_equalsIsTrue() {
         Date now = new Date();
-        Query.QueryItem item = part.range(DateOption.from(now), DateOption.NOW);
-        Query.QueryItem item2 = part.range(DateOption.from(now), DateOption.NOW);
+        QueryItem item = part.range(DateOption.from(now), DateOption.NOW);
+        QueryItem item2 = part.range(DateOption.from(now), DateOption.NOW);
         Assert.assertEquals(item, item2);
     }
 

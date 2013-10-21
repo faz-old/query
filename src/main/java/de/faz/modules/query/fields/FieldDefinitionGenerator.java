@@ -12,7 +12,7 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.fields;
 
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
@@ -126,50 +126,52 @@ public class FieldDefinitionGenerator {
 		}
 		return null;
 	}
-}
 
-class FieldDefinition {
-	final CharSequence name;
-	final int boost;
+	/** @author Andreas Kaubisch <a.kaubisch@faz.de> */
+	public static class FieldDefinition {
+		final CharSequence name;
+		final int boost;
 
-	public FieldDefinition(final CharSequence name, final Integer boost) {
-		this.name = name;
-		if (boost != null) {
-			this.boost = boost;
-		} else {
-			this.boost = 1;
+		public FieldDefinition(final CharSequence name, final Integer boost) {
+			this.name = name;
+			if (boost != null) {
+				this.boost = boost;
+			} else {
+				this.boost = 1;
+			}
+		}
+
+		public CharSequence getName() {
+			return name;
+		}
+
+		public FieldDefinition setName(final String name) {
+			return new FieldDefinition(name, boost);
+		}
+
+		public int getBoost() {
+			return boost;
+		}
+
+		public FieldDefinition setBoost(final int boost) {
+			return new FieldDefinition(name, boost);
+		}
+
+		@Override
+		public boolean equals(final Object obj) {
+			if (obj instanceof FieldDefinition) {
+				final FieldDefinition def = (FieldDefinition) obj;
+				return name.equals(def.name) && boost == def.boost;
+			}
+			return super.equals(obj);
+		}
+
+		@Override
+		public int hashCode() {
+			int result = name != null ? name.hashCode() : 0;
+			result = 31 * result + boost;
+			return result;
 		}
 	}
-
-	CharSequence getName() {
-		return name;
-	}
-
-	FieldDefinition setName(final String name) {
-		return new FieldDefinition(name, boost);
-	}
-
-	int getBoost() {
-		return boost;
-	}
-
-	FieldDefinition setBoost(final int boost) {
-		return new FieldDefinition(name, boost);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj instanceof FieldDefinition) {
-			final FieldDefinition def = (FieldDefinition) obj;
-			return name.equals(def.name) && boost == def.boost;
-		}
-		return super.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = name != null ? name.hashCode() : 0;
-		result = 31 * result + boost;
-		return result;
-	}
 }
+

@@ -9,5 +9,5 @@ public interface ContextCapabilities {
 	boolean hasSupportFor(@Nonnull Class<? extends FeatureSupport> feature);
 
 	@Nonnull
-	<T extends SearchOption> SearchOptionFactory getSearchOptionFactoryFor(@Nonnull Class<? extends FeatureSupport> featureClass) throws UnsupportedFeatureException;
+	<T extends SearchOption> SearchOptionFactory<T> getSearchOptionFactoryFor(@Nonnull Class<? extends FeatureSupport> featureClass) throws UnsupportedFeatureException;
 }

@@ -1,6 +1,7 @@
 package de.faz.modules.query;
 
 import de.faz.modules.query.capabilities.SearchOption;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +10,14 @@ import java.util.List;
 public abstract class GroupingSearchOption implements SearchOption {
 
 	private final FieldDefinitionGenerator generator;
+	private final List<Query> groupQueries;
 
 	private CharSequence fieldName;
 	private Integer limit;
-	private final List<Query> groupQueries;
 
 	private boolean merge;
 
-	public GroupingSearchOption(FieldDefinitionGenerator generator) {
+	public GroupingSearchOption(final FieldDefinitionGenerator generator) {
 		this.generator = generator;
 		groupQueries = new ArrayList<>();
 	}
@@ -24,7 +25,7 @@ public abstract class GroupingSearchOption implements SearchOption {
 	public GroupingSearchOption groupByField(final Object fieldDefinition) {
 		if(generator.isEmpty()) { throw new IllegalArgumentException("a field definition is required to group by fieldname."); }
 
-		FieldDefinition definition = generator.pop();
+		FieldDefinitionGenerator.FieldDefinition definition = generator.pop();
 		fieldName = definition.getName();
 		return this;
 	}

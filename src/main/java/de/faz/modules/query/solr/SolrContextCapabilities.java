@@ -7,6 +7,8 @@ import de.faz.modules.query.capabilities.HighlightingSupport;
 import de.faz.modules.query.capabilities.SearchOption;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
 import de.faz.modules.query.exception.UnsupportedFeatureException;
+import de.faz.modules.query.solr.capabilities.SolrGroupingSupportFactory;
+import de.faz.modules.query.solr.capabilities.SolrHighlightingSupportFactory;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class SolrContextCapabilities implements ContextCapabilities {
 	public SolrContextCapabilities() {
 		supportMap = new HashMap<>();
 		supportMap.put(GroupingSupport.class, new SolrGroupingSupportFactory());
-		supportMap.put(HighlightingSupport.class, null);
+		supportMap.put(HighlightingSupport.class, new SolrHighlightingSupportFactory());
 	}
 
 	@Override

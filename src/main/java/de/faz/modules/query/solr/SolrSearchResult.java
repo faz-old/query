@@ -13,10 +13,10 @@
  */
 package de.faz.modules.query.solr;
 
-import com.google.common.base.Optional;
-import de.faz.modules.query.FieldDefinitionGenerator;
-import de.faz.modules.query.Mapping;
 import de.faz.modules.query.SearchContext;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.Mapping;
+import de.faz.modules.query.solr.internal.SolrResponseCallbackFactory;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -25,26 +25,30 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
+class SolrSearchResult extends SearchContext.SearchResult {
 
 	private SolrResponseCallbackFactory callbackFactory;
 	private FieldDefinitionGenerator fieldGenerator;
 
+	private final QueryResponse response;
 
-	SolrSearchResult(final QueryResponse result, int pageSize) {
-		super(result, pageSize);
+
+	SolrSearchResult(final QueryResponse result, final int pageSize) {
+		super(pageSize);
+		response = result;
 	}
 
 	SolrSearchResult(final FieldDefinitionGenerator generator, final QueryResponse result, final int pageSize, final int offset, final SolrResponseCallbackFactory factory) {
-		super(result, pageSize, offset);
+		super(pageSize, offset);
 		this.callbackFactory = factory;
 		this.fieldGenerator = generator;
+		this.response = result;
 	}
 
 	public long getNumCount() {
 		long numCount = 0;
-		if(implementedSearchResult.isPresent()) {
-			numCount = implementedSearchResult.get().getResults().getNumFound();
+		if(response != null) {
+			numCount = response.getResults().getNumFound();
 		}
 
 		return numCount;
@@ -52,16 +56,15 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 
 	public long getNumberOfPages() {
 		int numPages = 0;
-		if(implementedSearchResult.isPresent()) {
-			numPages = (int) Math.ceil(implementedSearchResult.get().getResults().getNumFound() / (double)pageSize);
+		if(response != null) {
+			numPages = (int) Math.ceil(response.getResults().getNumFound() / (double)pageSize);
 		}
 		return numPages;
 	}
 
 	@Override
 	public <S extends Mapping> Iterator<S> getResultsForMapping(final Class<S> mapping) {
-		if(implementedSearchResult.isPresent()) {
-			final QueryResponse response = implementedSearchResult.get();
+		if(response != null) {
 			return createIteratorFromDocumentList(response, mapping, response.getResults());
 		} else {
 			return createDefaultIterator();
@@ -109,7 +112,7 @@ class SolrSearchResult extends SearchContext.SearchResult<QueryResponse> {
 		};
 	}
 
-	protected Optional<QueryResponse> getSolrResponse() {
-		return implementedSearchResult;
+	protected QueryResponse getSolrResponse() {
+		return response;
 	}
 }

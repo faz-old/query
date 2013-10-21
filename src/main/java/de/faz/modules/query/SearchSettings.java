@@ -15,13 +15,16 @@
 package de.faz.modules.query;
 
 import com.google.common.base.Optional;
+import de.faz.modules.query.capabilities.ContextCapabilities;
+import de.faz.modules.query.capabilities.DefaultContextCapabilities;
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
+import de.faz.modules.query.capabilities.GroupingSupport;
+import de.faz.modules.query.capabilities.HighlightingSupport;
 import de.faz.modules.query.capabilities.SearchOption;
+import de.faz.modules.query.capabilities.SearchOptionFactory;
 import de.faz.modules.query.exception.InvalidQueryException;
-import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
-import de.faz.modules.query.solr.SolrResponseCallbackFactory;
-import de.faz.modules.query.solr.StandardCallbackFactory;
-import de.faz.modules.query.solr.capabilities.SolrGroupingSearchOption;
-import org.apache.solr.client.solrj.SolrQuery;
+import de.faz.modules.query.exception.UnsupportedFeatureException;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -34,68 +37,82 @@ import java.util.Map;
 public class SearchSettings implements SearchOption {
 
 	public static final int DEFAULT_ROWS = 10;
-	private static final int DEFAULT_OFFSET = 0;
 
 	public enum Order {
 		ASC, DESC;
-
 	}
 
-	private Collection<SearchOption> optionCollection;
+	protected Collection<SearchOption> optionCollection;
 
 	private Collection<SortBy> sort;
-	private Optional<SolrResponseCallbackFactory> customCallbackFactory = Optional.absent();
-	private Optional<Integer> pageSize = Optional.absent();
-	private Optional<Integer> offset = Optional.absent();
-	private List<Query> filterList;
-	private Collection<String> fieldList;
+	protected Optional<Integer> pageSize = Optional.absent();
+	protected Optional<Integer> offset = Optional.absent();
+	protected List<Query> filterList;
+	protected Collection<String> fieldList;
 	private Map<String, Object> parameterMap;
 
 	protected FieldDefinitionGenerator generator;
 
-	SearchSettings(FieldDefinitionGenerator generator) {
+	private final ContextCapabilities capabilities;
+
+	{
 		sort = new ArrayList<>();
 		filterList = new ArrayList<>();
 		optionCollection = new ArrayList<>();
 		parameterMap = new HashMap<>();
 		fieldList = new ArrayList<>();
+	}
+
+	public SearchSettings(final FieldDefinitionGenerator generator, final ContextCapabilities capabilities) {
+		this.capabilities = capabilities;
 		this.generator = generator;
 	}
 
-	public SearchSettings withPageSize(int size) {
+	SearchSettings(final FieldDefinitionGenerator generator) {
+		this(generator, new DefaultContextCapabilities());
+	}
+
+	public SearchSettings withPageSize(final int size) {
 		this.pageSize = Optional.of(size);
 		return this;
 	}
 
-	public SearchSettings startAt(int offset) {
+	public SearchSettings startAt(final int offset) {
 		this.offset = Optional.of(offset);
 		return this;
 	}
 
-	public SearchSettings sortBy(Object fieldDefinition, Order order) {
+	public SearchSettings sortBy(final Object fieldDefinition, final Order order) {
 		if (generator.isEmpty()) {
 			throw new InvalidQueryException("The field description of sortBy was null.");
 		}
-		FieldDefinition definition = generator.pop();
-		this.sort.add(new SortBy(definition.name, order));
+		FieldDefinitionGenerator.FieldDefinition definition = generator.pop();
+		this.sort.add(new SortBy(definition.getName(), order));
 		return this;
 	}
 
-	public SearchSettings filterBy(@Nonnull Query filter) {
+	public SearchSettings filterBy(@Nonnull final Query filter) {
 		filterList.add(filter);
 		return this;
 	}
 
 	public SearchHighlighter addHighlighting() {
-		SearchHighlighter highlighter = new SearchHighlighter(generator);
+		if(!capabilities.hasSupportFor(HighlightingSupport.class)) {
+			throw new UnsupportedFeatureException("highlighting is not supported with the selected SearchEngine.");
+		}
+		SearchOptionFactory<SearchHighlighter> optionFactory = capabilities.getSearchOptionFactoryFor(HighlightingSupport.class);
+		SearchHighlighter highlighter = optionFactory.createInstance(generator);
 		optionCollection.add(highlighter);
-		customCallbackFactory = Optional.<SolrResponseCallbackFactory> of(highlighter);
-
 		return highlighter;
 	}
 
 	public GroupingSearchOption addGrouping() {
-		GroupingSearchOption option = new SolrGroupingSearchOption(generator);
+		if(!capabilities.hasSupportFor(GroupingSupport.class)) {
+			throw new UnsupportedFeatureException("grouping is not supported with the selected SearchEngine.");
+		}
+
+		SearchOptionFactory<GroupingSearchOption> optionFactory = capabilities.getSearchOptionFactoryFor(GroupingSupport.class);
+		GroupingSearchOption option = optionFactory.createInstance(generator);
 		optionCollection.add(option);
 		return option;
 	}
@@ -106,10 +123,6 @@ public class SearchSettings implements SearchOption {
 
 	public Collection<SortBy> getSort() {
 		return sort;
-	}
-
-	public SolrResponseCallbackFactory getCustomCallbackFactory() {
-		return customCallbackFactory.or(new StandardCallbackFactory());
 	}
 
 	public SearchSettings addParameter(final String key, final Object value) {
@@ -136,30 +149,7 @@ public class SearchSettings implements SearchOption {
 		return this;
 	}
 
-	void enrichQuery(SolrQuery query) {
-		query.setStart(offset.or(DEFAULT_OFFSET));
-		query.setRows(pageSize.or(DEFAULT_ROWS));
-		Collection<SearchSettings.SortBy> sortCollection = getSort();
-
-		for (SearchSettings.SortBy sortBy : sortCollection) {
-			query.addSortField(sortBy.getFieldName().toString(), sortBy.getSolrOrder());
-		}
-
-		for (SearchOption option : optionCollection) {
-			option.getQueryExecutor().enrich(query);
-		}
-
-		for (Query filter : filterList) {
-			query.addFilterQuery(filter.toString());
-		}
-
-		for (String field : fieldList) {
-			query.addField(field);
-		}
-
-	}
-
-	static class SortBy {
+	protected static class SortBy {
 		private CharSequence fieldName;
 
 		private Order order;
@@ -169,32 +159,21 @@ public class SearchSettings implements SearchOption {
 			this.order = order;
 		}
 
-		CharSequence getFieldName() {
+		public CharSequence getFieldName() {
 			return fieldName;
 		}
 
-		Order getOrder() {
+		public Order getOrder() {
 			return order;
 		}
-
-		SolrQuery.ORDER getSolrOrder() {
-			switch (order) {
-				case DESC:
-					return SolrQuery.ORDER.desc;
-				case ASC:
-				default:
-					return SolrQuery.ORDER.asc;
-			}
-		}
-
 	}
 
 	@Override
 	public EnrichQueryExecutor getQueryExecutor() {
-		return new SolrEnrichQueryExecutor() {
+		return new EnrichQueryExecutor() {
 			@Override
-			public void enrich(final SolrQuery query) {
-				enrichQuery(query);
+			public void enrich(final Object query) {
+				//DO NOTHING
 			}
 		};
 	}

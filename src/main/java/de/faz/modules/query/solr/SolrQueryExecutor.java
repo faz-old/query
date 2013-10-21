@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2013. F.A.Z. Electronic Media GmbH
  * All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
+ * 
+ * NOTICE: All information contained herein is, and remains
  * the property of F.A.Z. Electronic Media GmbH and its suppliers,
  * if any. The intellectual and technical concepts contained
  * herein are proprietary to F.A.Z. Electronic Media GmbH
@@ -15,11 +15,11 @@
 package de.faz.modules.query.solr;
 
 import com.polopoly.search.solr.QueryDecorator;
-import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.SearchSettings;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -30,21 +30,23 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class SolrQueryExecutor extends QueryExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SolrQueryExecutor.class);
 
-	private final FieldDefinitionGenerator generator;
+	private final FieldDefinitionGenerator fieldGenerator;
 
-	private final SolrServer server;
+	private final SolrServer solrServer;
 
 	private final List<QueryDecorator> decoratorList;
 
 	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
-		this.server = server;
-		this.generator = generator;
+		super();
+		this.solrServer = server;
+		this.fieldGenerator = generator;
 		this.decoratorList = new ArrayList<>();
 	}
 
@@ -55,37 +57,52 @@ class SolrQueryExecutor extends QueryExecutor {
 	@Override
 	@Nonnull
 	protected SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
-		if(query == null) { throw new IllegalArgumentException("A query instance is required to perform a search."); }
-		if(settings == null) { throw new IllegalArgumentException("Settings are required to perform a search."); }
+		Objects.requireNonNull(query, "A query instance is required to perform a search.");
+		Objects.requireNonNull(settings, "Settings are required to perform a search.");
 
 		int numOfElementsOnPage = settings.getPageSize();
-		SolrSearchResult result = createDefaultResult(settings.getPageSize());
-		if(server != null && !query.isEmpty()) {
-			SolrQuery solrQuery = createQuery(query, settings);
-			solrQuery.setRows(numOfElementsOnPage);
-			try {
-				if(LOG.isDebugEnabled()) {
-					LOG.debug("Executing query: {}", solrQuery.toString());
-				}
-				QueryResponse solrResult = server.query(solrQuery);
-				int page = 0;
-				if(settings.getOffset().isPresent()) {
-					page = settings.getPageSize() > 0 ? settings.getOffset().get() / settings.getPageSize() : 0;
-				}
-
-				result =  new SolrSearchResult(
-						generator
-						, solrResult
-						, numOfElementsOnPage
-						, page
-						, settings.getCustomCallbackFactory()
-				);
-			} catch (SolrServerException e) {
-				LOG.warn("got exception when execute a search to solr", e);
-			}
+		SolrSearchResult result = createDefaultResult(numOfElementsOnPage);
+		if (canProcessQuery(query)) {
+			result = processQuery(query, settings);
 		}
 
 		return result;
+	}
+
+	@Nonnull
+	private SolrSearchResult processQuery(final Query query, final SearchSettings settings) {
+		SolrSearchResult result = createDefaultResult(settings.getPageSize());
+		try {
+			QueryResponse solrResult = solrServer.query(createQuery(query, settings));
+
+			result = mapSolrQueryToDomainResult(settings, solrResult);
+		} catch (SolrServerException e) {
+			LOG.warn("got exception when execute a search to solr", e);
+		}
+		return result;
+	}
+
+	@Nonnull
+	private SolrSearchResult mapSolrQueryToDomainResult(final SearchSettings settings, final QueryResponse solrResult) {
+		SolrSearchResult result = createDefaultResult(settings.getPageSize());
+		//TODO ugly but it works. refactor this instanceof to a method that handles SolrSearchSettings only
+		if (settings instanceof SolrSearchSettings) {
+			result = new SolrSearchResult(fieldGenerator, solrResult, settings.getPageSize(), getCurrentPage(settings), ((SolrSearchSettings) settings).getCustomCallbackFactory());
+		}
+		return result;
+	}
+
+	private int getCurrentPage(final SearchSettings settings) {
+		int page = 0;
+		int offset = settings.getOffset().or(0);
+		if (settings.getPageSize() > 0) {
+			page = offset / settings.getPageSize();
+		}
+		return page;
+	}
+
+	private boolean canProcessQuery(final Query query) {
+		return solrServer != null && !query.isEmpty();
 	}
 
 	private SolrSearchResult createDefaultResult(final int numOfElementsOnPage) {
@@ -93,14 +110,14 @@ class SolrQueryExecutor extends QueryExecutor {
 	}
 
 	private SolrQuery createQuery(final Query q, final SearchSettings settings) {
-		Query decoratedQuery = q;
-		SearchSettings decoratedSettings = settings;
-
-		SolrQuery solrQuery = new SolrQuery(decoratedQuery.toString());
-		decoratedSettings.getQueryExecutor().enrich(solrQuery);
-		for(QueryDecorator decorator :decoratorList) {
+		SolrQuery solrQuery = new SolrQuery(q.toString());
+		solrQuery.setRows(settings.getPageSize());
+		settings.getQueryExecutor().enrich(solrQuery);
+		for (QueryDecorator decorator : decoratorList) {
 			decorator.decorate(solrQuery);
 		}
+
+		LOG.debug("Executing query: {}", solrQuery);
 		return solrQuery;
 	}
 }

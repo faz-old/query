@@ -18,10 +18,10 @@ import java.util.Stack;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class ModificationSelection {
-    private Query query;
-    private Range range;
+    private final Query query;
+    private final Range range;
 
-    ModificationSelection(Query q, Integer lowerLimit, Integer upperLimit) {
+    ModificationSelection(final Query q, final Integer lowerLimit, final Integer upperLimit) {
         this.query = q;
         this.range = new Range(lowerLimit, upperLimit);
     }
@@ -54,25 +54,25 @@ public class ModificationSelection {
         public void and() {
             Query q = selection.query;
             if(selection.range.isAll() && q.getItemStack().size() > 1) {
-                Stack<Query.QueryItem> savedItems = (Stack<Query.QueryItem>)q.getItemStack().clone();
+                Stack<QueryItem> savedItems = (Stack<QueryItem>)q.getItemStack().clone();
                 selection.remove();
-                q.getItemStack().push(q.and(savedItems.pop(), savedItems.toArray(new Query.QueryItem[savedItems.size() - 1])));
+                q.getItemStack().push(q.and(savedItems.pop(), savedItems.toArray(new QueryItem[savedItems.size() - 1])));
             }
         }
 
         public void or() {
             Query q = selection.query;
             if(selection.range.isAll()) {
-                Stack<Query.QueryItem> savedItems = (Stack<Query.QueryItem>)q.getItemStack().clone();
+                Stack<QueryItem> savedItems = (Stack<QueryItem>)q.getItemStack().clone();
                 selection.remove();
-                q.getItemStack().push(q.or(savedItems.pop(), savedItems.toArray(new Query.QueryItem[savedItems.size() - 1])));
+                q.getItemStack().push(q.or(savedItems.pop(), savedItems.toArray(new QueryItem[savedItems.size() - 1])));
             }
         }
     }
 
     private static class Range {
-        Integer from;
-        Integer to;
+        final Integer from;
+        final Integer to;
 
         private Range(final Integer from, final Integer to) {
             this.from = from;

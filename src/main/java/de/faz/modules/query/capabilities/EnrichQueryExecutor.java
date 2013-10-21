@@ -12,9 +12,9 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.capabilities;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public interface EnrichQueryExecutor<T> {
-    public void enrich(T query);
+    void enrich(T query);
 }

@@ -1,10 +1,10 @@
 package de.faz.modules.query.solr.capabilities;
 
-import de.faz.modules.query.EnrichQueryExecutor;
-import de.faz.modules.query.FieldDefinitionGenerator;
 import de.faz.modules.query.GroupingSearchOption;
 import de.faz.modules.query.Query;
-import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
+import de.faz.modules.query.solr.internal.SolrEnrichQueryExecutor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.GroupParams;

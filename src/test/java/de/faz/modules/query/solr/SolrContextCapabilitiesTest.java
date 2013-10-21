@@ -6,6 +6,7 @@ import de.faz.modules.query.capabilities.GroupingSupport;
 import de.faz.modules.query.capabilities.HighlightingSupport;
 import de.faz.modules.query.capabilities.SearchOptionFactory;
 import de.faz.modules.query.exception.UnsupportedFeatureException;
+import de.faz.modules.query.solr.capabilities.SolrGroupingSupportFactory;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -14,7 +14,7 @@
 
 package de.faz.modules.query;
 
-import com.google.common.base.Optional;
+import de.faz.modules.query.fields.Mapping;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -52,8 +52,7 @@ public interface SearchContext {
      *
      * @return a new {@link Query} instance
      */
-    @Nonnull
-    Query createQuery();
+    @Nonnull Query createQuery();
 
     /**
      * This function works like {@link de.faz.modules.query.SearchContext#createQuery()}
@@ -64,8 +63,7 @@ public interface SearchContext {
      *                 to combine all query items
      * @return a new {@link Query} instance
      */
-    @Nonnull
-    Query createQuery(@Nonnull Query.Operator operator);
+    @Nonnull Query createQuery(@Nonnull Query.Operator operator);
 
     /**
      * This function creates a new {@link PreparedQuery} instance that
@@ -74,25 +72,23 @@ public interface SearchContext {
      *
      * @return a new {@link PreparedQuery} instance
      */
-    @Nonnull
-    PreparedQuery createPreparedQuery();
+    @Nonnull PreparedQuery createPreparedQuery();
 
     /**
      * This function is one of the primary function you will use when you
      * work with this framework. It generates a new instance of a given
-     * {@link Mapping} class and decorates this instance that the framework
-     * get the field definition from this {@link Mapping} instead of any
+     * {@link de.faz.modules.query.fields.Mapping} class and decorates this instance that the framework
+     * get the field definition from this {@link de.faz.modules.query.fields.Mapping} instead of any
      * values defined in the getter methods.
-     * You need to annotate that function with {@link MapToField} annotation
+     * You need to annotate that function with {@link de.faz.modules.query.fields.MapToField} annotation
      * that this function works correctly.
      *
-     * @param mappingClass a class that implement {@link Mapping}
-     * @param <T> a class that implements {@link Mapping}
+     * @param mappingClass a class that implement {@link de.faz.modules.query.fields.Mapping}
+     * @param <T> a class that implements {@link de.faz.modules.query.fields.Mapping}
      * @return  a new class of type T that is decorated to be used
      *          in other framework classes.
      */
-    @Nonnull
-    <T extends Mapping> T createFieldDefinitionFor(@Nonnull Class<T> mappingClass);
+    @Nonnull <T extends Mapping> T createFieldDefinitionFor(@Nonnull Class<T> mappingClass);
 
     /**
      * This function takes a {@link Query} instance an call a execute this
@@ -107,8 +103,7 @@ public interface SearchContext {
      * @param query a {@link Query} instance
      * @return a new {@link SearchResult} that contains the search results
      */
-    @Nonnull
-    SearchResult execute(@Nonnull Query query);
+    @Nonnull SearchResult execute(@Nonnull Query query);
 
     /**
      * This function works similar to {@link SearchContext#execute(Query)}
@@ -122,8 +117,7 @@ public interface SearchContext {
      * @param settings a custom {@link SearchSettings} instance
      * @return a new {@link SearchResult} that contains the search results
      */
-    @Nonnull
-    SearchResult execute(@Nonnull Query query, @Nonnull SearchSettings settings);
+    @Nonnull SearchResult execute(@Nonnull Query query, @Nonnull SearchSettings settings);
 
     /**
      * This function creates a new instance of {@link SearchSettings}.
@@ -135,27 +129,25 @@ public interface SearchContext {
      *
      * @return a new {@link SearchSettings} instance
      */
-    @Nonnull
-    SearchSettings withSettings();
+    @Nonnull SearchSettings withSettings();
 
-    abstract class SearchResult<T> {
-        protected Optional<T> implementedSearchResult;
-
+    abstract class SearchResult {
         protected int pageSize;
         protected int offset;
 
 
-        public SearchResult(T result, int pageSize) {
-            this(result, pageSize, 0);
+        public SearchResult(int pageSize) {
+            this(pageSize, 0);
         }
 
-        public SearchResult(T result, int pageSize, int offset) {
-            this.implementedSearchResult = Optional.fromNullable(result);
+        public SearchResult(int pageSize, int offset) {
             this.pageSize = pageSize;
             this.offset = offset;
         }
 
-	    protected SearchResult() {}
+	    protected SearchResult() {
+		    //protected default constructor with no function
+	    }
 
 	    public int getPageSize() {
             return pageSize;

@@ -1,5 +1,6 @@
 package de.faz.modules.query;
 
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -7,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -20,21 +20,21 @@ public class QueryTest {
     @Before
     public void setUp() {
         QueryExecutor executor = mock(QueryExecutor.class);
-        context = new DefaultSearchContext(executor);
+        context = new MockedSearchContext(executor, new FieldDefinitionGenerator());
         q = context.createQuery();
         fieldDefinition = context.createFieldDefinitionFor(TestMapping.class);
     }
 
     @Test
     public void add_withQueryItem_addItemToQuery() {
-        Query.QueryItem item = new Query.QueryItem() {
+        QueryItem item = new QueryItem() {
             @Override
-            CharSequence toCharSequence() {
+            public CharSequence toCharSequence() {
                 return "query item";
             }
 
             @Override
-            public boolean contains(final Query.QueryItem item) {
+            public boolean contains(final QueryItem item) {
                 return false;
             }
         };
@@ -56,7 +56,7 @@ public class QueryTest {
 
     @Test
     public void and_withQueryItemValues_returnNewQueryItemWithEmbeddedItems() {
-        Query.QueryItem item = q.and(
+        QueryItem item = q.and(
                 q.term(fieldDefinition.getField1()).value("field1"),
                 q.term(fieldDefinition.getField2()).value("field2")
         );
@@ -65,7 +65,7 @@ public class QueryTest {
 
     @Test
     public void or_withQueryItemValues_returnNewQueryItemWithEmbeddedItems() {
-        Query.QueryItem item = q.or(
+        QueryItem item = q.or(
                 q.term(fieldDefinition.getField1()).value("field1"),
                 q.term(fieldDefinition.getField2()).value("field2")
         );
@@ -74,7 +74,7 @@ public class QueryTest {
 
     @Test
     public void not_withQueryItem_returnNewQueryItemWithEmbeddedItem() {
-        Query.QueryItem item = q.not(
+        QueryItem item = q.not(
                 q.term(fieldDefinition.getField1()).value("field1")
         );
         assertEquals("NOT (field1:field1)", item.toString());
@@ -134,10 +134,10 @@ public class QueryTest {
     
     @Test
     public void equalsOperatorItem_withEqualItems_equalsIsTrue() {
-        Query.QueryItem item1 = q.not(
+        QueryItem item1 = q.not(
                 q.term(fieldDefinition.getField1()).value("field1")
         );
-        Query.QueryItem item2 = q.not(
+        QueryItem item2 = q.not(
                 q.term(fieldDefinition.getField1()).value("field1")
         );
         assertEquals(item1, item2);
@@ -145,10 +145,10 @@ public class QueryTest {
 
     @Test
     public void equalsOperatorItem_withDifferentItems_equalsIsFalse() {
-        Query.QueryItem item1 = q.not(
+        QueryItem item1 = q.not(
                 q.term(fieldDefinition.getField1()).value("field1")
         );
-        Query.QueryItem item2 = q.not(
+        QueryItem item2 = q.not(
                 q.term(fieldDefinition.getField1()).value("field2")
         );
         assertNotEquals(item1, item2);
@@ -156,12 +156,12 @@ public class QueryTest {
 
     @Test
     public void equalsItemChain_withEqualOrderedItems_equalsIsTrue() {
-        Query.QueryItem item1 = q.and(
+        QueryItem item1 = q.and(
             q.term(fieldDefinition.getField1()).value("field1"),
             q.term(fieldDefinition.getField2()).value("field2")
         );
 
-        Query.QueryItem item2 = q.and(
+        QueryItem item2 = q.and(
             q.term(fieldDefinition.getField1()).value("field1"),
             q.term(fieldDefinition.getField2()).value("field2")
         );
@@ -171,12 +171,12 @@ public class QueryTest {
 
     @Test
     public void equalsItemChain_withEqualUnOrderedItems_equalsIsTrue() {
-        Query.QueryItem item1 = q.and(
+        QueryItem item1 = q.and(
             q.term(fieldDefinition.getField1()).value("field1"),
             q.term(fieldDefinition.getField2()).value("field2")
         );
 
-        Query.QueryItem item2 = q.and(
+        QueryItem item2 = q.and(
             q.term(fieldDefinition.getField2()).value("field2"),
             q.term(fieldDefinition.getField1()).value("field1")
         );
@@ -186,12 +186,12 @@ public class QueryTest {
 
     @Test
     public void equalsItemChain_withDifferentItems_equalsIsFalse() {
-        Query.QueryItem item1 = q.and(
+        QueryItem item1 = q.and(
             q.term(fieldDefinition.getField1()).value("field1"),
             q.term(fieldDefinition.getField2()).value("field2")
         );
 
-        Query.QueryItem item2 = q.and(
+        QueryItem item2 = q.and(
             q.term(fieldDefinition.getField1()).value("field2"),
             q.term(fieldDefinition.getField2()).value("field3")
         );

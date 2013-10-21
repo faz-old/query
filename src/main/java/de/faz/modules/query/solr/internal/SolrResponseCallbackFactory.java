@@ -12,14 +12,14 @@
  * from F.A.Z. Electronic Media GmbH.
  */
 
-package de.faz.modules.query;
+package de.faz.modules.query.solr.internal;
 
-/**
- * Just a marker interface that marks an implemented class
- * to be a search mapping. This marker interface is used
- * for the {@link Query} object later.
- *
- * @author Andreas Kaubisch <a.kaubisch@faz.de>
- */
+import net.sf.cglib.proxy.Callback;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 
-public interface Mapping {}
+/** @author Andreas Kaubisch <a.kaubisch@faz.de> */
+public interface SolrResponseCallbackFactory {
+
+    Callback createCallbackForDocument(final QueryResponse response, final SolrDocument document);
+}

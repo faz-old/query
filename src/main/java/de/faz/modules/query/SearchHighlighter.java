@@ -14,36 +14,27 @@
 
 package de.faz.modules.query;
 
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
 import de.faz.modules.query.capabilities.SearchOption;
-import de.faz.modules.query.solr.SolrEnrichQueryExecutor;
-import de.faz.modules.query.solr.SolrResponseCallbackFactory;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.params.HighlightParams;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
-public class SearchHighlighter implements SearchOption,SolrResponseCallbackFactory {
+public abstract class SearchHighlighter implements SearchOption {
 
 	private final FieldDefinitionGenerator generator;
-	private final List<FieldDefinition> definitionList;
+	protected final List<FieldDefinitionGenerator.FieldDefinition> definitionList;
 
-	private CharSequence prefix;
-	private CharSequence postfix;
+	protected CharSequence prefix;
+	protected CharSequence postfix;
 
-	private Query highlightingQuery;
+	protected Query highlightingQuery;
 
 
-	SearchHighlighter(final FieldDefinitionGenerator generator) {
+	public SearchHighlighter(final FieldDefinitionGenerator generator) {
 		this.generator = generator;
 		this.prefix = "";
 		this.postfix = "";
@@ -73,7 +64,7 @@ public class SearchHighlighter implements SearchOption,SolrResponseCallbackFacto
 		return this;
 	}
 
-	List<FieldDefinition> getFields() {
+	List<FieldDefinitionGenerator.FieldDefinition> getFields() {
 		return Collections.unmodifiableList(definitionList);
 	}
 
@@ -86,48 +77,7 @@ public class SearchHighlighter implements SearchOption,SolrResponseCallbackFacto
 	}
 
 	@Override
-	public EnrichQueryExecutor getQueryExecutor() {
-		return new SolrEnrichQueryExecutor() {
-			@Override
-			public void enrich(final SolrQuery query) {
-				query.setHighlight(true);
-				query.setHighlightFragsize(Integer.MAX_VALUE);
-				query.setHighlightSimplePre(prefix.toString());
-				query.setHighlightSimplePost(postfix.toString());
+	public abstract EnrichQueryExecutor getQueryExecutor();
 
-				for(final FieldDefinition definition : definitionList) {
-					query.addHighlightField(definition.name.toString());
-				}
 
-				if(highlightingQuery != null) {
-					query.setParam(HighlightParams.Q, highlightingQuery.toString());
-				}
-			}
-		};
-	}
-
-	@Override
-	public Callback createCallbackForDocument(final QueryResponse response, final SolrDocument document) {
-		return new MethodInterceptor() {
-			@Override
-			public Object intercept(final Object o, final Method method, final Object[] objects, final MethodProxy methodProxy) throws Throwable {
-				final MapToField mapping = method.getAnnotation(MapToField.class);
-				final String docId = (String)document.getFieldValue("contentId");
-				if(mapping != null) {
-					final Map<String, List<String>> highlightingResult = response.getHighlighting().get(docId);
-					if(hasHighlightingForField(mapping.value(), highlightingResult)) {
-						return highlightingResult.get(mapping.value()).get(0);
-					} else {
-						return document.getFieldValue(mapping.value());
-					}
-				}
-
-				return null;
-			}
-		};
-	}
-
-	private boolean hasHighlightingForField(final String fieldName, final Map<String, List<String>> highlightingMap) {
-		return highlightingMap != null && highlightingMap.get(fieldName) != null && highlightingMap.get(fieldName).size() > 0;
-	}
 }

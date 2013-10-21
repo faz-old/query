@@ -14,19 +14,17 @@
 
 package de.faz.modules.query;
 
-import de.faz.modules.query.SearchContext;
-
 import javax.annotation.Nonnull;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public abstract class QueryExecutor {
 
     @Nonnull
-    public SearchContext.SearchResult execute(@Nonnull Query query, @Nonnull SearchSettings settings) {
+    public SearchContext.SearchResult execute(@Nonnull final Query query, @Nonnull final SearchSettings settings) {
         return executeQuery(query, settings);
     }
 
     @Nonnull
-    protected abstract SearchContext.SearchResult executeQuery(@Nonnull Query query, @Nonnull SearchSettings settings);
+    protected abstract SearchContext.SearchResult executeQuery(@Nonnull final Query query, @Nonnull final SearchSettings settings);
 
 }

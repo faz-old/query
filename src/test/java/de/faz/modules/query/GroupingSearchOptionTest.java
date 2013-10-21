@@ -1,5 +1,7 @@
 package de.faz.modules.query;
 
+import de.faz.modules.query.capabilities.EnrichQueryExecutor;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.Before;
 import org.junit.Test;

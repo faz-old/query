@@ -16,10 +16,10 @@ package de.faz.modules.query;
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class QueryDefaultComparator extends AbstractQueryDecorator {
 
-    private Query query;
-    private Operator operator;
+    private final Query query;
+    private final Operator operator;
 
-    QueryDefaultComparator(Query q, Operator op) {
+    QueryDefaultComparator(final Query q, final Operator op) {
 	    super(q);
         this.query = q;
         this.operator = op;
