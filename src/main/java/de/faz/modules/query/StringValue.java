@@ -19,6 +19,8 @@ class StringValue extends ValueItem {
 		for (String character : ILLEGAL_CHARACTERS) {
 			stringValue = stringValue.replaceAll(Pattern.quote(character), "\\\\" + character);
 		}
+		// escape the quotation mark (") in special cases
+		stringValue = stringValue.replaceAll("=([^\\\\\"]*[\\\\\"][^\\\\\"]*[\\\\\"])*[^\\\\\"]*$", "\\\\\"");
 		return stringValue;
 	}
 }
