@@ -55,4 +55,17 @@ public class StringValueTest {
 		StringValue value = new StringValue("^Joachim ~Müller:Jung");
 		assertEquals("\\^Joachim\\ \\~Müller\\:Jung", value.toCharSequence());
 	}
+
+	@Test
+	public void test_toCharSequence_OtherSpecialChars() {
+		StringValue value = new StringValue("Werner D’Inka");
+		assertEquals("Werner\\ D’Inka", value.toCharSequence());
+	}
+
+	@Test
+	public void test_toCharSequence_OtherSpecialChars2() {
+		StringValue value = new StringValue("Werner D'Inka");
+		assertEquals("Werner\\ D'Inka", value.toCharSequence());
+	}
+
 }
