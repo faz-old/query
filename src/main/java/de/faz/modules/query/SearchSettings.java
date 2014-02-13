@@ -149,12 +149,12 @@ public class SearchSettings implements SearchOption {
 		return this;
 	}
 
-	protected static class SortBy {
+	public static class SortBy {
 		private CharSequence fieldName;
 
 		private Order order;
 
-		SortBy(final CharSequence fieldName, final Order order) {
+		public SortBy(final CharSequence fieldName, final Order order) {
 			this.fieldName = fieldName;
 			this.order = order;
 		}

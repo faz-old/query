@@ -16,9 +16,12 @@ package de.faz.modules.query.solr;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.fields.Mapping;
 import org.apache.solr.client.solrj.response.Group;
+import org.apache.solr.client.solrj.response.GroupCommand;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class GroupSearchResult {
@@ -35,7 +38,7 @@ public class GroupSearchResult {
 	public <T extends Mapping> Iterator<T> getGroup(final int index, final Class<T> mappingClass) {
 		Iterator<T> it = result.createDefaultIterator();
 		if(getGroupCount() > index) {
-			Group group = response.getGroupResponse().getValues().get(index).getValues().get(0);
+			Group group = getMergedGroupList(response.getGroupResponse().getValues()).get(index);
 			it = result.createIteratorFromDocumentList(response, mappingClass, group.getResult());
 		}
 		return it;
@@ -44,16 +47,24 @@ public class GroupSearchResult {
 	public int getGroupCount() {
 		int count = 0;
 		if(response != null) {
-			count = response.getGroupResponse().getValues().size();
+			count = getMergedGroupList(response.getGroupResponse().getValues()).size();
 		}
 
 		return count;
 	}
 
+    private List<Group> getMergedGroupList(List<GroupCommand> groupCommandList) {
+        List<Group> groupList = new ArrayList<>();
+        for (GroupCommand groupCommand : groupCommandList) {
+            groupList.addAll(groupCommand.getValues());
+        }
+        return groupList;
+    }
+
 	public long getResultCount(final int index) {
 		long found = 0;
 		if(getGroupCount() > index) {
-			found = response.getGroupResponse().getValues().get(index).getValues().get(0).getResult().getNumFound();
+			found = getMergedGroupList(response.getGroupResponse().getValues()).get(index).getResult().getNumFound();
 		}
 
 		return found;

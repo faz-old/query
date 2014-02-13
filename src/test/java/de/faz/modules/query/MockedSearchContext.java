@@ -1,6 +1,7 @@
 package de.faz.modules.query;
 
 import de.faz.modules.query.fields.FieldDefinitionGenerator;
+import de.faz.modules.query.solr.SolrContextCapabilities;
 
 import javax.annotation.Nonnull;
 
@@ -30,6 +31,6 @@ public class MockedSearchContext extends DefaultSearchContext {
 	@Nonnull
 	@Override
 	public SearchSettings withSettings() {
-		return new SearchSettings(generator);
+		return new SearchSettings(generator,new SolrContextCapabilities());
 	}
 }
