@@ -13,6 +13,7 @@
  */
 package de.faz.modules.query.solr;
 
+import com.google.common.collect.Lists;
 import de.faz.modules.query.SearchContext;
 import de.faz.modules.query.fields.Mapping;
 import org.apache.solr.client.solrj.response.Group;
@@ -54,7 +55,7 @@ public class GroupSearchResult {
 	}
 
     private List<Group> getMergedGroupList(List<GroupCommand> groupCommandList) {
-        List<Group> groupList = new ArrayList<>();
+        List<Group> groupList = Lists.newArrayList();
         for (GroupCommand groupCommand : groupCommandList) {
             groupList.addAll(groupCommand.getValues());
         }
