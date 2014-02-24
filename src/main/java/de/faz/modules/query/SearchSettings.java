@@ -142,7 +142,7 @@ public class SearchSettings implements SearchOption {
 		return offset;
 	}
 
-	public SearchSettings restrictByField(final Object fieldDefinition) {
+	public SearchSettings retainOnlyIncludedFieldsInResult(final Object fieldDefinition) {
 		if (!generator.isEmpty()) {
 			fieldList.add(generator.pop().getName().toString());
 		}
@@ -152,29 +152,29 @@ public class SearchSettings implements SearchOption {
 	public static class SortBy {
 		private CharSequence fieldName;
 
-		private Order order;
+        private Order order;
 
-		public SortBy(final CharSequence fieldName, final Order order) {
-			this.fieldName = fieldName;
-			this.order = order;
-		}
+        public SortBy(final CharSequence fieldName, final Order order) {
+            this.fieldName = fieldName;
+            this.order = order;
+        }
 
-		public CharSequence getFieldName() {
-			return fieldName;
-		}
+        public CharSequence getFieldName() {
+            return fieldName;
+        }
 
-		public Order getOrder() {
-			return order;
-		}
-	}
+        public Order getOrder() {
+            return order;
+        }
+    }
 
-	@Override
-	public EnrichQueryExecutor getQueryExecutor() {
-		return new EnrichQueryExecutor() {
-			@Override
-			public void enrich(final Object query) {
-				//DO NOTHING
-			}
-		};
-	}
+    @Override
+    public EnrichQueryExecutor getQueryExecutor() {
+        return new EnrichQueryExecutor() {
+            @Override
+            public void enrich(final Object query) {
+                //DO NOTHING
+            }
+        };
+    }
 }

@@ -54,7 +54,7 @@ public class SolrSearchSettingsTest {
 	public void restrictByField_withFieldDefinition_addFieldToSolrQuery() {
 		when(generator.pop()).thenReturn(new FieldDefinitionGenerator.FieldDefinition("fieldName", 1));
 		when(generator.isEmpty()).thenReturn(false);
-		underTest.restrictByField(null);
+		underTest.retainOnlyIncludedFieldsInResult(null);
 
 		org.apache.solr.client.solrj.SolrQuery query = mock(org.apache.solr.client.solrj.SolrQuery.class);
 		underTest.enrichQuery(query);
