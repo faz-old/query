@@ -1,15 +1,18 @@
 package de.faz.modules.query.solr;
 
-import com.google.common.base.Optional;
-import com.polopoly.management.ServiceNotAvailableException;
-import com.polopoly.search.solr.SearchResult;
-import de.faz.modules.query.fields.FieldDefinitionGenerator;
-import de.faz.modules.query.Query;
-import de.faz.modules.query.SearchContext;
-import de.faz.modules.query.SearchDecorator;
-import de.faz.modules.query.TestMapping;
-import de.faz.modules.query.fields.Mapping;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
+import java.util.Iterator;
+
 import net.sf.cglib.proxy.Callback;
+
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -26,25 +29,20 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import java.util.Iterator;
+import com.google.common.base.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import de.faz.modules.query.Query;
+import de.faz.modules.query.SearchContext;
+import de.faz.modules.query.SearchDecorator;
+import de.faz.modules.query.TestMapping;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
+import de.faz.modules.query.fields.Mapping;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)
 public class SolrQueryExecutorTest {
 
     @Mock SolrServer searchClient;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS) SearchResult polopolyResult;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) QueryResponse solrResponse;
 	@Mock(answer = Answers.RETURNS_DEEP_STUBS) SolrSearchSettings settings;
 
@@ -54,7 +52,7 @@ public class SolrQueryExecutorTest {
     private SolrQueryExecutor executor;
 
     @Before
-    public void setUp() throws ServiceNotAvailableException, SolrServerException {
+    public void setUp() throws SolrServerException {
         when(searchClient.query(any(SolrQuery.class))).thenReturn(solrResponse);
 	    when(settings.getOffset()).thenReturn(Optional.<Integer>absent());
         executor = new SolrQueryExecutor(searchClient, generator);
@@ -88,7 +86,7 @@ public class SolrQueryExecutorTest {
     }
 
     @Test
-    public void executeQuery_withQueryAndSettings_callSearchClient() throws ServiceNotAvailableException, SolrServerException {
+    public void executeQuery_withQueryAndSettings_callSearchClient() throws SolrServerException {
         executor.executeQuery(q, settings);
         verify(searchClient).query(any(SolrQuery.class));
     }
@@ -124,20 +122,6 @@ public class SolrQueryExecutorTest {
     public void executeQuery_withResult_verifyFactoryIsGetFromSettings() {
         executor.executeQuery(q, settings);
         verify(settings).getCustomCallbackFactory();
-    }
-
-    @Test
-    public void executeQuery_withServiceNotAvailableException_returnsStandardResult() throws ServiceNotAvailableException, SolrServerException {
-        when(polopolyResult.getPage(anyInt())).thenThrow(new ServiceNotAvailableException("message"));
-        SearchContext.SearchResult result = executor.executeQuery(q, settings);
-        assertEquals(0, result.getNumCount());
-    }
-
-    @Test
-    public void executeQuery_withSolrServerException_returnStandardResult() throws ServiceNotAvailableException, SolrServerException {
-        when(polopolyResult.getPage(anyInt())).thenThrow(new SolrServerException("message"));
-        SearchContext.SearchResult result = executor.executeQuery(q, settings);
-        assertEquals(0, result.getNumCount());
     }
 
 	private SearchDecorator createSearchDecoratorMock() {

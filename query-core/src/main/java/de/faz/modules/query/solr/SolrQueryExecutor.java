@@ -14,12 +14,10 @@
 
 package de.faz.modules.query.solr;
 
-import com.polopoly.search.solr.QueryDecorator;
-import de.faz.modules.query.Query;
-import de.faz.modules.query.QueryExecutor;
-import de.faz.modules.query.SearchContext;
-import de.faz.modules.query.SearchSettings;
-import de.faz.modules.query.fields.FieldDefinitionGenerator;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -27,10 +25,11 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import de.faz.modules.query.Query;
+import de.faz.modules.query.QueryExecutor;
+import de.faz.modules.query.SearchContext;
+import de.faz.modules.query.SearchSettings;
+import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class SolrQueryExecutor extends QueryExecutor {
@@ -41,17 +40,10 @@ class SolrQueryExecutor extends QueryExecutor {
 
 	private final SolrServer solrServer;
 
-	private final List<QueryDecorator> decoratorList;
-
 	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
 		super();
 		this.solrServer = server;
 		this.fieldGenerator = generator;
-		this.decoratorList = new ArrayList<>();
-	}
-
-	public void addQueryDecorator(final QueryDecorator decorator) {
-		this.decoratorList.add(decorator);
 	}
 
 	@Override
@@ -113,9 +105,6 @@ class SolrQueryExecutor extends QueryExecutor {
 		SolrQuery solrQuery = new SolrQuery(q.toString());
 		solrQuery.setRows(settings.getPageSize());
 		settings.getQueryExecutor().enrich(solrQuery);
-		for (QueryDecorator decorator : decoratorList) {
-			decorator.decorate(solrQuery);
-		}
 
 		LOG.debug("Executing query: {}", solrQuery);
 		return solrQuery;

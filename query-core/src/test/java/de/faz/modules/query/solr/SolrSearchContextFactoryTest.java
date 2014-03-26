@@ -17,7 +17,7 @@ public class SolrSearchContextFactoryTest {
 
 	@Test
 	public void createSearchContext_returnsNewInstanceOfSolrSearchContext() {
-		SearchContext context = SolrSearchContextFactory.createSearchContext(server, null);
+		SearchContext context = SolrSearchContextFactory.createSearchContext(server);
 		assertEquals(SolrSearchContext.class, context.getClass());
 	}
 }
