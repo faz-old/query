@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class ItemChain extends QueryItem {
@@ -34,21 +35,18 @@ class ItemChain extends QueryItem {
 
 	@Override
 	public int hashCode() {
-		int result = separator.hashCode();
-		result = 31 * result + Arrays.hashCode(items);
-		return result;
+		Object[] values = new Object[items.length + 1];
+		System.arraycopy(items, 0, values, 0, items.length);
+		values[values.length-1] = separator;
+		return Objects.hash(values);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof ItemChain) {
 			ItemChain chain = (ItemChain) obj;
-			boolean containsAllItems = true;
-			List<QueryItem> itemList = Arrays.asList(chain.items);
-			for (QueryItem item : items) {
-				containsAllItems &= itemList.contains(item);
-			}
-			return containsAllItems && separator.equals(chain.separator);
+			return Objects.equals(separator, chain.separator)
+				&& Arrays.asList(items).containsAll(Arrays.asList(chain.items));
 		}
 		return super.equals(obj);
 	}

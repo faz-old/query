@@ -1,5 +1,7 @@
 package de.faz.modules.query;
 
+import java.util.Objects;
+
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public abstract class ValueItem {
 	abstract CharSequence toCharSequence();
@@ -11,16 +13,11 @@ public abstract class ValueItem {
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (obj instanceof ValueItem) {
-			return toCharSequence().equals(((ValueItem) obj).toCharSequence());
-		}
-		return super.equals(obj);
+		return obj instanceof ValueItem ? Objects.equals(toCharSequence(), ((ValueItem) obj).toCharSequence()) : super.equals(obj);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + toCharSequence().hashCode();
-		return result;
+		return Objects.hash(toCharSequence());
 	}
 }

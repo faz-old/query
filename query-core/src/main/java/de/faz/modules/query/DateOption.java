@@ -17,6 +17,7 @@ package de.faz.modules.query;
 import org.apache.solr.common.util.DateUtil;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Andreas Kaubisch <a.kaubisch@faz.de>
@@ -64,7 +65,7 @@ public abstract class DateOption {
         @Override
         public boolean equals(final Object obj) {
             if (obj instanceof PredefinedValueOption) {
-                return value.equals(((PredefinedValueOption) obj).value);
+                return Objects.equals(value, ((PredefinedValueOption) obj).value);
             }
             return super.equals(obj);
         }
@@ -84,7 +85,7 @@ public abstract class DateOption {
         @Override
         public boolean equals(final Object obj) {
             if (obj instanceof NativeDateOption) {
-                return date.equals(((NativeDateOption) obj).date);
+                return Objects.equals(date, ((NativeDateOption) obj).date);
             }
             return super.equals(obj);
         }

@@ -19,6 +19,7 @@ import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import javax.annotation.Nonnull;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class TermQueryPart {
@@ -104,16 +105,15 @@ public class TermQueryPart {
         public boolean equals(final Object obj) {
             if(obj instanceof DateValue) {
                 final DateValue value = (DateValue) obj;
-                return from.equals(value.from) && to.equals(value.to);
+                return Objects.equals(from, value.from)
+					&& Objects.equals(to, value.to);
             }
             return super.equals(obj);
         }
 
 	    @Override
 	    public int hashCode() {
-		    int result = from.hashCode();
-		    result = 31 * result + to.hashCode();
-		    return result;
+		    return Objects.hash(from, to);
 	    }
     }
 }

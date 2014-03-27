@@ -13,7 +13,6 @@
  */
 package de.faz.modules.query.polopoly.filter;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,7 +34,7 @@ import de.faz.modules.query.polopoly.mapping.PolopolyContentMapping;
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class TimeStateWithPreviewTimeFilter implements QueryDecorator,SearchDecorator {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 	private final SearchContext context;
 	private final TimeStateFilter filter;
@@ -59,7 +58,7 @@ public class TimeStateWithPreviewTimeFilter implements QueryDecorator,SearchDeco
 		if(date == null) {
 			return filter.decorate(solrQuery);
 		}
-		String formattedDate = DATE_FORMAT.format(date);
+		String formattedDate = new SimpleDateFormat(TIME_FORMAT).format(date);
 		return solrQuery.addFilterQuery("(" + IndexFields.ON_TIME_DEFINED + ":false OR " + IndexFields.ON_TIME + ":[* TO " + formattedDate + "]) AND (" + IndexFields.OFF_TIME_DEFINED + ":false OR " + IndexFields.OFF_TIME + ":[" + formattedDate + " TO *])");
 	}
 

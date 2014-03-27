@@ -2,6 +2,8 @@ package de.faz.modules.query;
 
 import de.faz.modules.query.fields.FieldDefinitionGenerator;
 
+import java.util.Objects;
+
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 class TermItem extends QueryItem {
 
@@ -25,16 +27,15 @@ class TermItem extends QueryItem {
 
     @Override
     public int hashCode() {
-        int result = field.hashCode();
-        result = 31 * result + value.hashCode();
-        return result;
+        return Objects.hash(field, value);
     }
 
     @Override
     public boolean equals(final Object obj) {
         if(obj instanceof TermItem) {
             TermItem termItem = (TermItem)obj;
-            return field.equals(termItem.field) && value.equals(termItem.value);
+            return Objects.equals(field, termItem.field)
+				&& Objects.equals(value, termItem.value);
         }
         return super.equals(obj);
     }

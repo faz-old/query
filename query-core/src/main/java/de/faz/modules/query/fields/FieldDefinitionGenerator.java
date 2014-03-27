@@ -22,6 +22,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.Stack;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
@@ -161,16 +162,15 @@ public class FieldDefinitionGenerator {
 		public boolean equals(final Object obj) {
 			if (obj instanceof FieldDefinition) {
 				final FieldDefinition def = (FieldDefinition) obj;
-				return name.equals(def.name) && boost == def.boost;
+				return Objects.equals(name, def.name)
+					&& Objects.equals(boost, def.boost);
 			}
 			return super.equals(obj);
 		}
 
 		@Override
 		public int hashCode() {
-			int result = name != null ? name.hashCode() : 0;
-			result = 31 * result + boost;
-			return result;
+			return Objects.hash(name, boost);
 		}
 	}
 }
