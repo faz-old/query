@@ -34,19 +34,32 @@ import de.faz.modules.query.polopoly.mapping.PolopolyContentMapping;
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 public class TimeStateFilter implements QueryDecorator, SearchDecorator {
 
-	public static String SUPPRESS_TIMESTATE_FILTER = "suppressTSFilter";
+	public static final String SUPPRESS_TIMESTATE_FILTER = "suppressTSFilter";
 	private static final String QUERY = "{!cache=false}(" + IndexFields.ON_TIME_DEFINED + ":false OR " + IndexFields.ON_TIME + ":[* TO NOW]) AND (" + IndexFields.OFF_TIME_DEFINED + ":false OR " + IndexFields.OFF_TIME + ":[NOW TO *])";
+	public static final int TIME_PRECISION_IN_MINUTES = 5;
 
 	private final SearchContext context;
 
+	/**
+	 * Standardconstructor that is used by old polopoly solr client.
+	 */
 	public TimeStateFilter() {
 		this.context = null;
 	}
 
+	/**
+	 * This constructor is used by the Query Framework to initialize a {@link de.faz.modules.query.polopoly.filter.TimeStateFilter}
+	 * with the context it is assigned to.
+	 *
+	 * @param context parent {@link de.faz.modules.query.SearchContext}
+	 */
 	public TimeStateFilter(@Nonnull final SearchContext context) {
 		this.context = context;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public SolrQuery decorate(final SolrQuery solrQuery) {
 		if(!"true".equals(solrQuery.get(SUPPRESS_TIMESTATE_FILTER, ""))) {
@@ -56,46 +69,51 @@ public class TimeStateFilter implements QueryDecorator, SearchDecorator {
 		return solrQuery;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Nonnull
 	@Override
 	public Query decorateQuery(@Nonnull final Query q) {
 		return q;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Nonnull
 	@Override
 	public SearchSettings decorateSettings(@Nonnull final SearchSettings settings) {
 		Optional<Boolean> suppressFilter = settings.getParameter (SUPPRESS_TIMESTATE_FILTER);
 		if(context != null && !suppressFilter.or(false)) {
-			Date calculatedNow = flattenNowToMinuteInterval(5);
+			Date calculatedNow = flattenNowToMinuteInterval(TIME_PRECISION_IN_MINUTES);
 			PolopolyContentMapping fieldDef = context.createFieldDefinitionFor(PolopolyContentMapping.class);
 			Query timeStateQuery = context.createQuery(Query.Operator.AND);
 
 			timeStateQuery.add(
-					timeStateQuery.or(
-							timeStateQuery.term(fieldDef.getOnTimeDefined()).value("false")
-							, timeStateQuery.term(fieldDef.getOnTime()).range(DateOption.WILDCARD, DateOption.from(calculatedNow))
-					)
+				timeStateQuery.or(
+					timeStateQuery.term(fieldDef.getOnTimeDefined()).value("false")
+					, timeStateQuery.term(fieldDef.getOnTime()).range(DateOption.WILDCARD, DateOption.from(calculatedNow))
+				)
 			);
 
 			timeStateQuery.add(
-					timeStateQuery.or(
-							timeStateQuery.term(fieldDef.getOffTimeDefined()).value("false")
-							, timeStateQuery.term(fieldDef.getOffTime()).range(DateOption.from(calculatedNow), DateOption.WILDCARD)
-					)
+				timeStateQuery.or(
+					timeStateQuery.term(fieldDef.getOffTimeDefined()).value("false")
+					, timeStateQuery.term(fieldDef.getOffTime()).range(DateOption.from(calculatedNow), DateOption.WILDCARD)
+				)
 			);
 
 			settings.filterBy(timeStateQuery);
-
 		}
 		return settings;
 	}
 
-	Date flattenNowToMinuteInterval(int minutes) {
+	Date flattenNowToMinuteInterval(final int minutes) {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.set(Calendar.SECOND, 0);
-		cal.add(Calendar.MINUTE, cal.get(Calendar.MINUTE) % minutes * -1);
+		cal.add(Calendar.MINUTE, cal.get(Calendar.MINUTE) % minutes * - 1);
 
 		return cal.getTime();
 	}
