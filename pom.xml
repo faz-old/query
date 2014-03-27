@@ -2,22 +2,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>de.faz</groupId>
-		<artifactId>fazcore</artifactId>
-		<version>5.1.0</version>
-	</parent>
 	<groupId>de.faz.modules</groupId>
 	<artifactId>query</artifactId>
 	<version>2.1-SNAPSHOT</version>
 	<name>query - all modules for query framework</name>
 	<packaging>pom</packaging>
-
 	<modules>
 		<module>query-core</module>
 		<module>query-spring</module>
 		<module>query-polopoly</module>
 	</modules>
+
+	<properties>
+		<asm.version>4.0</asm.version>
+		<guava.version>14.0.1</guava.version>
+		<commons-lang3.version>3.1</commons-lang3.version>
+		<solrj.version>3.6.0</solrj.version>
+		<mockito.version>1.9.5</mockito.version>
+		<junit.version>4.11</junit.version>
+		<cglib.version>3.0</cglib.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<fazcore.version>5.1.0</fazcore.version>
+		<jsr305.version>1.3.9</jsr305.version>
+		<polopoly.version>10.6.1-fp9-88b1b32</polopoly.version>
+	</properties>
 
 	<scm>
 		<connection>scm:git:git@pc12811.faz.de:kaubisch/query.git</connection>
@@ -32,75 +40,24 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-server</artifactId>
-				<version>${jetty.version}</version>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-webapp</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate.javax.persistence</groupId>
-				<artifactId>hibernate-jpa-2.0-api</artifactId>
-				<version>1.0.1.Final</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>3.6.9.Final</version>
-			</dependency>
-			<dependency>
-				<groupId>com.polopoly</groupId>
-				<artifactId>testbase</artifactId>
-				<version>1.1</version>
-			</dependency>
-			<dependency>
-				<groupId>com.polopoly.ps</groupId>
-				<artifactId>contentimporter</artifactId>
-				<version>1.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.quartz-scheduler</groupId>
-				<artifactId>quartz</artifactId>
-				<version>1.8.6</version>
-				<!-- 2.1.0 wont work with spring! -->
-			</dependency>
-			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>5.1.21</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-expression</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-asm</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${spring.version}</version>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons-lang3.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.code.findbugs</groupId>
 				<artifactId>jsr305</artifactId>
-				<version>1.3.9</version>
+				<version>${jsr305.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.faz</groupId>
 				<artifactId>polopoly-private</artifactId>
-				<version>5.1.0</version>
+				<version>${fazcore.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.faz.modules.query</groupId>
@@ -112,6 +69,52 @@
 				<artifactId>query-core</artifactId>
 				<version>${project.version}</version>
 				<classifier>tests</classifier>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>${cglib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ow2.asm</groupId>
+				<artifactId>asm</artifactId>
+				<version>${asm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ow2.asm</groupId>
+				<artifactId>asm-util</artifactId>
+				<version>${asm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-solrj</artifactId>
+				<version>${solrj.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.polopoly</groupId>
+				<artifactId>polopoly</artifactId>
+				<version>${polopoly.version}</version>
+				<classifier>api</classifier>
+			</dependency>
+			<dependency>
+				<groupId>com.polopoly</groupId>
+				<artifactId>polopoly</artifactId>
+				<version>${polopoly.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -127,4 +130,38 @@
 			<url>http://nexus.tecfem.de:8081/nexus/content/repositories/faz-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>deploy</phase>
+						<goals><goal>jar-no-fork</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>deploy</phase>
+						<goals><goal>jar</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

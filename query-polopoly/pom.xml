@@ -12,9 +12,6 @@
 	<groupId>de.faz.modules.query</groupId>
 	<artifactId>query-polopoly</artifactId>
 
-	<properties>
-		<polopoly.version>10.6.1-fp9-88b1b32</polopoly.version>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>de.faz.modules.query</groupId>
@@ -27,11 +24,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>jsr250-api</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>de.faz</groupId>
 			<artifactId>polopoly-private</artifactId>
 			<scope>provided</scope>
@@ -40,30 +32,12 @@
 			<groupId>com.polopoly</groupId>
 			<artifactId>polopoly</artifactId>
 			<classifier>api</classifier>
-			<version>${polopoly.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.polopoly</groupId>
 			<artifactId>polopoly</artifactId>
-			<version>${polopoly.version}</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-solrj</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>jcl-over-slf4j</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
