@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.polopoly.application.ApplicationComponentControl;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +44,9 @@ public class PolopolySearchContextFactory {
 
 	public static SearchContext createContext(SolrSearchClient client) {
 		SearchContext context;
-		if(client != null && client.getServiceControl() instanceof SolrClientImpl) {
-			SolrClientImpl solrClient = (SolrClientImpl)client.getServiceControl();
+		ApplicationComponentControl serviceControl = client.getServiceControl();
+		if(serviceControl instanceof SolrClientImpl) {
+			SolrClientImpl solrClient = (SolrClientImpl) serviceControl;
 			context = SolrSearchContextFactory.createSearchContext(solrClient.getSolrServer());
 			appendSearchDecoratorsTo(solrClient, context);
 		} else {
@@ -78,17 +80,5 @@ public class PolopolySearchContextFactory {
 		}
 
 		return instance;
-	}
-
-	private static QueryDecorator[] getDecorators(SolrClientImpl client) {
-		List<QueryDecorator> decoratorList = new ArrayList<>(client.getQueryDecorators());
-		decoratorList.add(new QueryDecorator() {
-			@Override
-			public SolrQuery decorate(final SolrQuery solrQuery) {
-				return solrQuery.addFilterQuery("visibleOnline:true", "-p.needsIndexing_b:true");
-			}
-		});
-
-		return decoratorList.toArray(new QueryDecorator[0]);
 	}
 }

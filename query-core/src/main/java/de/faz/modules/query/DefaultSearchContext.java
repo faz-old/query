@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
@@ -48,6 +49,11 @@ public abstract class DefaultSearchContext implements SearchContext {
 	@Override
 	public void addSearchDecorator(@Nonnull final SearchDecorator decorator) {
 		this.decoratorList.add(decorator);
+	}
+
+	@Override
+	public Collection<SearchDecorator> getSearchDecorators() {
+		return new ArrayList<>(decoratorList);
 	}
 
 	@Nonnull

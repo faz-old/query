@@ -1,5 +1,6 @@
 package de.faz.modules.query.solr;
 
+import de.faz.modules.query.SearchDecorator;
 import de.faz.modules.query.fields.FieldDefinitionGenerator;
 import de.faz.modules.query.Query;
 import de.faz.modules.query.QueryExecutor;
@@ -11,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 /** @author Andreas Kaubisch <a.kaubisch@faz.de> */
 @RunWith(MockitoJUnitRunner.class)

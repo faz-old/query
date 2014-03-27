@@ -9,7 +9,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>query-core</module>
-		<module>query-spring</module>
 		<module>query-polopoly</module>
 	</modules>
 
@@ -148,7 +147,9 @@
 					<execution>
 						<id>attach-sources</id>
 						<phase>deploy</phase>
-						<goals><goal>jar-no-fork</goal></goals>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -158,10 +159,73 @@
 					<execution>
 						<id>attach-javadocs</id>
 						<phase>deploy</phase>
-						<goals><goal>jar</goal></goals>
+						<goals>
+							<goal>jar</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<properties>
+				<sonar.jdbc.url>jdbc:mysql://sonar.tecfem.de:3306/sonar?useUnicode=true&amp;characterEncoding=utf8</sonar.jdbc.url>
+				<sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
+				<sonar.host.url>http://sonar.tecfem.de:9000</sonar.host.url>
+				<!-- Tells Sonar to run the unit tests -->
+				<sonar.dynamicAnalysis>true</sonar.dynamicAnalysis>
+				<!-- Tells Sonar to use JaCoCo as the code coverage tool -->
+				<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+				<sonar.profile>fazcore</sonar.profile>
+				<sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
+			</properties>
+			<!--<dependencies>-->
+				<!--<dependency>-->
+					<!--<groupId>org.codehaus.sonar-plugins.java</groupId>-->
+					<!--<artifactId>sonar-jacoco-listeners</artifactId>-->
+					<!--<version>1.2</version>-->
+					<!--<scope>test</scope>-->
+				<!--</dependency>-->
+			<!--</dependencies>-->
+			<!--<build>-->
+				<!--<plugins>-->
+					<!--<plugin>-->
+						<!--<groupId>org.jacoco</groupId>-->
+						<!--<artifactId>jacoco-maven-plugin</artifactId>-->
+						<!--<version>0.7.0.201403182114</version>-->
+						<!--<configuration>-->
+							<!--<destFile>${sonar.jacoco.reportPath}</destFile>-->
+							<!--<propertyName>jacoco.agent.ut.arg</propertyName>-->
+							<!--<append>true</append>-->
+						<!--</configuration>-->
+						<!--<executions>-->
+							<!--<execution>-->
+								<!--<id>jacoco-prepare-agent-ut</id>-->
+								<!--<phase>process-test-classes</phase>-->
+								<!--<goals>-->
+									<!--<goal>prepare-agent</goal>-->
+								<!--</goals>-->
+							<!--</execution>-->
+						<!--</executions>-->
+					<!--</plugin>-->
+					<!--<plugin>-->
+						<!--<groupId>org.apache.maven.plugins</groupId>-->
+						<!--<artifactId>maven-surefire-plugin</artifactId>-->
+						<!--<version>2.14.1</version>-->
+						<!--<configuration>-->
+							<!--<argLine>${jacoco.agent.ut.arg}</argLine>-->
+							<!--<properties>-->
+								<!--<property>-->
+									<!--<name>listener</name>-->
+									<!--<value>org.sonar.java.jacoco.JUnitListener</value>-->
+								<!--</property>-->
+							<!--</properties>-->
+						<!--</configuration>-->
+					<!--</plugin>-->
+				<!--</plugins>-->
+			<!--</build>-->
+		</profile>
+	</profiles>
 </project>

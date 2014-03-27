@@ -17,6 +17,7 @@ package de.faz.modules.query;
 import de.faz.modules.query.fields.Mapping;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -43,6 +44,14 @@ public interface SearchContext {
 	 * @param decorator
 	 */
 	void addSearchDecorator(@Nonnull SearchDecorator decorator);
+
+	/**
+	 * Returns a collection of all added {@link de.faz.modules.query.SearchDecorator}
+	 * to this Search Context. It returns an empty Collection when no decorator
+	 * was added.
+	 * @return a Collection of {@link de.faz.modules.query.SearchDecorator}
+	 */
+	Collection<SearchDecorator> getSearchDecorators();
 
     /**
      * This function creates a new Query instance an return this.

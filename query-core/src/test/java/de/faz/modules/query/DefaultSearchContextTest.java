@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -92,6 +93,13 @@ public class DefaultSearchContextTest {
 	public void createFieldDefinitionFor_WithClass_callsGenerator() {
 		underTest.createFieldDefinitionFor(TestMapping.class);
 		verify(generator).createFieldDefinition(TestMapping.class);
+	}
+
+	@Test
+	public void addSearchDecorator_withDecorator_addDecoratorToContext() {
+		SearchDecorator decorator = mock(SearchDecorator.class);
+		underTest.addSearchDecorator(decorator);
+		assertTrue(underTest.getSearchDecorators().contains(decorator));
 	}
 }
 
