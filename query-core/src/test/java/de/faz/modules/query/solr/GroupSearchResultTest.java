@@ -89,8 +89,16 @@ public class GroupSearchResultTest {
 		decorateResponseWithCommands(command);
 
 		assertEquals(0, underTest.getResultCount(0));
-
 	}
+
+    @Test
+    public void getNumCount_withoutResults_returnsZero() {
+        GroupCommand command = createGroup();
+        SolrDocumentList results = mock(SolrDocumentList.class);
+        when(command.getValues().get(0).getResult()).thenReturn(results);
+        decorateResponseWithCommands(command);
+        assertEquals(0, underTest.getNumCount(0));
+    }
 
 	private void decorateResponseWithCommands(GroupCommand... commands) {
 		List<GroupCommand> groupCommands = Arrays.asList(commands);

@@ -70,4 +70,12 @@ public class GroupSearchResult {
 
 		return found;
 	}
+
+    public long getNumCount(final int index) {
+        long found = 0;
+        if (getGroupCount() > index && index >= 0){
+            found = response.getGroupResponse().getValues().get(index).getValues().get(0).getResult().getNumFound();
+        }
+        return found;
+    }
 }
