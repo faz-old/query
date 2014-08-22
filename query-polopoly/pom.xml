@@ -24,11 +24,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>de.faz</groupId>
-			<artifactId>polopoly-private</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.polopoly</groupId>
 			<artifactId>polopoly</artifactId>
 			<classifier>api</classifier>
@@ -37,7 +32,7 @@
 		<dependency>
 			<groupId>com.polopoly</groupId>
 			<artifactId>polopoly</artifactId>
-			<scope>runtime</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
