@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.faz.modules</groupId>
 	<artifactId>query</artifactId>
-	<version>2.3-SNAPSHOT</version>
+	<version>2.2</version>
 	<name>query - all modules for query framework</name>
 	<packaging>pom</packaging>
 	<modules>
