@@ -27,7 +27,7 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:git@pc12811.faz.de:kaubisch/query.git</connection>
+		<connection>scm:git:git@github.com:faz-electronic-media/query.git</connection>
 	</scm>
 
 	<ciManagement>
