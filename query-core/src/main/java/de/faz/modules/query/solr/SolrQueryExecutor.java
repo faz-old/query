@@ -14,13 +14,16 @@
 
 package de.faz.modules.query.solr;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +41,11 @@ class SolrQueryExecutor extends QueryExecutor {
 
 	private final FieldDefinitionGenerator fieldGenerator;
 
-	private final SolrServer solrServer;
+	private final HttpSolrServer httpSolrServer;
 
-	SolrQueryExecutor(final SolrServer server, final FieldDefinitionGenerator generator) {
+	SolrQueryExecutor(final HttpSolrServer httpSolrServer, final FieldDefinitionGenerator generator) {
 		super();
-		this.solrServer = server;
+		this.httpSolrServer = httpSolrServer;
 		this.fieldGenerator = generator;
 	}
 
@@ -65,8 +68,7 @@ class SolrQueryExecutor extends QueryExecutor {
 	private SolrSearchResult processQuery(final Query query, final SearchSettings settings) {
 		SolrSearchResult result = createDefaultResult(settings.getPageSize());
 		try {
-			QueryResponse solrResult = solrServer.query(createQuery(query, settings));
-
+			QueryResponse solrResult = httpSolrServer.query(createQuery(query, settings));
 			result = mapSolrQueryToDomainResult(settings, solrResult);
 		} catch (SolrServerException e) {
 			LOG.warn("got exception when execute a search to solr", e);
@@ -94,14 +96,14 @@ class SolrQueryExecutor extends QueryExecutor {
 	}
 
 	private boolean canProcessQuery(final Query query) {
-		return solrServer != null && !query.isEmpty();
+		return httpSolrServer != null && !query.isEmpty();
 	}
 
 	private SolrSearchResult createDefaultResult(final int numOfElementsOnPage) {
 		return new SolrSearchResult(null, numOfElementsOnPage);
 	}
 
-	private SolrQuery createQuery(final Query q, final SearchSettings settings) {
+	protected SolrQuery createQuery(final Query q, final SearchSettings settings) {
 		SolrQuery solrQuery = new SolrQuery(q.toString());
 		solrQuery.setRows(settings.getPageSize());
 		settings.getQueryExecutor().enrich(solrQuery);

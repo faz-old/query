@@ -54,7 +54,7 @@ public class SolrSearchSettings extends SearchSettings {
 		Collection<SearchSettings.SortBy> sortCollection = getSort();
 
 		for (SearchSettings.SortBy sortBy : sortCollection) {
-			query.addSortField(sortBy.getFieldName().toString(), new SolrOrderByMapper(sortBy).toSolrOrder());
+			query.addSort(sortBy.getFieldName().toString(), new SolrOrderByMapper(sortBy).toSolrOrder());
 		}
 
 		for (SearchOption option : optionCollection) {

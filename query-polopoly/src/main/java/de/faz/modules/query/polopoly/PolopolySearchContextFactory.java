@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.polopoly.application.ApplicationComponentControl;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,8 @@ public class PolopolySearchContextFactory {
 		ApplicationComponentControl serviceControl = client.getServiceControl();
 		if(serviceControl instanceof SolrClientImpl) {
 			SolrClientImpl solrClient = (SolrClientImpl) serviceControl;
-			context = SolrSearchContextFactory.createSearchContext(solrClient.getSolrServer());
+			HttpSolrServer httpSolrServer = new HttpSolrServer(solrClient.getSolrServerUrl().getUrl() + "/" + client.getIndexName().getName());
+			context = SolrSearchContextFactory.createSearchContext(httpSolrServer);
 			appendSearchDecoratorsTo(solrClient, context);
 		} else {
 			context = SolrSearchContextFactory.createSearchContext(null);
