@@ -16,6 +16,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,7 +40,7 @@ import static org.mockito.Mockito.withSettings;
 public class PolopolySearchContextFactoryTest extends TestCase {
 	@Mock
 	Application application;
-	@Mock
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS)
 	SolrSearchClient client;
 
 	private PolopolySearchContextFactory underTest;
@@ -56,15 +58,18 @@ public class PolopolySearchContextFactoryTest extends TestCase {
 
 	@Test
 	public void createContext_createsNewSearchContext() {
-		SolrClientImpl polopolySolrClient = mock(SolrClientImpl.class);
+		SolrClientImpl polopolySolrClient = mock(SolrClientImpl.class,RETURNS_DEEP_STUBS);
 		when(client.getServiceControl()).thenReturn(polopolySolrClient);
+		when(polopolySolrClient.getSolrServerUrl().getUrl()).thenReturn("http://localhost:8080/solr");
 		assertNotNull(underTest.createContext());
 	}
 
 	@Test
 	public void createContext_withSolrSearchClientHasDecorators_returnContextWithDecorators() {
-		SolrClientImpl polopolySolrClient = mock(SolrClientImpl.class);
+		SolrClientImpl polopolySolrClient = mock(SolrClientImpl.class,RETURNS_DEEP_STUBS);
 		when(client.getServiceControl()).thenReturn(polopolySolrClient);
+		when(polopolySolrClient.getSolrServerUrl().getUrl()).thenReturn("http://localhost:8080/solr");
+		when(client.getIndexName().getName()).thenReturn("public");
 		QueryDecorator queryDecorator = new TestSearchDecorator(null);
 		when(polopolySolrClient.getQueryDecorators()).thenReturn(Arrays.asList(queryDecorator));
 		SearchContext context = underTest.createContext(client);
