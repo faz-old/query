@@ -47,7 +47,7 @@ public class SolrSearchSettingsTest {
 
 		org.apache.solr.client.solrj.SolrQuery query = mock(org.apache.solr.client.solrj.SolrQuery.class);
 		underTest.enrichQuery(query);
-		verify(query).addSort("fieldName", org.apache.solr.client.solrj.SolrQuery.ORDER.asc);
+		verify(query).addSortField("fieldName", org.apache.solr.client.solrj.SolrQuery.ORDER.asc);
 	}
 
 	@Test
